@@ -1,7 +1,7 @@
 # LwMQ.net
 Lightweight, Brokerless Messaging
 
-<p align="center">
+<p align="left">
   <img src="https://www.lwmq.net/assets/img/logo-1024x1024.jpg" alt="LwMQ Logo" width="256"/>
 </p>
 
