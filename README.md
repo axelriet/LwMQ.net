@@ -6,6 +6,6 @@
 Lightweight, Brokerless, High-Performance Messaging
 </p>
 <p>
-LwMQ is a lightweight, brokerless, zero-configuration, high-performance, and modern message queuing layer supporting request-reply, pub-sub, broadcast, and fan-out over multiple protocols, including TCP, UDP, QUIC, PGM, RDMA (Infiniband, iWARP) as well as local and to/from virtual machines and containers through hypervisor-specific protocols.
+LwMQ is a DMA-first, lightweight, brokerless, zero-configuration, high-performance, and modern message queuing subsystem over RDMA (Infiniband, RoCE, iWARP) and Shared Memory, TCP, UDP, and PGM as well as to/from Virtual Machines and Containers through hypervisor-specific protocols.
 </p>
 
