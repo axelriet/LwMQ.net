@@ -5,7 +5,7 @@ See :doc:`about`, :doc:`user-guide`, and :doc:`api` sections for further informa
 
 .. note::
 
-   This project is under active development.
+   Under construction.
 
 Contents
 --------
@@ -13,5 +13,5 @@ Contents
 .. toctree::
 
    about
-   user-guide
-   api
+   guide/index
+   api/index
