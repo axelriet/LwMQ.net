@@ -110,7 +110,7 @@ Functions
 
     .. note:: Creating a message reference offers a way to send the same message through more than one communication channel. The normal behavior is the application returns ownerthip of the message to LwMQ when queuing them for sending. Since sending messages is asynchronous, the application cannot keep a reference to the message sent, as it will be destroyed asynchronously at some point in the future. Creating a message reference allows the application to send the original and retain a reference to be sent through another channel. LwMQ takes care of reference counting and manages the lifetime of the messages handed back to it. Creating a message reference is a lightweight operation, as the clone shares the same data frames as the original message. The clone is independent of the original message's lifetime, and can be safely used even after the original message has been sent and destroyed by LwMQ.
 
-    :param MessageRef: A pointer to a variable that receives the created message instance. The clone shares the same data frames as the original message and is independent of the original message's lifetime.
+    :param MessageRef: A pointer to a variable that receives the created message instance. The reference shares the same data frames as the original message and is independent of the original message's lifetime.
 
 .. code:: c
     
