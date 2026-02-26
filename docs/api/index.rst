@@ -1,3 +1,7 @@
+.. |br| raw:: html
+
+   <br />
+
 *************
 API Reference
 *************
@@ -13,18 +17,33 @@ Macros
 Functions
 ---------
 
-.. c:function:: LMQAPI LmqInitialize (WORD VersionRequested)
-    
-   Initializes LwMQ. This function must be called before any
-   other LwMQ functions are called. Multiple calls are allowed
-   but must be matched by a corresponding call to LmqTerminate().   
+.. c:function:: LMQAPI LmqInitialize(WORD VersionRequested)
 
-   :param VersionRequested: Pass the supplied LMQ_CURRENT_API_VERSION macro.
+    |br|
+    Initializes LwMQ.
+
+    :param VersionRequested: Pass the supplied LMQ_CURRENT_API_VERSION macro.
+
+    .. note:: This function must be called before any other LwMQ function. Multiple calls are allowed but must be matched by a corresponding call to LmqTerminate().
+    |br|
 
 .. c:function:: LMQAPI LmqTerminate()
 
-   Shuts down LwMQ and deallocate internal ressources. This function must be called once for each
-   calls made to LmqInitialize().  
+    |br|
+    Shuts down LwMQ and deallocate internal ressources.
+    
+    .. note:: This function must be called once for each calls made to LmqInitialize().
+    |br|
+
+.. code:: c
+
+    #include <api-lwmq-messaging.h>
+
+    HRESULT hr = LmqInitialize(LMQ_CURRENT_API_VERSION);
+
+    // ...
+
+    hr = LmqTerminate();
 
 Messages
 ========
