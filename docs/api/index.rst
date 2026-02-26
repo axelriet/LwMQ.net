@@ -44,6 +44,35 @@ Messages
 
 Messages are structured entities composed of one or more data frames. The general philosophy is the messages belong to LwMQ and the application only holds references to messages, which are automatically freed by LwMQ once they are no longer needed. This design allows for efficient message handling and minimizes the risk of memory leaks or dangling pointers in the application.
 
+.. code::
+
+    //
+    // General idea, with most error checking
+    // and details omitted for clarity.
+    //
+
+    LMQ_MESSAGE Message;
+
+    hr = LmqCreateMessage(LMQ_MESSAGEFRAMECOUNT_DEFAULT,
+                          &Message);
+
+    hr = LmqAppendFrame(Message,
+                        MessageContent,
+                        MessageSize,
+                        Timestamp);
+
+    if (FAILED(LmqSendMessage(SendQueue,
+                              &Message,
+                              0)))
+    {
+        //
+        // Messages that failed to send must be
+        // destroyed to free their resources.
+        //
+
+        LmqDestroyUnsentMessage(&Message);
+    }
+
 Types
 -----
 
@@ -255,6 +284,7 @@ Functions
 
     if (SUCCEEDED(hr)
     {
+        //
         // The message has been successfuly created but
         // an error occured afterward such as you could
         // not acquire the data to send, or you changed
@@ -266,7 +296,14 @@ Functions
         // not be automatically destroyed.
         //
 
-        hr = LmqDestroyUnsentMessage(&Message);
+        if (SOME_ERROR_CONDITION)
+        {
+            //
+            // The message that will never be sent.
+            //
+
+            hr = LmqDestroyUnsentMessage(&Message);
+        }
     }
 
 Queues
