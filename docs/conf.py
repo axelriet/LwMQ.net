@@ -6,7 +6,7 @@ author = 'Axel Rietschin'
 release = '0.1'
 
 extensions = [ 'sphinx_rtd_theme' ]
-
+html_static_path = ['_static']
 html_theme = "sphinx_rtd_theme"
 
 html_theme_options = {
@@ -28,4 +28,6 @@ html_theme_options = {
     'titles_only': False
 }
 
-
+html_css_files = [
+    'css/custom.css',
+]
