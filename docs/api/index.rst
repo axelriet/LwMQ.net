@@ -61,6 +61,13 @@ Messages are structured entities composed of one or more data frames. The genera
                         MessageSize,
                         Timestamp);
 
+    //
+    // Queue the message for sending. After this call, the
+    // application can't access the message anymore as the
+    // ownership has been transferred to LwMQ, and it will
+    // be asynchronously destroyed at some future point.
+    //
+
     if (FAILED(LmqSendMessage(SendQueue,
                               &Message,
                               0)))
