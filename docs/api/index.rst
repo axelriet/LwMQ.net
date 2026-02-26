@@ -104,18 +104,20 @@ Functions
     HRESULT hr = LmqCreateMessage(LMQ_MESSAGEFRAMECOUNT_DEFAULT,
                                   &Message);
 
-.. c:function:: LMQAPI LmqCreateMessageRef(LMQ_MESSAGE Message, PLMQ_MESSAGE Clone)
+.. c:function:: LMQAPI LmqCreateMessageRef(LMQ_MESSAGE Message, PLMQ_MESSAGE MessageRef)
 
     :param Message: The message to create a reference from.
 
-    :param Clone: A pointer to a variable that receives the created message instance. The clone shares the same data frames as the original message and is independent of the original message's lifetime.
+    .. note:: Creating a message reference offers a way to send the same message through more than one communication channel. The normal behavior is the application returns ownerthip of the message to LwMQ when queuing them for sending. Since sending messages is asynchronous, the application cannot keep a reference to the message sent, as it will be destroyed asynchronously at some point in the future. Creating a message reference allows the application to send the original and retain a reference to be sent through another channel. LwMQ takes care of reference counting and manages the lifetime of the messages handed back to it. Creating a message reference is a lightweight operation, as the clone shares the same data frames as the original message. The clone is independent of the original message's lifetime, and can be safely used even after the original message has been sent and destroyed by LwMQ.
+
+    :param MessageRef: A pointer to a variable that receives the created message instance. The clone shares the same data frames as the original message and is independent of the original message's lifetime.
 
 .. code:: c
     
-    LMQ_MESSAGE Clone;
+    LMQ_MESSAGE MessageRef;
 
     HRESULT hr = LmqCreateMessageRef(Message,
-                                     &Clone);
+                                     &MessageRef);
 
 .. c:function:: LMQAPI LmqAppendFrame(LMQ_MESSAGE Message, const BYTE* Data, UINT64 DataSize, ULONG64 Timestamp)
 
