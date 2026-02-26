@@ -42,7 +42,7 @@ Functions
 Messages
 ========
 
-Messages are structured entities composed of one or more data frames.
+Messages are structured entities composed of one or more data frames. The general philosophy is the messages belong to LwMQ and the application only holds references to messages, which are automatically freed by LwMQ once they are no longer needed. This design allows for efficient message handling and minimizes the risk of memory leaks or dangling pointers in the application.
 
 Types
 -----
@@ -231,6 +231,43 @@ Functions
     :param MaxInlineFrameSize: A pointer to a variable that receives the maximum frame payload size in bytes that can be stored "inline" within the message without requiring additional internal memory allocation.
 
     .. note:: The value is indicative and does not represent a limit. Application that are extremely performance-sensitive benefit from keeping frame payloads at or below this size, as well as indicating the expected number of frames they intend to add to a message upon message creation.
+
+.. code:: c
+
+    USHORT MaxInlineFrameSize;
+    
+    HRESULT hr = LmqQueryMaxInlineFrameSize(&MaxInlineFrameSize);
+
+.. c:function:: LMQAPI LmqDestroyUnsentMessage(PLMQ_MESSAGE Message)
+
+    Destroys a message that was created but not sent. This function is only necessary if the message was created but will not be sent, for example because the application encountered an error after creating the message but before sending it. Messages that are successfully sent do not need to be explicitly destroyed.
+
+    :param Message: A pointer to the message to destroy. The pointer is set to NULL before the function returns.
+
+    .. note:: Messages that are successfully sent do not need to be explicitly destroyed, as they are automatically destroyed by LwMQ once they are no longer needed. However, if a message was created but will not be sent, for example because the application encountered an error after creating the message but before sending it, then this function must be called to free the resources associated with the message.
+
+.. code:: c
+
+    LMQ_MESSAGE Message;
+
+    HRESULT hr = LmqCreateMessage(LMQ_MESSAGEFRAMECOUNT_DEFAULT,
+                                  &Message);
+
+    if (SUCCEEDED(hr)
+    {
+        // The message has been successfuly created but
+        // an error occured afterward such as you could
+        // not acquire the data to send, or you changed
+        // your mind about sending the message.
+        //
+        // In this case you must destroy the message to
+        // free its memory resources, since the message
+        // will not be handed out to LwMQ and thus will
+        // not be automatically destroyed.
+        //
+
+        hr = LmqDestroyUnsentMessage(&Message);
+    }
 
 Queues
 ======
