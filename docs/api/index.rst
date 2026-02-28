@@ -73,8 +73,8 @@ Messages are structured entities composed of one or more data frames. The genera
                               0)))
     {
         //
-        // Messages that failed to send must be
-        // destroyed to free their resources.
+        // Messages that failed to send can be retried or
+        // must be destroyed to free their resources.
         //
 
         LmqDestroyUnsentMessage(&Message);
@@ -87,10 +87,6 @@ Types
 
     An opaque message instance.
 
-.. c:type:: PLMQ_MESSAGE
-
-    A pointer to an opaque message instance.
-
 Functions
 ---------
 
@@ -98,7 +94,7 @@ Functions
 
     Creates a new message instance.
 
-    :param FrameCountHint: A hint for the number of frames that will be added to the message. This is used to optimize internal data structures but does not limit the actual number of frames that can be added. For most applications, pass LMQ_MESSAGEFRAMECOUNT_DEFAULT.
+    :param FrameCountHint: A hint for the number of frames that will be added to the message. For most applications, pass LMQ_MESSAGEFRAMECOUNT_DEFAULT.
 
     :param Message: A pointer to a variable that receives the created message instance.
 
@@ -115,9 +111,9 @@ Functions
 
     :param Message: The message to create a reference from.
 
-    .. note:: Creating a message reference offers a way to send the same message through more than one communication channel. The normal behavior is the application returns ownerthip of the message to LwMQ when queuing them for sending. Since sending messages is asynchronous, the application cannot keep a reference to the message sent, as it will be destroyed asynchronously at some point in the future. Creating a message reference allows the application to send the original and retain a reference to be sent through another channel. LwMQ takes care of reference counting and manages the lifetime of the messages handed back to it. Creating a message reference is a lightweight operation, as the clone shares the same data frames as the original message. The clone is independent of the original message's lifetime, and can be safely used even after the original message has been sent and destroyed by LwMQ.
+    :param MessageRef: A pointer to a variable that receives the created message reference. The reference shares the same data frames as the original message and is independent of the original message's lifetime.
 
-    :param MessageRef: A pointer to a variable that receives the created message instance. The reference shares the same data frames as the original message and is independent of the original message's lifetime.
+    .. note:: Creating a message reference offers a way to send the same message through more than one communication channel. The normal behavior is the application returns ownership of the message to LwMQ when queuing them for sending. Since sending messages is asynchronous, the application cannot keep a reference to the message sent, as it will be destroyed asynchronously at some point in the future. Creating a message reference allows the application to send the original and retain a reference to be sent through another channel. LwMQ takes care of reference counting and manages the lifetime of the messages handed back to it. Creating a message reference is a lightweight operation, as the clone shares the same data frames as the original message. The clone is independent of the original message's lifetime, and can be safely used even after the original message has been sent and destroyed by LwMQ.
 
 .. code:: c
     
@@ -315,11 +311,103 @@ Functions
         }
     }
 
+Channels
+========
+
+Types
+-----
+
+.. c:type:: PLMQ_CHANNEL
+
+    An opaque channel instance.
+
+.. cpp:type:: LMQ_CHANNELTYPE
+
+    An enumerated type representing the type of a communication channel.    
+
+.. cpp:type:: LMQ_CHANNELROLE
+
+    An enumerated type representing the role of a communication channel once opened.
+
+.. cpp:type:: LMQ_RECEIVEQUEUETYPE
+
+    An enumerated type representing the type of receive queue to use for incoming messages when opening a communication channel as a receiver.
+
+.. cpp:type:: LMQ_CHANNELCONTROLCODE
+
+    An enumerated type representing the control codes for performing a control operation on a communication channel.
+
+Functions
+---------
+
+.. c:function:: LMQAPI LmqCreateChannel(LMQ_CHANNELTYPE ChannelType, PLMQ_CHANNEL Channel)
+
+    Creates a new communication channel.
+
+    :param ChannelType: The type of the communication channel to create.
+    
+    :param Channel: A pointer to a variable that receives the created channel instance.
+
+.. c:function:: LMQAPI LmqOpenChannel(LMQ_CHANNEL Channel, LMQ_CHANNELROLE ChannelRole, LMQ_RECEIVEQUEUETYPE ReceiveQueueType, LONG ReceiveQueueCapacity)
+
+    Opens a communication channel for sending or receiving messages.
+
+    :param Channel: The communication channel to open.
+
+    :param ChannelRole: The role that the channel will play once opened, either sender or receiver.
+
+    :param ReceiveQueueType: If the channel is opened as a receiver, the type of receive queue to use for incoming messages.
+
+    :param ReceiveQueueCapacity: If the channel is opened as a receiver, the maximum number of messages that can be queued for receiving at any given time. This parameter must be zero if the channel is opened only as a sender.
+
+    .. note:: Transports must be added before the channel is opened, and cannot be added once the channel is opened. The channel will not be able to be opened until at least one transport has been added.
+
+.. c:function:: LMQAPI LmqChannelControl(LMQ_CHANNEL Channel, LMQ_CHANNELCONTROLCODE ControlCode, PVOID InputBuffer, ULONG InputBufferLengthBytes, PVOID OutputBuffer, ULONG OutputBufferLengthBytes, PULONG BytesReturned)
+    
+    Performs a control operation on a communication channel.
+
+    :param Channel: The communication channel to perform the control operation on.
+
+    :param ControlCode: The control code representing the control operation to perform.
+
+    :param InputBuffer: An optional pointer to a buffer containing input data for the control operation.
+
+    :param InputBufferLengthBytes: The size of the input buffer in bytes.
+
+    :param OutputBuffer: An optional pointer to a buffer that receives output data from the control operation.
+
+    :param OutputBufferLengthBytes: The size of the output buffer in bytes.
+
+    :param BytesReturned: An optional pointer to a variable that receives the size of the data returned in the output buffer in bytes.
+
+.. c:function:: LMQAPI LmqFlushChannel(LMQ_CHANNEL Channel, UINT32 TimeoutMs)
+
+    Flushes a communication channel, ensuring that all pending messages are sent.
+
+     :param Channel: The communication channel to flush.
+
+    :param TimeoutMs: The maximum time to wait for the flush operation to complete, in milliseconds. A value of INFINITE can be used to wait indefinitely.
+
+    .. note:: This function blocks until all pending messages are sent or until the specified timeout elapses. If the flush operation does not complete within the specified timeout, the function returns a timeout error code, but any pending messages will still be sent. You can call this function periodically when sending messages at a rapit pace through an unbounded send queue, of the recipients don't drain the queue fast enough, which causes the number of queued messages on the sending side to keep growing. Flushing the channel allows the application to apply backpressure and avoid excessive memory usage by ensuring that pending messages are sent before queuing more messages for sending.
+
+.. c:function:: LMQAPI LmqCloseChannel(LMQ_CHANNEL Channel, UINT32 LingerMs)
+    
+    Closes a communication channel.
+
+    :param Channel: The communication channel to close.
+
+    :param LingerMs: The maximum time to wait for any pending messages to be processed (sent, or dispatched to the receiving queue) before forcefully closing the channel, in milliseconds. A value of INFINITE can be used to wait indefinitely.
+
+    .. note:: If LingerMs > 0 the function internally calls LmqFlushChannel() to ensure that all pending messages are sent before closing the channel. If the flush operation does not complete within the LingerMs time, the channel is forcefully closed anyway.
+
+.. c:function:: LMQAPI LmqDestroyChannel(LMQ_CHANNEL Channel)
+    
+    Destroys a communication channel.
+
+    :param Channel: The communication channel to destroy.
+
 Queues
 ======
 
 Transports
 ==========
-
-Channels
-========
