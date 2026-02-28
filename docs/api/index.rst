@@ -384,11 +384,11 @@ Functions
 
     Flushes a communication channel, ensuring that all pending messages are sent.
 
-     :param Channel: The communication channel to flush.
+    :param Channel: The communication channel to flush.
 
     :param TimeoutMs: The maximum time to wait for the flush operation to complete, in milliseconds. A value of INFINITE can be used to wait indefinitely.
 
-    .. note:: This function blocks until all pending messages are sent or until the specified timeout elapses. If the flush operation does not complete within the specified timeout, the function returns a timeout error code, but any pending messages will still be sent. You can call this function periodically when sending messages at a rapit pace through an unbounded send queue, of the recipients don't drain the queue fast enough, which causes the number of queued messages on the sending side to keep growing. Flushing the channel allows the application to apply backpressure and avoid excessive memory usage by ensuring that pending messages are sent before queuing more messages for sending.
+    .. note:: This function blocks until all pending messages are sent or until the specified timeout elapses. If the flush operation does not complete within the specified timeout, the function returns a timeout error code, but any pending messages will still be sent assuming the communication link is still active. You can call this function periodically when sending messages at a rapid pace through an unbounded send queue, of the recipients don't drain the queue fast enough, which causes the number of queued messages on the sending side to keep growing. Flushing the channel allows the application to apply backpressure and avoid excessive memory usage by ensuring that pending messages are sent before queuing more messages for sending.
 
 .. c:function:: LMQAPI LmqCloseChannel(LMQ_CHANNEL Channel, UINT32 LingerMs)
     
@@ -409,5 +409,106 @@ Functions
 Queues
 ======
 
+Types
+---------
+
+.. c:type:: LMQ_SENDQUEUE
+
+    An opaque send queue instance.
+
+.. c:type:: LMQ_SENDQUEUETYPE
+
+    An enumerated type representing the type of a send queue.
+
+.. c:type:: LMQ_SENDQUEUEPRIORITY
+
+    An enumerated type representing the priority of a send queue relative to other send queues on the same channel.
+   
+Functions
+---------
+
+.. c:function:: LMQAPI LmqAddSendQueue(LMQ_CHANNEL Channel, LMQ_SENDQUEUETYPE QueueType, LMQ_SENDQUEUEPRIORITY QueuePriority, LONG Capacity, PLMQ_SENDQUEUE SendQueue)
+    
+    Adds a send queue to a communication channel.
+
+    :param Channel: The communication channel to add the send queue to.
+
+    :param QueueType: The type of the send queue to add.
+
+    :param QueuePriority: The priority of the send queue relative to other send queues on the same channel. This parameter is only relevant if the channel has multiple send queues.
+
+    :param Capacity: The maximum number of messages that can be queued for sending at any given time in the send queue.
+
+    :param SendQueue: A pointer to a variable that receives the created send queue instance.
+
+    .. note:: A channel can have multiple send queues, but only one receive queue. Transports are added to the channel, and messages are sent through a specific send queue on the channel. The send queue priority is used to determine the order in which messages are sent when there are multiple send queues on the same channel. Messages queued on higher priority send queues tend to be sent before messages queued on lower priority send queues, but LwMQ uses a weigthed round-robin scheduling algorithm to ensure fairness among send queues. Two special priorities are not subjected to the round-robin scheduling: LMQ_SENDQUEUEPRIORITY_TIME_CRITICAL and LMQ_SENDQUEUEPRIORITY_IDLE. Messages queued on a LMQ_SENDQUEUEPRIORITY_TIME_CRITICAL send queue are always sent before messages on all other priority levels, possibly starving other queues, and messages queued on a LMQ_SENDQUEUEPRIORITY_IDLE send queue are always sent after all messages, possibly getting starved. The two extreme priorities are useful for applications that need to send some messages with very low latency, for example to trigger some action on the receiving side, or to send some messages with very low importance, for example some telemetry data that is nice to have on the receiving side but not worth delaying the delivery of other messages. Messages at the same priority are sent in order. Messages can capture the timestamp at which they were queued for sending, which is useful for example for progress messages where the recipient can compute rates based on the queuing time and not the reception tiime, which is subject to queuing latencies induced by traffic congestions or interruptions.
+
 Transports
 ==========
+
+Types
+-----
+
+.. c:type:: LMQ_TRANSPORT
+
+    An opaque transport instance.
+
+.. c:struct:: LMQ_TRANSPORTBUFFERLIMITS
+
+    A structure representing the buffer limits of a transport.
+
+Functions
+---------
+
+.. c:function:: LMQAPI LmqQueryTransportBufferLimits(PCWSTR TransportDescriptor, PLMQ_TRANSPORTBUFFERLIMITS BufferLimits, ULONG BufferLimitsSizeBytes)
+
+    Queries the buffer limits for a transport.
+
+    :param TransportDescriptor: The descriptor of the transport to query.
+
+    :param BufferLimits: A pointer to a variable that receives the buffer limits of the transport.
+
+    :param BufferLimitsSizeBytes: The size of the BufferLimits structure in bytes. This parameter allows for future extensibility of the BufferLimits structure. It must be set to sizeof(LMQ_TRANSPORTBUFFERLIMITS).
+
+.. c:function:: LMQAPI LmqAddTransport(LMQ_CHANNEL Channel, PCWSTR TransportDescriptor, SIZE_T BufferSizeBytes, LONG MaxPendingSendBuffers, LONG MaxPendingReceiveBuffers, UINT32 CreationFlags, PLMQ_TRANSPORT Transport)
+
+    Adds a transport to a communication channel.
+
+    :param Channel: The communication channel to add the transport to.
+
+    :param TransportDescriptor: The descriptor of the transport to add. The format of the transport descriptor is transport-specific. For example, for a RDMA transport, the descriptor is in the format "rdma://hostname:port".
+
+    :param BufferSizeBytes: The size of the buffers to use for sending and receiving messages through the transport in bytes. This parameter must be at least as large as the largest single message that will be sent or received through the transport. Moreover, all transports added to a particular channel must share the same buffer size.
+
+    :param MaxPendingSendBuffers: The maximum number of send buffers that can be pending for sending through the transport at any given time. This parameter must be zero if the transport cannot send, or at least 1 othwewise. For best sending performance, multiple send buffers are recommended.
+
+    :param MaxPendingReceiveBuffers: The maximum number of receive buffers that can be pending for receiving through the transport at any given time.  This parameter must be zero if the transport cannot receive, or at least 1 othwewise. For best receiving performance, multiple receive buffers are recommended.
+
+    :param CreationFlags: Flags controlling the creation of the transport, either TRANSPORT_CREATIONFLAGS_SEND, TRANSPORT_CREATIONFLAGS_RECEIVE, or TRANSPORT_CREATIONFLAGS_SENDRECEIVE.
+
+    :param Transport: A pointer to a variable that receives the created transport instance.
+
+.. c:function:: LMQAPI LmqTransportControl(LMQ_TRANSPORT Transport, ULONG ControlCode, PVOID InputBuffer, ULONG InputBufferLengthBytes, PVOID OutputBuffer, ULONG OutputBufferLengthBytes, PULONG BytesReturned)
+
+    Performs a control operation on a transport.
+
+    :param Transport: The transport to perform the control operation on.
+
+    :param ControlCode: The control code representing the control operation to perform. This parameter is transport-specific.
+
+    :param InputBuffer: An optional pointer to a buffer containing input data for the control operation.
+
+    :param InputBufferLengthBytes: The size of the input buffer in bytes.
+
+    :param OutputBuffer: An optional pointer to a buffer that receives output data from the control operation.
+
+    :param OutputBufferLengthBytes: The size of the output buffer in bytes.
+
+    :param BytesReturned: An optional pointer to a variable that receives the size of the data returned in the output buffer in bytes.
+
+Send and Receive Messages
+=========================
+
+    TBD
+
+
