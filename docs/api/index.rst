@@ -506,9 +506,47 @@ Functions
 
     :param BytesReturned: An optional pointer to a variable that receives the size of the data returned in the output buffer in bytes.
 
-Send and Receive Messages
-=========================
+Sending and Receiving Messages
+==============================
 
-    TBD
+.. c:function:: LMQAPI LmqSendMessage(LMQ_SENDQUEUE SendQueue, PLMQ_MESSAGE Message, UINT32 TimeoutMs)
 
+    Queues a message for sending through a communication channel.
 
+    :param SendQueue: The send queue to send the message through.
+
+    :param Message: A pointer to the message to send. After this call, the application can't access the message anymore as the ownership has been transferred to LwMQ, and it will be asynchronously destroyed at some future point.
+
+    :param TimeoutMs: The maximum time to wait for the message to be accepted for sending, in milliseconds. A value of INFINITE can be used to wait indefinitely. 
+
+.. c:function:: LMQAPI LmqSendMessageWithTag(LMQ_SENDQUEUE SendQueue, PLMQ_MESSAGE Message, LONG_PTR Tag, UINT32 TimeoutMs)
+    
+    Queues a message for sending through a communication channel with an associated user-defined tag.
+
+    :param SendQueue: The send queue to send the message through.
+
+    :param Message: A pointer to the message to send. After this call, the application can't access the message anymore as the ownership has been transferred to LwMQ, and it will be asynchronously destroyed at some future point.
+
+    :param Tag: A user-defined tag value that is associated with the message. This value is interpreted by LwMQ and any message with the same tag still in the queue is removed before the new message is queued.
+
+    :param TimeoutMs: The maximum time to wait for the message to be accepted for sending, in milliseconds. A value of INFINITE can be used to wait indefinitely.
+
+.. c:function:: LMQAPI LmqReceiveMessage(LMQ_CHANNEL Channel, UINT32 TimeoutMs, PUSHORT FrameCount, PUINT64 PayloadSizeBytes, PLMQ_MESSAGE Message)
+
+    Receives a message from a communication channel.
+
+    :param Channel: The communication channel to receive the message from.
+
+    :param TimeoutMs: The maximum time to wait for a message to be received, in milliseconds. A value of INFINITE can be used to wait indefinitely.
+
+    :param FrameCount: A pointer to a variable that receives the number of frames in the received message.
+
+    :param PayloadSizeBytes: An optional pointer to a variable that receives the total size of all frame payloads in bytes in the received message.
+
+    :param Message: A pointer to a variable that receives the received message instance. The application takes ownership of the received message and is responsible for destroying it when it is no longer needed by calling LmqDisposeReceivedMessage().
+
+.. c:function:: LMQAPI LmqDisposeReceivedMessage(PLMQ_MESSAGE Message)
+
+    Disposes a received message that is no longer needed.
+
+    :param Message: A pointer to the received message to dispose. The pointer is set to NULL before the function returns.
