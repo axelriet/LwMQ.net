@@ -72,16 +72,16 @@ the risk of memory leaks or dangling pointers in the application.
     // be asynchronously destroyed at some future point.
     //
 
-    if (FAILED(LmqSendMessage(SendQueue,
+    if (FAILED(LmqPostMessage(SendQueue,
                               &Message,
                               0)))
     {
         //
-        // Messages that failed to send can be retried or
+        // Messages that failed to post can be retried or
         // must be destroyed to free their resources.
         //
 
-        LmqDestroyUnsentMessage(&Message);
+        LmqDestroyUnpostedMessage(&Message);
     }
 
 Types
@@ -117,7 +117,7 @@ Functions
 
     :param MessageRef: A pointer to a variable that receives the created message reference. The reference shares the same data frames as the original message and is independent of the original message's lifetime.
 
-    .. note:: Creating a message reference offers a way to send the same message through more than one communication channel. The normal behavior is the application returns ownership of the message to LwMQ when queuing them for sending. Since sending messages is asynchronous, the application cannot keep a reference to the message sent, as it will be destroyed asynchronously at some point in the future. Creating a message reference allows the application to send the original and retain a reference to be sent through another channel. Unsent references must be destroyed through LmqDestroyUnsentMessage(). LwMQ takes care of reference counting and manages the lifetime of the messages handed back to it. Creating a message reference is a lightweight operation, as the reference shares the same data frames as the original message. The reference is independent of the original message's lifetime, and can be safely used even after the original message has been sent and destroyed by LwMQ.
+    .. note:: Creating a message reference offers a way to send the same message through more than one communication channel. The normal behavior is the application returns ownership of the message to LwMQ when queuing them for sending. Since sending messages is asynchronous, the application cannot keep a reference to the message sent, as it will be destroyed asynchronously at some point in the future. Creating a message reference allows the application to send the original and retain a reference to be sent through another channel. Unsent references must be destroyed through LmqDestroyUnpostedMessage(). LwMQ takes care of reference counting and manages the lifetime of the messages handed back to it. Creating a message reference is a lightweight operation, as the reference shares the same data frames as the original message. The reference is independent of the original message's lifetime, and can be safely used even after the original message has been sent and destroyed by LwMQ.
 
 .. code:: c
     
@@ -178,6 +178,10 @@ Functions
 
 .. code:: c
 
+    //
+    // From <api-lwmq-messaging.h>
+    //
+
     typedef enum _LQM_MESSAGECALLBACKREASON
     {
         ACQUIRE_DATA,
@@ -190,6 +194,12 @@ Functions
         const BYTE* Data,
         UINT64 DataSize,
         PVOID Context);
+
+    //
+    // Example of appending an external frame with a callback to
+    // release the data when the message is no longer needed by
+    // the communication channel.
+    //        
     
     HRESULT hr = LmqAppendExternalFrame(Message,
                                         DataBuffer,
@@ -278,7 +288,7 @@ Functions
     
     HRESULT hr = LmqQueryMaxInlineFrameSize(&MaxInlineFrameSizeBytes);
 
-.. c:function:: LMQAPI LmqDestroyUnsentMessage(PLMQ_MESSAGE Message)
+.. c:function:: LMQAPI LmqDestroyUnpostedMessage(PLMQ_MESSAGE Message)
 
     Destroys a message that was created but not sent. This function is only necessary if the message (or message reference) was created but will not be sent, for example because the application encountered an error after creating the message but before sending it.
 
@@ -313,7 +323,7 @@ Functions
             // The message that will never be sent.
             //
 
-            hr = LmqDestroyUnsentMessage(&Message);
+            hr = LmqDestroyUnpostedMessage(&Message);
         }
     }
 
@@ -449,6 +459,49 @@ Functions
 
     .. note:: A channel can have multiple send queues, but only one receive queue. Transports are added to the channel, and messages are sent through a specific send queue on the channel. Each message is sent though each sending transport in the channel. The send queue priority is used to determine the order in which messages are sent when there are multiple send queues on the same channel. Messages queued on higher priority send queues tend to be sent before messages queued on lower priority send queues, but LwMQ uses a weigthed round-robin scheduling algorithm to ensure some fairness among send queues. Two special priorities are not subjected to the prioritized scheduling: LMQ_SENDQUEUEPRIORITY_TIME_CRITICAL and LMQ_SENDQUEUEPRIORITY_IDLE. All pending messages queued on a LMQ_SENDQUEUEPRIORITY_TIME_CRITICAL send queue are always sent before messages on all other priority levels, possibly starving other queues, and messages queued on a LMQ_SENDQUEUEPRIORITY_IDLE send queue are always sent after all other messages, possibly getting starved. The two extreme priorities are useful for applications that need to send some messages with very low latency, for example to trigger some action on the receiving side, or to send some messages very low importance, for example some telemetry data that is nice to have on the receiving side but not worth delaying the delivery of other messages. Messages at the same priority are sent in order. Messages can capture the timestamp at which they were queued for sending, which is useful for example for progress messages where the recipient can compute accurate rates based on the queuing time and not the reception time, which is subject to queuing latencies induced by traffic congestions or interruptions, and fluctuations in the actual transport time.
 
+.. code:: c
+
+    //
+    // From <api-lwmq-messaging.h>
+    //
+
+    typedef enum _LMQ_SENDQUEUETYPE
+    {
+        LMQ_SENDQUEUETYPE_NA,
+        LMQ_SENDQUEUETYPE_MONOPRODUCER_UNBOUNDED,
+        LMQ_SENDQUEUETYPE_MULTIPRODUCER_UNBOUNDED,
+        LMQ_SENDQUEUETYPE_MULTIPRODUCER_UNBOUNDED_TAGGED,
+        LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_DISCARD_OLDEST,
+        LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_DISCARD_NEWEST,
+        LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_TAGGED_DISCARD_OLDEST,
+        LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_TAGGED_DISCARD_NEWEST
+    }
+    LMQ_SENDQUEUETYPE;
+
+    typedef enum _LMQ_SENDQUEUEPRIORITY
+    {
+        LMQ_SENDQUEUEPRIORITY_TIME_CRITICAL,
+        LMQ_SENDQUEUEPRIORITY_HIGHEST,
+        LMQ_SENDQUEUEPRIORITY_ABOVE_NORMAL,
+        LMQ_SENDQUEUEPRIORITY_NORMAL,
+        LMQ_SENDQUEUEPRIORITY_BELOW_NORMAL,
+        LMQ_SENDQUEUEPRIORITY_LOWEST,
+        LMQ_SENDQUEUEPRIORITY_IDLE
+    }
+    LMQ_SENDQUEUEPRIORITY;
+
+    //
+    // Example of adding an unbounded monoproducer send queue to a channel.
+    //
+
+    LMQ_SENDQUEUE SendQueue;
+
+    HRESULT hr = LmqAddSendQueue(Channel,
+                                 LMQ_SENDQUEUETYPE_MONOPRODUCER_UNBOUNDED,
+                                 LMQ_SENDQUEUEPRIORITY_NORMAL,
+                                 LMQ_QUEUECAPACITY_UNBOUNDED,
+                                 &SendQueue);
+
 Transports
 ==========
 
@@ -517,7 +570,7 @@ Functions
 Sending and Receiving Messages
 ==============================
 
-.. c:function:: LMQAPI LmqSendMessage(LMQ_SENDQUEUE SendQueue, PLMQ_MESSAGE Message, UINT32 TimeoutMs)
+.. c:function:: LMQAPI LmqPostMessage(LMQ_SENDQUEUE SendQueue, PLMQ_MESSAGE Message, UINT32 TimeoutMs)
 
     Queues a message for sending through a communication channel.
 
@@ -527,7 +580,7 @@ Sending and Receiving Messages
 
     :param TimeoutMs: The maximum time to wait for the message to be accepted for sending, in milliseconds. A value of INFINITE can be used to wait indefinitely. This parameter has no effect for unbounded send queues and must be zero, as they are always ready to accept messages for sending.
 
-.. c:function:: LMQAPI LmqSendMessageWithTag(LMQ_SENDQUEUE SendQueue, PLMQ_MESSAGE Message, LONG_PTR Tag, UINT32 TimeoutMs)
+.. c:function:: LMQAPI LmqPostMessageWithTag(LMQ_SENDQUEUE SendQueue, PLMQ_MESSAGE Message, LONG_PTR Tag, UINT32 TimeoutMs)
     
     Queues a message for sending through a communication channel with an associated user-defined tag.
 
