@@ -29,7 +29,7 @@ Functions
     
     .. note:: This function must be called once for each calls made to LmqInitialize().
 
-.. code:: c
+.. code:: cpp
 
     #include <api-lwmq-messaging.h>
 
@@ -48,7 +48,7 @@ references to messages, which are automatically freed by LwMQ once they are no
 longer needed. This design allows for efficient message handling and minimizes
 the risk of memory leaks or dangling pointers in the application.
 
-.. code::
+.. code:: cpp
 
     //
     // General idea with most error checking
@@ -74,7 +74,7 @@ the risk of memory leaks or dangling pointers in the application.
 
     if (FAILED(LmqPostMessage(SendQueue,
                               &Message,
-                              0)))
+                              TimeoutMs)))
     {
         //
         // Messages that failed to post can be retried or
@@ -104,7 +104,7 @@ Functions
 
     .. note:: The FrameCountHint value is indicative and does not represent a limit. LwMQ may optimize internal allocations knowing the number of frames that will be added to a message, but applications are not required to provide an accurate hint. Extremely performance-sensitive applications benefit from using single-frame messages, which is the default value used when passing LMQ_MESSAGEFRAMECOUNT_DEFAULT.
         
-.. code:: c
+.. code:: cpp
     
     LMQ_MESSAGE Message;
 
@@ -119,7 +119,7 @@ Functions
 
     .. note:: Creating a message reference offers a way to send the same message through more than one communication channel. The normal behavior is the application returns ownership of the message to LwMQ when queuing them for sending. Since sending messages is asynchronous, the application cannot keep a reference to the message sent, as it will be destroyed asynchronously at some point in the future. Creating a message reference allows the application to send the original and retain a reference to be sent through another channel. Unsent references must be destroyed through LmqDestroyUnpostedMessage(). LwMQ takes care of reference counting and manages the lifetime of the messages handed back to it. Creating a message reference is a lightweight operation, as the reference shares the same data frames as the original message. The reference is independent of the original message's lifetime, and can be safely used even after the original message has been sent and destroyed by LwMQ.
 
-.. code:: c
+.. code:: cpp
     
     LMQ_MESSAGE MessageRef;
 
@@ -138,7 +138,7 @@ Functions
 
     .. note:: If supplied explicitly, the timestamp must be specified in Windows NT time format: a 64-bit integer representing the number of 100-nanosecond intervals that have elapsed since January 1, 1601. All timestamps are in UTC format so they are not affected by changes in time zone or daylight saving time.
 
-.. code:: c
+.. code:: cpp
     
     HRESULT hr = LmqAppendFrame(Message,
                                 (BYTE*)"Hello, World!", // Copied.
@@ -155,7 +155,7 @@ Functions
 
     :param Timestamp: An optional timestamp associated with the frame. See the Timestamp parameter of LmqAppendFrame() for important details.
 
-.. code:: c
+.. code:: cpp
     
     HRESULT hr = LmqAppendStaticFrame(Message,
                                       (BYTE*)"Hello, World!",
@@ -176,7 +176,7 @@ Functions
 
     :param Context: An optional user-defined context pointer or value that will be passed to the callback function.
 
-.. code:: c
+.. code:: cpp
 
     //
     // From <api-lwmq-messaging.h>
@@ -190,10 +190,10 @@ Functions
     LQM_MESSAGECALLBACKREASON;
 
     typedef HRESULT(REENTRANT_CALLBACK* PLMQ_MESSAGECALLBACK) (
-        LQM_MESSAGECALLBACKREASON Reason,
-        const BYTE* Data,
-        UINT64 DataSize,
-        PVOID Context);
+                    LQM_MESSAGECALLBACKREASON Reason,
+                    const BYTE* Data,
+                    UINT64 DataSize,
+                    PVOID Context);
 
     //
     // Example of appending an external frame with a callback to
@@ -216,7 +216,7 @@ Functions
 
     :param PayloadSizeBytes: An optional pointer to a variable that receives the total size of all frame payloads in bytes.
 
-.. code:: c
+.. code:: cpp
     
     USHORT FrameCount;
     UINT64 PayloadSizeBytes;
@@ -239,14 +239,14 @@ Functions
 
     :param EnumHint: An optional pointer to an enumeration hint structure that can be used to optimize enumeration of multiple frames in a message. If supplied, the caller must initialize the hint via LmqInitFrameEnumHint(). The enumeration hint is valid for all subsequent calls to LmqGetFrameData() for the same message until either the message is destroyed or LmqInitFrameEnumHint() is called again for the same enumeration hint structure.
 
-.. code:: c
+.. code:: cpp
 
         const BYTE* Data;
         UINT64 DataSizeBytes;
         ULONG64 Timestamp;
     
         HRESULT hr = LmqGetFrameData(Message,
-                                     0,
+                                     FrameIndex,
                                      &Data,
                                      &DataSizeBytes,
                                      &Timestamp,
@@ -256,7 +256,7 @@ Functions
 
     :param EnumHint: A pointer to an opaque enumeration hint structure to initialize.
 
-.. code:: c
+.. code:: cpp
 
     const BYTE* Data;
     UINT64 DataSizeBytes;
@@ -268,7 +268,7 @@ Functions
     // ...
 
     hr = LmqGetFrameData(Message,
-                         0,
+                         FrameIndex,
                          &Data,
                          &DataSizeBytes,
                          &Timestamp,
@@ -282,7 +282,7 @@ Functions
 
     .. note:: The value is indicative and does not represent a limit. The value is static and depends on LwMQ's build, therefore you only need to call this function once per application lifetime. Applications that are extremely performance-sensitive benefit from keeping their data frame's payloads at or below this size, as well as indicating the expected number of frames they intend to add to a message upon message creation.
 
-.. code:: c
+.. code:: cpp
 
     USHORT MaxInlineFrameSizeBytes;
     
@@ -294,9 +294,9 @@ Functions
 
     :param Message: A pointer to the message to destroy. The pointer is set to NULL before the function returns.
 
-    .. note:: Messages that are successfully queued for sending do not need to be explicitly destroyed, as they are automatically destroyed by LwMQ once they are no longer needed. However, if a message or message reference was created but will not be sent, for example because the application encountered an error after creating the message or reference but before sending it, then this function must be called to free the resources associated with the message, and the message or reference itself.
+    .. note:: Messages that are successfully posted (queued for sending) do not need to be explicitly destroyed, as they are automatically destroyed by LwMQ once they are no longer needed. However, if a message or message reference was created but will not be sent, for example because the application encountered an error after creating the message or reference but before sending it, then this function must be called to free the resources associated with the message, and the message or reference itself.
 
-.. code:: c
+.. code:: cpp
 
     LMQ_MESSAGE Message;
 
@@ -364,6 +364,13 @@ Functions
     
     :param Channel: A pointer to a variable that receives the created channel instance.
 
+.. code:: cpp
+
+    LMQ_CHANNEL Channel;
+
+    HRESULT hr = LmqCreateChannel(LMQ_CHANNELTYPE_ONE_TO_ONE,
+                                  &Channel);
+
 .. c:function:: LMQAPI LmqOpenChannel(LMQ_CHANNEL Channel, LMQ_CHANNELROLE ChannelRole, LMQ_RECEIVEQUEUETYPE ReceiveQueueType, LONG ReceiveQueueCapacity)
 
     Opens a communication channel for sending or receiving messages.
@@ -377,6 +384,18 @@ Functions
     :param ReceiveQueueCapacity: If the channel has any transport that can receive data and the receive queue type is one of the bounded types, the maximum number of messages that can be queued for receiving at any given time. This parameter must be zero if the channel does not have a bounded receive queue or if the channel has no transport that can receive data.
 
     .. note:: Transports must be added before the channel is opened, and cannot be added once the channel is opened. The channel will not be able to be opened until at least one transport has been added. All parameters must be consistent. For example you must indicate a queue type if any transport can receive, you can only indicate a capacity only if the queue is bounded, etc.
+
+.. code:: cpp
+
+    //
+    // Create channel, add transport, add send
+    // queue if needed, then open the channel.
+    //
+
+    HRESULT hr = LmqOpenChannel(Channel,
+                                LMQ_CHANNELROLE_SERVER,
+                                LMQ_RECEIVEQUEUETYPE_MONOCONSUMER_UNBOUNDED,
+                                LMQ_QUEUECAPACITY_UNBOUNDED);
 
 .. c:function:: LMQAPI LmqChannelControl(LMQ_CHANNEL Channel, LMQ_CHANNELCONTROLCODE ControlCode, PVOID InputBuffer, ULONG InputBufferLengthBytes, PVOID OutputBuffer, ULONG OutputBufferLengthBytes, PULONG BytesReturned)
     
@@ -396,6 +415,16 @@ Functions
 
     :param BytesReturned: An optional pointer to a variable that receives the size of the data returned in the output buffer in bytes.
 
+.. code:: cpp
+
+    HRESULT hr = LmqChannelControl(Channel,
+                                   ControlCode,
+                                   InputBuffer,
+                                   InputBufferLengthBytes,
+                                   OutputBuffer,
+                                   OutputBufferLengthBytes,
+                                   &BytesReturned);
+
 .. c:function:: LMQAPI LmqFlushChannel(LMQ_CHANNEL Channel, UINT32 TimeoutMs)
 
     Flushes a communication channel, ensuring that all pending messages are sent.
@@ -405,6 +434,15 @@ Functions
     :param TimeoutMs: The maximum time to wait for the flush operation to complete, in milliseconds. A value of INFINITE can be used to wait indefinitely.
 
     .. note:: This function blocks until all pending messages are sent, or until the specified timeout elapses. If the flush operation does not complete within the specified timeout, the function returns a timeout error code, but any pending messages or send buffers will still be sent processed, assuming the communication link is still active. You can call this function periodically when sending messages at a sustained rapid pace through an unbounded queues, if message transport or processing is not fast enough on the other side of the channel, which causes the number of queued messages on the sending side to keep growing. Flushing the channel allows the application to apply backpressure and avoid excessive memory usage. The timeout is not necessarily millisecond-accurate as the thread can enter a sleeping state while waiting for the channel to be flushed.
+
+.. code:: cpp
+
+    //
+    // Wait up to 1 second for the channel to be flushed.
+    //
+
+    HRESULT hr = LmqFlushChannel(Channel,
+                                 1000);
 
 .. c:function:: LMQAPI LmqCloseChannel(LMQ_CHANNEL Channel, UINT32 LingerTimeoutMs)
     
@@ -416,14 +454,25 @@ Functions
 
     .. note:: If LingerTimeoutMs > 0 the blocks until all pending messages are sent and all received messages are processed by the applicationbefore closing the channel. If the flush operation does not complete within the LingerTimeoutMs time, the channel is forcefully closed anyway. The timeout is not necessarily millisecond-accurate as the thread can enter a sleeping state while waiting for the channel to be flushed.
 
-.. c:function:: LMQAPI LmqDestroyChannel(LMQ_CHANNEL Channel)
+.. code:: cpp
+
+    //
+    // Wait up to 1 second for any queued messages
+    // to be sent before closing the channel.
+    //
+
+    HRESULT hr = LmqCloseChannel(Channel,
+                                 1000);
+
+.. c:function:: LMQAPI LmqDestroyChannel(PLMQ_CHANNEL Channel)
     
     Destroys a communication channel.
 
-    :param Channel: The communication channel to destroy.
+    :param Channel: A pointer to the communication channel to destroy.
 
-Queues
-======
+.. code:: cpp
+
+    HRESULT hr = LmqDestroyChannel(&Channel);
 
 Types
 ---------
@@ -457,9 +506,9 @@ Functions
 
     :param SendQueue: A pointer to a variable that receives the created send queue instance.
 
-    .. note:: A channel can have multiple send queues, but only one receive queue. Transports are added to the channel, and messages are sent through a specific send queue on the channel. Each message is sent though each sending transport in the channel. The send queue priority is used to determine the order in which messages are sent when there are multiple send queues on the same channel. Messages queued on higher priority send queues tend to be sent before messages queued on lower priority send queues, but LwMQ uses a weigthed round-robin scheduling algorithm to ensure some fairness among send queues. Two special priorities are not subjected to the prioritized scheduling: LMQ_SENDQUEUEPRIORITY_TIME_CRITICAL and LMQ_SENDQUEUEPRIORITY_IDLE. All pending messages queued on a LMQ_SENDQUEUEPRIORITY_TIME_CRITICAL send queue are always sent before messages on all other priority levels, possibly starving other queues, and messages queued on a LMQ_SENDQUEUEPRIORITY_IDLE send queue are always sent after all other messages, possibly getting starved. The two extreme priorities are useful for applications that need to send some messages with very low latency, for example to trigger some action on the receiving side, or to send some messages very low importance, for example some telemetry data that is nice to have on the receiving side but not worth delaying the delivery of other messages. Messages at the same priority are sent in order. Messages can capture the timestamp at which they were queued for sending, which is useful for example for progress messages where the recipient can compute accurate rates based on the queuing time and not the reception time, which is subject to queuing latencies induced by traffic congestions or interruptions, and fluctuations in the actual transport time.
+    .. note:: A channel can have multiple send queues, but only one receive queue. Transports are added to the channel, and messages are sent through a specific send queue on the channel. Each message is sent though each sending transport in the channel. The send queue priority is used to determine the order in which messages are sent when there are multiple send queues on the same channel. Messages queued on higher priority send queues tend to be sent before messages queued on lower priority send queues, but LwMQ uses a weigthed round-robin scheduling algorithm to ensure some fairness among send queues. Two special priorities are not subjected to the prioritized scheduling: LMQ_SENDQUEUEPRIORITY_TIME_CRITICAL and LMQ_SENDQUEUEPRIORITY_IDLE. All pending messages queued on a LMQ_SENDQUEUEPRIORITY_TIME_CRITICAL send queue are always sent before messages on all other priority levels, possibly starving other queues, and messages queued on a LMQ_SENDQUEUEPRIORITY_IDLE send queue are always sent after all other messages, possibly getting starved. The two extreme priorities are useful for applications that need to send some messages with very low latency, for example to trigger some action on the receiving side, or to send some messages very low importance, for example some telemetry data that is nice to have on the receiving side but not worth delaying the delivery of other messages. Messages at the same priority are sent in order. Messages can capture the timestamp at which they were posted (queued for sending), which is useful for example for progress messages where the recipient can compute accurate rates based on the queuing time and not the reception time, which is subject to queuing latencies induced by traffic congestions or interruptions, and fluctuations in the actual transport time.
 
-.. code:: c
+.. code:: cpp
 
     //
     // From <api-lwmq-messaging.h>
@@ -535,9 +584,19 @@ Functions
 
     :param CreationFlags: Flags controlling the creation of the transport, either TRANSPORT_CREATIONFLAGS_SEND, TRANSPORT_CREATIONFLAGS_RECEIVE, or TRANSPORT_CREATIONFLAGS_SENDRECEIVE.
 
-    :param Transport: A pointer to a variable that receives the created transport instance.
+    :param Transport: An optional pointer to a variable that receives the created transport instance.
 
-    .. note:: The bufer size parameter must be at least as large as the largest single message, plus the frame and message header wire encoding overhead, that will be sent or received through the transport. Ideally, the buffer size should be much larger than the typical message size, which enables message clubbing when messages are sent in rapid successions. For example, an application that sends, say, 80 bytes messages at very high rate (millions per second) will greatly benefit from using large buffers in the 1MB range. Moreover, all transports added to a particular channel must share the same buffer size. The actual maximum message size that cen be sent for a particular buffer size depends on various factors as the wire format use variable-length encoding for compacity. As a rule of thumb, consider ~1% overhead. For large payload, consider single-frame messages and add 4096 bytes to the expected payload size: if sending data in single-frame messages with 1MB of payload data (1,048,576 bytes) each - assuming the underlying transport supports that size - use a buffer size of 1,048,576 + 4,096 = 1,052,672 which allows for up to 4KB bytes of overhead, which is more than enough for the frame and message headers while aligning the buffer to a page boundary. Make sure you use at least 3-4 such buffers so your app can generate the next payload while the previous ones are transmitted. If sending messages with multiple frames or messages with very small payloads, the overhead can be higher in percentage, therefore you might want to use a larger buffer size to achieve optimal performance. There is no exact guidance regarding the optimal buffer size and count for each application. You need to experiment with different values to find the optimal configuration for your application, transport, and workload.
+    .. note:: The bufer size parameter must be at least as large as the largest single message, plus the frame and message header wire encoding overhead, that will be sent or received through the transport. Ideally, the buffer size should be much larger than the typical message size, which enables message clubbing when messages are sent in rapid successions. For example, an application that sends, say, 80 bytes messages at very high rate (millions per second) will greatly benefit from using large buffers in the 1MB range. Moreover, all transports added to a particular channel must share the same buffer size. The actual maximum message size that cen be sent for a particular buffer size depends on various factors as the wire format use variable-length encoding for compacity. As a rule of thumb, consider ~1% overhead. For large payload, consider single-frame messages and add 4096 bytes to the expected payload size: if sending data in single-frame messages with 1MB of payload data (1,048,576 bytes) each - assuming the underlying transport supports that size - use a buffer size of 1,048,576 + 4,096 = 1,052,672 which allows for up to 4KB bytes of overhead, which is more than enough for the frame and message headers while aligning the buffer to a page boundary. Make sure you use at least 3-4 such buffers so your app can generate the next payload while the previous ones are transmitted. If sending messages with multiple frames or messages with very small payloads, the overhead can be higher in percentage, therefore you might want to use a larger buffer size to achieve optimal performance. There is no exact guidance regarding the optimal buffer size and count for each application. You need to experiment with different values to find the optimal configuration for your application, transport, and workload. The transport instance can be used to perform transport-specific control operations on the transport through LmqTransportControl(). This parameter is optional.
+
+.. code:: cpp
+    
+    HRESULT hr = LmqAddTransport(Channel,
+                                 L"ipc://mycompany/myapp/myport",
+                                 1052672, // 1MB payload + 4KB overhead.
+                                 8,       // Send buffers.
+                                 8,       // Receive buffers.
+                                 TRANSPORT_CREATIONFLAGS_SENDRECEIVE,
+                                 nullptr);
 
 .. c:function:: LMQAPI LmqQueryTransportBufferLimits(PCWSTR TransportDescriptor, PLMQ_TRANSPORTBUFFERLIMITS BufferLimits, ULONG BufferLimitsSizeBytes)
 
@@ -548,6 +607,14 @@ Functions
     :param BufferLimits: A pointer to a variable that receives the buffer limits of the transport.
 
     :param BufferLimitsSizeBytes: The size of the BufferLimits structure in bytes. This parameter allows for future extensibility of the BufferLimits structure. It must be set to sizeof(LMQ_TRANSPORTBUFFERLIMITS).
+
+.. code:: cpp
+    
+    LMQ_TRANSPORTBUFFERLIMITS BufferLimits;
+
+    HRESULT hr = LmqQueryTransportBufferLimits(TransportDescriptor,
+                                               &BufferLimits,
+                                               sizeof(BufferLimits));
 
 .. c:function:: LMQAPI LmqTransportControl(LMQ_TRANSPORT Transport, ULONG ControlCode, PVOID InputBuffer, ULONG InputBufferLengthBytes, PVOID OutputBuffer, ULONG OutputBufferLengthBytes, PULONG BytesReturned)
 
@@ -567,8 +634,18 @@ Functions
 
     :param BytesReturned: An optional pointer to a variable that receives the size of the data returned in the output buffer in bytes.
 
-Sending and Receiving Messages
-==============================
+.. code:: cpp
+
+    HRESULT hr = LmqTransportControl(Transport,
+                                     ControlCode,
+                                     InputBuffer,
+                                     InputBufferLengthBytes,
+                                     OutputBuffer,
+                                     OutputBufferLengthBytes,
+                                     &BytesReturned);    
+
+Posting and Receiving
+=====================
 
 .. c:function:: LMQAPI LmqPostMessage(LMQ_SENDQUEUE SendQueue, PLMQ_MESSAGE Message, UINT32 TimeoutMs)
 
@@ -579,6 +656,12 @@ Sending and Receiving Messages
     :param Message: A pointer to the message to send. After this call, the application can't access the message anymore as the ownership has been transferred to LwMQ, and it will be asynchronously destroyed at some future point. This parameter being a *pointer* to the message, the function will null it before returning on successful execution, preventing any further use.
 
     :param TimeoutMs: The maximum time to wait for the message to be accepted for sending, in milliseconds. A value of INFINITE can be used to wait indefinitely. This parameter has no effect for unbounded send queues and must be zero, as they are always ready to accept messages for sending.
+
+.. code:: cpp
+    
+    HRESULT hr = LmqPostMessage(SendQueue,
+                                &Message,
+                                1000); // Wait up to 1 second.    
 
 .. c:function:: LMQAPI LmqPostMessageWithTag(LMQ_SENDQUEUE SendQueue, PLMQ_MESSAGE Message, LONG_PTR Tag, UINT32 TimeoutMs)
     
@@ -594,6 +677,13 @@ Sending and Receiving Messages
 
     .. note:: This function is useful for sending messages that supersede previous messages with the same tag, for example progress messages where only the latest message is relevant. By using the same tag for all progress messages, you can ensure that only the latest progress message is queued for sending, and any previous progress messages still in the queue are removed, which helps reduce unnecessary message processing on the receiving side. Note, however, that the tagged queues inccurs some overhead as they keep track of the tagged items in the queue for fast access. The coalescing only happen within messages that are qued but not already sent. Sent messages (i.e. mesages that have left, or about to leave in a trnasmission buffer) will not be rescinded. The tag is not transmitted and is only a locally processed artefact.
 
+.. code:: cpp
+    
+    HRESULT hr = LmqPostMessageWithTag(SendQueue,
+                                       &Message,
+                                       ProgressMessageTag, // Coalesce
+                                       1000); // Wait up to 1 second.
+
 .. c:function:: LMQAPI LmqReceiveMessage(LMQ_CHANNEL Channel, UINT32 TimeoutMs, PUSHORT FrameCount, PUINT64 PayloadSizeBytes, PLMQ_MESSAGE Message)
 
     Receives a message from a communication channel.
@@ -608,8 +698,24 @@ Sending and Receiving Messages
 
     :param Message: A pointer to a variable that receives the received message instance on success. The application takes ownership of the received message and is responsible for destroying it when it is no longer needed by calling LmqDisposeReceivedMessage().
 
+.. code:: cpp
+
+    USHORT FrameCount;
+    LMQ_MESSAGE Message;
+    UINT64 PayloadSizeBytes;
+
+    HRESULT hr = LmqReceiveMessage(Channel,
+                                   INFINITE, // Wait indefinitely.
+                                   &FrameCount,
+                                   &PayloadSizeBytes,
+                                   &Message);    
+
 .. c:function:: LMQAPI LmqDisposeReceivedMessage(PLMQ_MESSAGE Message)
 
     Disposes a received message that is no longer needed.
 
     :param Message: A pointer to the received message to dispose. The pointer is set to NULL before the function returns.
+
+.. code:: cpp
+
+    HRESULT hr = LmqDisposeReceivedMessage(&Message);
