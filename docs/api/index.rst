@@ -250,7 +250,7 @@ Functions
                                      &Data,
                                      &DataSizeBytes,
                                      &Timestamp,
-                                     nullptr);
+                                     nullptr); // Hint not used.
     
 .. c:function:: LMQAPI LmqInitFrameEnumHint(PLMQ_MESSAGEFRAMEENUMHINT EnumHint)
 
@@ -592,11 +592,11 @@ Functions
     
     HRESULT hr = LmqAddTransport(Channel,
                                  L"ipc://mycompany/myapp/myport",
-                                 1052672, // 1MB payload + 4KB overhead.
-                                 8,       // Send buffers.
-                                 8,       // Receive buffers.
+                                 1052672,  // 1MB payload + 4KB overhead.
+                                 8,        // Send buffers.
+                                 8,        // Receive buffers.
                                  TRANSPORT_CREATIONFLAGS_SENDRECEIVE,
-                                 nullptr);
+                                 nullptr); // Instance not needed.
 
 .. c:function:: LMQAPI LmqQueryTransportBufferLimits(PCWSTR TransportDescriptor, PLMQ_TRANSPORTBUFFERLIMITS BufferLimits, ULONG BufferLimitsSizeBytes)
 
@@ -675,7 +675,7 @@ Posting and Receiving
 
     :param TimeoutMs: The maximum time to wait for the message to be accepted for sending, in milliseconds. A value of INFINITE can be used to wait indefinitely. This parameter has no effect for unbounded send queues and must be zero, as they are always ready to accept messages for sending.
 
-    .. note:: This function is useful for sending messages that supersede previous messages with the same tag, for example progress messages where only the latest message is relevant. By using the same tag for all progress messages, you can ensure that only the latest progress message is queued for sending, and any previous progress messages still in the queue are removed, which helps reduce unnecessary message processing on the receiving side. Note, however, that the tagged queues inccurs some overhead as they keep track of the tagged items in the queue for fast access. The coalescing only happen within messages that are qued but not already sent. Sent messages (i.e. mesages that have left, or about to leave in a trnasmission buffer) will not be rescinded. The tag is not transmitted and is only a locally processed artefact. The send queue must be one of the tagged queues (LMQ_SENDQUEUETYPE_MULTIPRODUCER_UNBOUNDED_TAGGED, LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_TAGGED_DISCARD_OLDEST, LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_TAGGED_DISCARD_NEWEST), otherwise the function will fail with an error.
+    .. note:: This function is useful for sending messages that supersede previous messages with the same tag, for example progress messages where only the latest message is relevant. By using the same tag for all progress messages, you can ensure that only the latest progress message is queued for sending, and any previous progress messages still in the queue are removed, which helps reduce unnecessary message processing on the receiving side. Note, however, that the tagged queues inccurs some overhead as they keep track of the tagged items in the queue for fast access. The coalescing only happen within messages that are qued but not already sent. Sent messages (i.e. mesages that have left, or about to leave in a trnasmission buffer) will not be rescinded. The tag is not transmitted and is only a locally processed artefact. The send queue must be one of the tagged queues: LMQ_SENDQUEUETYPE_MULTIPRODUCER_UNBOUNDED_TAGGED, LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_TAGGED_DISCARD_OLDEST, LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_TAGGED_DISCARD_NEWEST, otherwise the function will fail with an error.
 
 .. code:: cpp
     
