@@ -667,7 +667,7 @@ Posting and Receiving
     
     Queues a message for sending through a communication channel with an associated user-defined tag.
 
-    :param SendQueue: The send queue to send the message through.
+    :param SendQueue: The tagged send queue to send the message through.
 
     :param Message: A pointer to the message to send. After this call, the application can't access the message anymore as the ownership has been transferred to LwMQ, and it will be asynchronously destroyed at some future point. This parameter being a *pointer* to the message, the function will null it before returning on successful execution, preventing any further use.
 
