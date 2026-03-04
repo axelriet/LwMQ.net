@@ -1,5 +1,6 @@
 html.writer-html4 .rst-content dl:not(.docutils)>dt,html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.citation):not(.glossary):not(.simple)>dt {
     display: table;
+    margin: 12px 0;
     font-size: 90%;
     line-height: normal;
     background: #e7f2fa;

@@ -1,5 +1,3 @@
-# -- Project information
-
 project = 'LwMQ'
 copyright = 'Axel Rietschin Software Development, LLC'
 author = 'Axel Rietschin'
