@@ -125,8 +125,8 @@ KV-Store Key Helpers Functions
         PLMQ_KVSTOREKEY Key
         );
 
-Compression Functions
-=====================
+Buffer Compression Functions
+============================
 
 .. code:: cpp
 
@@ -161,13 +161,18 @@ Compression Functions
         PLONG FinalUncompressedSize
         );
 
+One-Shot Compression Functions (BLOB)
+=====================================
+
+.. code:: cpp
+
     LMQAPI
     LmqCompressData (
         UCHAR const* UncompressedBuffer,
         LONG UncompressedBufferSize,
         INT CompressionEffort,
         PLMQ_COMPRESSEDDATABLOB CompressedDataBlob,
-        _Out_opt_ PLONG CompressedDataBlobSize
+        PLONG CompressedDataBlobSize
         );
 
     LMQAPI
