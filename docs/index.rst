@@ -1,5 +1,6 @@
+******************
 LwMQ Documentation
-==================
+******************
 
 See the :doc:`about`, :doc:`guide/index`, and :doc:`api/index` sections for further information.
 
@@ -8,7 +9,7 @@ See the :doc:`about`, :doc:`guide/index`, and :doc:`api/index` sections for furt
    Under construction.
 
 Contents
---------
+========
 
 .. toctree::
 

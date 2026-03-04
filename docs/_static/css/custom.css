@@ -10,7 +10,12 @@ html.writer-html4 .rst-content dl:not(.docutils)>dt,html.writer-html5 .rst-conte
     position: relative
 }
 
-.rst-content section ul li>p:only-child, .rst-content section ul li>p:only-child:last-child
+.rst-content section ul li>p
 {
     margin-bottom: 12px;
+}
+
+.rst-content section ul li>p:last-child
+{
+    margin-bottom: 0px;
 }
