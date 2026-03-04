@@ -681,7 +681,7 @@ Posting and Receiving
     
     HRESULT hr = LmqPostMessageWithTag(SendQueue,
                                        &Message,
-                                       ProgressMessageTag, // Coalesce
+                                       ProgressMessageTag, // Coalesce per tag.
                                        1000); // Wait up to 1 second.
 
 .. c:function:: LMQAPI LmqReceiveMessage(LMQ_CHANNEL Channel, UINT32 TimeoutMs, PUSHORT FrameCount, PUINT64 PayloadSizeBytes, PLMQ_MESSAGE Message)
