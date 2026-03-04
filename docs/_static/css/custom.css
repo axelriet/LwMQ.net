@@ -12,5 +12,5 @@ html.writer-html4 .rst-content dl:not(.docutils)>dt,html.writer-html5 .rst-conte
 
 .rst-content section ul li>p:only-child, .rst-content section ul li>p:only-child:last-child
 {
-    margin-bottom: 7px;
+    margin-bottom: 12px;
 }
