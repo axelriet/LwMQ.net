@@ -3,7 +3,7 @@
 project = 'LwMQ'
 copyright = 'Axel Rietschin Software Development, LLC'
 author = 'Axel Rietschin'
-release = '0.1'
+release = '1.0'
 
 extensions = [ 'sphinx_rtd_theme' ]
 html_static_path = ['_static']
@@ -20,7 +20,6 @@ html_theme_options = {
     'flyout_display': 'hidden',
     'version_selector': True,
     'language_selector': True,
-    # Toc options
     'collapse_navigation': True,
     'sticky_navigation': True,
     'navigation_depth': 4,

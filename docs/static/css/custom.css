@@ -1,0 +1,10 @@
+html.writer-html4 .rst-content dl:not(.docutils)>dt,html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.citation):not(.glossary):not(.simple)>dt {
+    display: table;
+    font-size: 90%;
+    line-height: normal;
+    background: #e7f2fa;
+    color: #2980b9;
+    border-top: 3px solid #6ab0de;
+    padding: 6px;
+    position: relative
+}
