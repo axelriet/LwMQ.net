@@ -2,7 +2,7 @@
 LwMQ Compression API
 ********************
 
-LwMQ includes fast functions for compressing and decompressing data buffers, which can be used in conjunction with the key-value storage or independently.
+LwMQ includes fast LZ4-based functions for compressing and decompressing data buffers, which can be used in conjunction with the key-value storage or independently.
 
 The compression scheme offers fast compression and ultrafast decompression with reasonable compression ratio for most compressible payloads.
 
