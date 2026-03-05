@@ -1,3 +1,7 @@
+.. sidebar::
+
+   :title: API Reference
+
 **********************************
 LwMQ Segmented Cache API Reference
 **********************************

@@ -33,3 +33,11 @@ html.writer-html5 .rst-content dl.citation, html.writer-html5 .rst-content dl.fi
     float: right;
     visibility: hidden;
 }
+
+.wy-side-scroll {
+    width: 360px;
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    height: 100%;
+}
