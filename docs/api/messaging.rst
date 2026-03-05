@@ -1,8 +1,8 @@
 .. |us| unicode:: U+00B5 s
 
-****************************
-LwMQ Messaging API Reference
-****************************
+******************
+LwMQ Messaging API
+******************
 
 This section documents LwMQ's core messaging APIs, which are transport-agnostic and form the basis for LwMQ's messaging capabilities.
 

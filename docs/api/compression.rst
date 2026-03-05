@@ -1,6 +1,6 @@
-******************************************
-LwMQ Compression API Reference
-******************************************
+********************
+LwMQ Compression API
+********************
 
 LwMQ includes fast functions for compressing and decompressing data buffers, which can be used in conjunction with the key-value storage or independently.
 

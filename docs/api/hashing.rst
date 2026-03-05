@@ -1,6 +1,6 @@
-**************************
-LwMQ Hashing API Reference
-**************************
+****************
+LwMQ Hashing API
+****************
 
 LwMQ provides a set of hashing and HMAC functions that can be used for various purposes such as message integrity checks, caching, and more.
 

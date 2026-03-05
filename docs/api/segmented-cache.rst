@@ -2,9 +2,9 @@
 
    :title: API Reference
 
-**********************************
-LwMQ Segmented Cache API Reference
-**********************************
+************************
+LwMQ Segmented Cache API
+************************
 
 Beyond the LwMQ in-memory cache, LwMQ provides a segmented (partitionned) cache built on top of the regular in-memory cache.
 

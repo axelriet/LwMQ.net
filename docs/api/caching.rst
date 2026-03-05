@@ -1,6 +1,6 @@
-**************************
-LwMQ Caching API Reference
-**************************
+****************
+LwMQ Caching API
+****************
 
 LwMQ provides a caching API that allows applications to create and manage in-memory caches for various purposes such as storing frequently accessed data, results of expensive computations, and more.
 
