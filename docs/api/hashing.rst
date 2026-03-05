@@ -32,10 +32,10 @@ Types
 
 .. code:: cpp
 
-    LMQ_KEY, PLMQ_KEY, PCLMQ_KEY
-    LMQ_HASH, PLMQ_HASH, PCLMQ_HASH
-    LMQ_HMAC, PLMQ_HMAC, PCLMQ_HMAC
-    LMQ_HMAC_CONTEXT, PLMQ_HMAC_CONTEXT, PCLMQ_HMAC_CONTEXT
+    LMQ_KEY
+    LMQ_HASH
+    LMQ_HMAC
+    LMQ_HMAC_CONTEXT
 
 Hashing and HMAC Functions
 ==========================
