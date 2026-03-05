@@ -24,6 +24,6 @@ html.writer-html5 .rst-content dl.citation, html.writer-html5 .rst-content dl.fi
 .rst-content .linenodiv pre, .rst-content div[class^=highlight] pre, .rst-content pre.literal-block
 {
     font-family: SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, Courier, monospace;
-    /* font-size: 12px; */
+    font-size: initial;
     line-height: 1.4;
 }
