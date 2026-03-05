@@ -30,6 +30,10 @@ html.writer-html5 .rst-content dl.citation, html.writer-html5 .rst-content dl.fi
 
 .wy-breadcrumbs>li.wy-breadcrumbs-aside
 {
-    float: right;
+    visibility: initial;
+}
+
+.wy-side-nav-search>div.switch-menus
+{
     visibility: hidden;
 }
