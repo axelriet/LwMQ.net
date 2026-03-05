@@ -462,7 +462,7 @@ Functions
 
     :param TimeoutMs: The maximum time to wait for the flush operation to complete, in milliseconds. A value of INFINITE can be used to wait indefinitely.
 
-    .. note:: This function blocks until all pending messages are sent, or until the specified timeout elapses. If the flush operation does not complete within the specified timeout, the function returns a timeout error code, but any pending messages or send buffers will still be sent processed, assuming the communication link is still active. You can call this function periodically when sending messages at a sustained rapid pace through an unbounded queues, if message transport or processing is not fast enough on the other side of the channel, which causes the number of queued messages on the sending side to keep growing. Flushing the channel allows the application to apply backpressure and avoid excessive memory usage. The timeout is not necessarily millisecond-accurate as the thread can enter a sleeping state while waiting for the channel to be flushed.
+    .. note:: This function blocks until all pending messages are sent, or until the specified timeout elapses. If the flush operation does not complete within the specified timeout, the function returns a timeout error code, but any pending messages or send buffers will still be processed, assuming the communication link is still active. You can call this function periodically when sending messages at a sustained rapid pace through an unbounded queue, if message transport or processing is not fast enough on the other side of the channel, which causes the number of queued messages on the sending side to keep growing. Flushing the channel allows the application to apply backpressure and avoid excessive memory usage. The timeout is not necessarily millisecond-accurate as the thread can enter a sleeping state while waiting for the channel to be flushed.
 
 .. code:: cpp
 
@@ -481,7 +481,7 @@ Functions
 
     :param LingerTimeoutMs: The maximum time to wait for any pending messages to be sent before forcefully closing the channel, in milliseconds. A value of INFINITE can be used to wait indefinitely.
 
-    .. note:: If LingerTimeoutMs > 0 the blocks until all pending messages are sent and all received messages are processed by the applicationbefore closing the channel. If the flush operation does not complete within the LingerTimeoutMs time, the channel is forcefully closed anyway. The timeout is not necessarily millisecond-accurate as the thread can enter a sleeping state while waiting for the channel to be flushed.
+    .. note:: If LingerTimeoutMs > 0 the function blocks until all pending messages are sent and all received messages are processed by the applicationbefore closing the channel. If the flush operation does not complete within the LingerTimeoutMs time, the channel is forcefully closed anyway. The timeout is not necessarily millisecond-accurate as the thread can enter a sleeping state while waiting for the channel to be flushed.
 
 .. code:: cpp
 
@@ -700,7 +700,7 @@ Posting and Receiving
 
     :param Message: A pointer to the message to send. After this call, the application can't access the message anymore as the ownership has been transferred to LwMQ, and it will be asynchronously destroyed at some future point. This parameter being a *pointer* to the message, the function will null it before returning on successful execution, preventing any further use.
 
-    :param Tag: A user-defined tag value that is associated with the message. This value is interpreted by LwMQ while queueing the message, and any message with the same tag still in the queue at the time of insertion is removed before the new message new message is queued. A value of 0 means "no tag" and the message is queued normally in FIFO order.
+    :param Tag: A user-defined tag value that is associated with the message. This value is interpreted by LwMQ while queueing the message, and any message with the same tag still in the queue at the time of insertion is removed before the new message is queued. A value of 0 means "no tag" and the message is queued normally in FIFO order.
 
     :param TimeoutMs: The maximum time to wait for the message to be accepted for sending, in milliseconds. A value of INFINITE can be used to wait indefinitely. This parameter has no effect for unbounded send queues and must be zero, as they are always ready to accept messages for sending.
 
