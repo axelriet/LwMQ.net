@@ -27,3 +27,9 @@ html.writer-html5 .rst-content dl.citation, html.writer-html5 .rst-content dl.fi
     font-size: initial;
     line-height: 1.4;
 }
+
+.wy-breadcrumbs>li.wy-breadcrumbs-aside
+{
+    float: right;
+    visibility: hidden;
+}
