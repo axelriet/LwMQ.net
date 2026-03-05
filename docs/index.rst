@@ -13,6 +13,6 @@ Contents
 
 .. toctree::
 
-   about
    guide/index
    api/index
+   about
