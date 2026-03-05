@@ -32,5 +32,5 @@ html_css_files = [
 html_show_sphinx = False
 
 def setup(app):
-    app.add_javascript("https://www.googletagmanager.com/gtag/js?id=G-VW7BZSSV48")
-    app.add_javascript("ga.js")
+    app.add_js_file("https://www.googletagmanager.com/gtag/js?id=G-VW7BZSSV48")
+    app.add_js_file("ga.js")
