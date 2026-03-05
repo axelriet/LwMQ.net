@@ -13,5 +13,7 @@ Contents
 
    messaging
    caching
+   segmented-cache
    hashing
    storage
+   compression

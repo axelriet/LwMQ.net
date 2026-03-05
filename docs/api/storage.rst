@@ -1,6 +1,6 @@
-******************************************
-LwMQ Storage and Compression API Reference
-******************************************
+**************************
+LwMQ Storage API Reference
+**************************
 
 LwMQ provides a key-value storage API that allows applications to create and manage on-disk key-value stores for various purposes such as caching, storing application state, and more.
 
@@ -34,9 +34,7 @@ Types
 
     LMQ_KVSTORE
     LMQ_KVSTOREKEY
-    LMQ_COMPRESSIONWORKSPACE
-    LMQ_COMPRESSEDDATABLOB
-
+ 
 Key-Value Storage Functions
 ===========================
 
@@ -123,73 +121,4 @@ KV-Store Key Helpers Functions
     LMQAPI
     LmqMakeRfc4122KvStoreKey (
         PLMQ_KVSTOREKEY Key
-        );
-
-Buffer Compression Functions
-============================
-
-.. code:: cpp
-
-    LMQAPI
-    LmqAllocateCompressionWorkspace (
-        LONG MaxUncompressedBufferSize,
-        PLMQ_COMPRESSIONWORKSPACE CompressionWorkspace
-        );
-
-    LMQAPI
-    LmqFreeCompressionWorkspace (
-        LMQ_COMPRESSIONWORKSPACE CompressionWorkspace
-        );
-
-    LMQAPI
-    LmqCompressBuffer (
-        UCHAR const* UncompressedBuffer,
-        LONG UncompressedBufferSize,
-        PUCHAR CompressedBuffer,
-        LONG CompressedBufferSize,
-        INT CompressionEffort,
-        PLONG FinalCompressedSize,
-        LMQ_COMPRESSIONWORKSPACE CompressionWorkspace
-        );
-
-    LMQAPI
-    LmqDecompressBuffer (
-        PUCHAR UncompressedBuffer,
-        LONG UncompressedBufferSize,
-        UCHAR const* CompressedBuffer,
-        LONG CompressedBufferSize,
-        PLONG FinalUncompressedSize
-        );
-
-One-Shot Compression Functions (BLOB)
-=====================================
-
-.. code:: cpp
-
-    LMQAPI
-    LmqCompressData (
-        UCHAR const* UncompressedBuffer,
-        LONG UncompressedBufferSize,
-        INT CompressionEffort,
-        PLMQ_COMPRESSEDDATABLOB CompressedDataBlob,
-        PLONG CompressedDataBlobSize
-        );
-
-    LMQAPI
-    LmqDecompressData (
-        LMQ_COMPRESSEDDATABLOB CompressedDataBlob,
-        PUCHAR UncompressedBuffer,
-        PLONG UncompressedBufferSize
-        );
-
-    LMQAPI
-    LmqGetCompressedDataBlobSizes (
-        LMQ_COMPRESSEDDATABLOB CompressedDataBlob,
-        PLONG CompressedBlobSize,
-        PLONG UncompressedDataSize
-        );
-
-    LMQAPI
-    LmqFreeCompressedDataBlob (
-        LMQ_COMPRESSEDDATABLOB CompressedDataBlob
         );

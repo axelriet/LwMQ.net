@@ -1,12 +1,14 @@
 **************************
-LWMQ Caching API Reference
+LwMQ Caching API Reference
 **************************
 
 LwMQ provides a caching API that allows applications to create and manage in-memory caches for various purposes such as storing frequently accessed data, results of expensive computations, and more.
 
-The cache scavenging strategy is Last Recently Used (LRU) and supports features such as time-to-live (TTL) for cache entries, encryption with additional entropy, compression, and more.
+The cache scavenging strategy implemented in the LwMQ in-memory cache is Last Recently Used (LRU) and supports features such as time-to-live (TTL) for cache entries, encryption with additional entropy, compression, and more.
 
-It is designed to be fast and efficient, making use of modern processor capabilities.
+The cache is passive in the sense that it does not use a background thread for housekeeping. It is designed to be fast and efficient with low to moderate contentions, making use of modern processor capabilities.
+
+The in-memory cache supports terabytes of RAM and can be extended at runtime.
 
 C and C++ Header File
 =====================
@@ -63,13 +65,13 @@ Core Cache Functions
 
     LMQAPI
     LmqDestroyCache (
-        _Post_ptr_invalid_ LMQ_CACHE Cache
+        PLMQ_CACHE Cache
         );
 
     LMQAPI
     LmqGetCacheMetrics (
         LMQ_CACHE Cache,
-        _Inout_ PLMQ_CACHEMETRICS Metrics
+        PLMQ_CACHEMETRICS Metrics
         );
 
     LMQAPI
@@ -141,7 +143,7 @@ Cache Memory Allocation (Advanced)
     LMQAPI
     LmqAdvCacheMemFree (
         LMQ_CACHE Cache,
-        _Post_ptr_invalid_ PVOID* DataPointerAddress
+        PVOID* DataPointerAddress
         );
 
 Cache Extents Functions (Advanced)
@@ -152,7 +154,7 @@ Cache Extents Functions (Advanced)
     LMQAPI
     LmqAdvAddCacheExtent (
         LMQ_CACHE Cache,
-        _In_range_(1, ULONG_MAX) ULONG NewExtentSizeEntries
+        ULONG NewExtentSizeEntries
         );
 
 Cache Keys Helper Functions

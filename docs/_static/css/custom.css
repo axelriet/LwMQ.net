@@ -1,4 +1,5 @@
-html.writer-html4 .rst-content dl:not(.docutils)>dt,html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.citation):not(.glossary):not(.simple)>dt {
+html.writer-html4 .rst-content dl:not(.docutils)>dt,html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.citation):not(.glossary):not(.simple)>dt
+{
     display: table;
     margin: 14px 0;
     font-size: 90%;
@@ -10,12 +11,13 @@ html.writer-html4 .rst-content dl:not(.docutils)>dt,html.writer-html5 .rst-conte
     position: relative
 }
 
+.rst-content section ul li>p:only-child, .rst-content section ul li>p:only-child:last-child
+{
+    margin-bottom: 0px;
+}
+
 .rst-content section ul li>p
 {
     margin-bottom: 12px;
 }
 
-.rst-content section ul li>p:last-child
-{
-    margin-bottom: 0px;
-}

@@ -1,0 +1,161 @@
+************************************
+LwMQ Segmented Caching API Reference
+************************************
+
+Beyond the LwMQ in-memory cache, LwMQ provides a segmented (partitionned) cache built on top of the regular in-memory cache.
+
+The segmented cache partitions the key space and assign each key segment to its own underlying LRU cache. The result is a composite cache that reduces contentions to enable higher insertions and lookup rate than possible with a single cache with a central LRU list.
+
+The drawback is the cache assumes a uniform distribution of keys. The API provides for indicating which bits in the key are used for partitioning.
+
+The segmented cache supports up to 1,024 segments, and each segment can hold millions of keys. By creating as many segments as available CPU cores, up to 1,024, contentions are minimized and the cache througput can reach hundreds of millions of retrievals per second, only subject to memory bandwidth and cache entry sizes.  
+
+The segmented cache supports terabytes of RAM and can be extended at runtime.
+
+C and C++ Header File
+=====================
+
+.. code:: cpp
+
+    #include <api-lwmq-segmented-cache.h>
+
+Binaries
+========
+
+.. code:: cpp
+
+    api-lwmq-cache.dll
+
+Dependencies
+============
+
+.. code:: cpp
+
+    api-lwmq-heap-1-0.dll
+    api-lwmq-hash-1-0.dll
+
+Types
+=====
+
+.. code:: cpp
+
+    LMQ_SEGMENTEDCACHE
+    LMQ_SEGMENTEDCACHE_METRICS
+    LMQ_SEGMENTEDCACHE_KEYTYPE
+
+Segmented Cache Functions
+=========================
+
+Core Segmented Cache Functions
+------------------------------
+
+.. code:: cpp
+
+    LMQAPI
+    LmqCreateSegmentedCache (
+        PCLMQ_CACHEPARAMETERS Parameters,
+        LMQ_SEGMENTEDCACHE_KEYTYPE KeyType,
+        BYTE KeyWordOffset,
+        WORD Segments,
+        PLMQ_SEGMENTEDCACHE Cache
+        );
+
+    LMQAPI
+    LmqClearSegmentedCache (
+        LMQ_SEGMENTEDCACHE Cache,
+        BOOL RemoveExtents
+        );
+
+    LMQAPI
+    LmqDestroySegmentedCache (
+        PLMQ_SEGMENTEDCACHE Cache
+        );
+
+    LMQAPI
+    LmqGetSegmentedCacheMetrics (
+        LMQ_SEGMENTEDCACHE Cache,
+        PLMQ_SEGMENTEDCACHE_METRICS Metrics
+        );
+
+    LMQAPI
+    LmqAddSegmentedCacheEntry (
+        LMQ_SEGMENTEDCACHE Cache,
+        PCLMQ_CACHEKEY Key,
+        PVOID Data,
+        ULONG DataSize,
+        PCLMQ_CACHEENTROPY AdditionalEntropy,
+        WORD EntryFlags,
+        FLOAT TTLSec
+        );
+
+    LMQAPI
+    LmqAddSegmentedCacheEntryFromCallback (
+        LMQ_CACHE Cache,
+        LMQ_CACHECOOKIE Cookie,
+        PVOID Data,
+        ULONG DataSize,
+        PCLMQ_CACHEENTROPY AdditionalEntropy,
+        WORD EntryFlags,
+        FLOAT TTLSec
+        );
+
+    LMQAPI
+    LmqRemoveSegmentedCacheEntry (
+        LMQ_SEGMENTEDCACHE Cache,
+        PCLMQ_CACHEKEY Key
+        );
+
+    LMQAPI
+    LmqLookupSegmentedCacheEntry (
+        LMQ_SEGMENTEDCACHE Cache,
+        PCLMQ_CACHEKEY Key,
+        PULONG DataSize
+        );
+
+    LMQAPI
+    LmqRetrieveSegmentedCacheEntry (
+        LMQ_SEGMENTEDCACHE Cache,
+        PCLMQ_CACHEKEY Key,
+        PVOID Data,
+        PULONG DataSize,
+        PCLMQ_CACHEENTROPY AdditionalEntropy,
+        PVOID CacheMissContext
+        );
+
+    LMQAPI
+    LmqRetrieveSegmentedCacheEntryFromCallback (
+        LMQ_CACHE Cache,
+        LMQ_CACHECOOKIE Cookie,
+        PVOID Data,
+        ULONG DataSize,
+        PCLMQ_CACHEENTROPY AdditionalEntropy
+        );
+
+Segmented Cache Memory Allocation (Advanced)
+--------------------------------------------
+
+.. code:: cpp
+
+    LMQAPI
+    LmqAdvSegmentedCacheMemAlloc (
+        LMQ_SEGMENTEDCACHE Cache,
+        PVOID* DataPointerAddress,
+        ULONG DataSize
+        );
+
+    LMQAPI
+    LmqAdvSegmentedCacheMemFree (
+        LMQ_SEGMENTEDCACHE Cache,
+        PVOID* DataPointerAddress
+        );
+
+Cache Extents Functions (Advanced)
+----------------------------------
+
+.. code:: cpp
+
+    LMQAPI
+    LmqAdvSegmentedCacheAddExtent (
+        LMQ_SEGMENTEDCACHE Cache,
+        ULONG NewExtentSizeEntries
+        );
