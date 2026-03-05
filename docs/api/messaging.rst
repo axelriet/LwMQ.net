@@ -33,6 +33,249 @@ Dependencies
     api-lwmq-time-1-0.dll
     api-lwmq-hash-1-0.dll
 
+Overview
+========
+
+Types
+-----
+
+.. code:: cpp
+
+    PLMQ_CHANNEL
+    LMQ_CHANNELTYPE
+    LMQ_CHANNELROLE
+    LMQ_CHANNELCONTROLCODE
+    LMQ_RECEIVEQUEUETYPE
+    LMQ_SENDQUEUE
+    LMQ_SENDQUEUETYPE
+    LMQ_SENDQUEUEPRIORITY
+    LMQ_TRANSPORT
+    LMQ_TRANSPORTBUFFERLIMITS
+    LMQ_MESSAGE
+    LMQ_MESSAGECALLBACK
+    LMQ_MESSAGEFRAMEENUMHINT
+
+Initialization and Termination
+------------------------------
+
+.. code:: cpp
+
+    #define LMQ_CURRENT_API_VERSION MAKEWORD(1, 0)
+
+    LMQAPI
+    LmqInitialize (
+        WORD VersionRequested
+        );
+
+    LMQAPI
+    LmqTerminate (
+        VOID
+        );
+
+Channels
+--------
+
+.. code:: cpp
+
+    LMQAPI
+    LmqCreateChannel (
+        LMQ_CHANNELTYPE ChannelType,
+        PLMQ_CHANNEL Channel
+        );
+
+    LMQAPI
+    LmqOpenChannel (
+        LMQ_CHANNEL Channel,
+        LMQ_CHANNELROLE ChannelRole,
+        LMQ_RECEIVEQUEUETYPE ReceiveQueueType,
+        LONG ReceiveQueueCapacity
+        );
+
+    LMQAPI
+    LmqChannelControl (
+        LMQ_CHANNEL Channel,
+        LMQ_CHANNELCONTROLCODE ControlCode,
+        PVOID InputBuffer,
+        ULONG InputBufferLengthBytes,
+        PVOID OutputBuffer,
+        ULONG OutputBufferLengthBytes,
+        PULONG BytesReturned
+        );
+
+    LMQAPI
+    LmqFlushChannel (
+        LMQ_CHANNEL Channel,
+        UINT32 TimeoutMs
+        );
+
+    LMQAPI
+    LmqCloseChannel (
+        LMQ_CHANNEL Channel,
+        UINT32 LingerTimeoutMs
+        );
+
+    LMQAPI
+    LmqDestroyChannel (
+        PLMQ_CHANNEL Channel
+        );
+
+Queues
+------
+
+.. code:: cpp
+
+    LMQAPI
+    LmqAddSendQueue (
+        LMQ_CHANNEL Channel,
+        LMQ_SENDQUEUETYPE QueueType,
+        LMQ_SENDQUEUEPRIORITY QueuePriority,
+        LONG Capacity,
+        PLMQ_SENDQUEUE SendQueue
+        );
+
+Transports
+----------
+
+.. code:: cpp
+
+    LMQAPI
+    LmqQueryTransportBufferLimits (
+        PCWSTR TransportDescriptor,
+        PLMQ_TRANSPORTBUFFERLIMITS BufferLimits,
+        ULONG BufferLimitsSizeBytes
+        );
+
+    LMQAPI
+    LmqAddTransport (
+        LMQ_CHANNEL Channel,
+        PCWSTR TransportDescriptor,
+        SIZE_T BufferSizeBytes,
+        LONG MaxPendingSendBuffers,
+        LONG MaxPendingReceiveBuffers,
+        UINT32 CreationFlags,
+        PLMQ_TRANSPORT Transport
+        );
+
+    LMQAPI
+    LmqTransportControl (
+        LMQ_TRANSPORT Transport,
+        ULONG ControlCode,
+        PVOID InputBuffer,
+        ULONG InputBufferLengthBytes,
+        PVOID OutputBuffer,
+        ULONG OutputBufferLengthBytes,
+        PULONG BytesReturned
+        );
+
+Messages & Frames
+-----------------
+
+.. code:: cpp
+
+    LMQAPI
+    LmqCreateMessage (
+        USHORT FrameCountHint,
+        PLMQ_MESSAGE Message
+        );
+
+    LMQAPI
+    LmqCreateMessageRef (
+        LMQ_MESSAGE Message,
+        PLMQ_MESSAGE Clone
+        );
+
+    LMQAPI
+    LmqAppendFrame (
+        LMQ_MESSAGE Message,
+        const BYTE* Data,
+        UINT64 DataSize,
+        ULONG64 Timestamp
+        );
+
+    LMQAPI
+    LmqAppendStaticFrame (
+        LMQ_MESSAGE Message,
+        const BYTE* Data,
+        UINT64 DataSize,
+        ULONG64 Timestamp
+        );
+
+    LMQAPI
+    LmqAppendExternalFrame (
+        LMQ_MESSAGE Message,
+        const BYTE* Data,
+        UINT64 DataSize,
+        ULONG64 Timestamp,
+        PLMQ_MESSAGECALLBACK Callback,
+        PVOID Context
+        );
+
+    LMQAPI
+    LmqGetFrameCount (
+        LMQ_MESSAGE Message,
+        PUSHORT FrameCount,
+        PUINT64 PayloadSizeBytes
+        );
+
+    LMQAPI
+    LmqGetFrameData (
+        LMQ_MESSAGE Message,
+        USHORT FrameIndex,
+        const BYTE** Data,
+        PUINT64 DataSize,
+        PULONG64 Timestamp,
+        PLMQ_MESSAGEFRAMEENUMHINT EnumHint
+        );
+
+    LMQAPI
+    LmqInitFrameEnumHint (
+        _Pre_invalid_ PLMQ_MESSAGEFRAMEENUMHINT EnumHint
+        );
+
+    LMQAPI
+    LmqQueryMaxInlineFrameSize (
+        PUSHORT MaxInlineFrameSize
+        );
+
+Send and Receive
+----------------
+
+.. code:: cpp
+
+    LMQAPI
+    LmqPostMessage (
+        LMQ_SENDQUEUE SendQueue,
+        PLMQ_MESSAGE Message,
+        UINT32 TimeoutMs
+        );
+
+    LMQAPI
+    LmqPostMessageWithTag (
+        LMQ_SENDQUEUE SendQueue,
+        PLMQ_MESSAGE Message,
+        LONG_PTR Tag,
+        UINT32 TimeoutMs
+        );
+
+    LMQAPI
+    LmqDestroyUnpostedMessage (
+        PLMQ_MESSAGE Message
+        );
+
+    LMQAPI
+    LmqReceiveMessage (
+        LMQ_CHANNEL Channel,
+        UINT32 TimeoutMs,
+        PUSHORT FrameCount,
+        PUINT64 PayloadSizeBytes,
+        PLMQ_MESSAGE Message
+        );
+
+    LMQAPI
+    LmqDisposeReceivedMessage (
+        PLMQ_MESSAGE Message
+        );
+
 Initialization and Termination
 ==============================
 

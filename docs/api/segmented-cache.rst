@@ -38,8 +38,11 @@ Dependencies
     api-lwmq-heap-1-0.dll
     api-lwmq-hash-1-0.dll
 
+Overview
+========
+
 Types
-=====
+-----
 
 .. code:: cpp
 
@@ -48,10 +51,10 @@ Types
     LMQ_SEGMENTEDCACHE_KEYTYPE
 
 Segmented Cache Functions
-=========================
+-------------------------
 
 Core Segmented Cache Functions
-------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code:: cpp
 
@@ -136,7 +139,7 @@ Core Segmented Cache Functions
         );
 
 Segmented Cache Memory Allocation (Advanced)
---------------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code:: cpp
 
@@ -154,7 +157,7 @@ Segmented Cache Memory Allocation (Advanced)
         );
 
 Cache Extents Functions (Advanced)
-----------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code:: cpp
 

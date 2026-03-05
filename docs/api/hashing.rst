@@ -27,8 +27,11 @@ Dependencies
 
     None
 
+Overview
+========
+
 Types
-=====
+-----
 
 .. code:: cpp
 
@@ -37,11 +40,8 @@ Types
     LMQ_HMAC
     LMQ_HMAC_CONTEXT
 
-Hashing and HMAC Functions
-==========================
-
-Hashing
--------
+Hashing Functions
+-----------------
 
 The hashing functions are meant to be fast. They are not cryptographic and should not be used for security purposes.
 
@@ -82,8 +82,8 @@ The hashing functions are meant to be fast. They are not cryptographic and shoul
 
     bool operator!=(const LMQ_HASH& Hash1, const LMQ_HASH& Hash2);
 
-HMAC (Hash-Based Message Authentication Code)
----------------------------------------------
+HMAC Functions
+--------------
 
 The encryption and hashing algorithms used to compute HMACs in LwMQ are meant to be fast as their primary design goal. The cipher used is a weakened (low round count) version of an otherwise secure algorithm tuned for excellent performance on modern processors.
 

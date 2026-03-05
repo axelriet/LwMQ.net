@@ -32,8 +32,11 @@ Dependencies
     api-lwmq-heap-1-0.dll
     api-lwmq-hash-1-0.dll
 
+Overview
+========
+
 Types
-=====
+-----
 
 .. code:: cpp
 
@@ -44,10 +47,10 @@ Types
     LMQ_CACHEMETRICS
 
 In-Memory Cache Functions
-=========================
+-------------------------
 
 Core Cache Functions
---------------------
+^^^^^^^^^^^^^^^^^^^^
 
 .. code:: cpp
 
@@ -129,7 +132,7 @@ Core Cache Functions
         );
 
 Cache Memory Allocation (Advanced)
-----------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code:: cpp
 
@@ -147,7 +150,7 @@ Cache Memory Allocation (Advanced)
         );
 
 Cache Extents Functions (Advanced)
-----------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code:: cpp
 
@@ -158,7 +161,7 @@ Cache Extents Functions (Advanced)
         );
 
 Cache Keys Helper Functions
----------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code:: cpp
 
@@ -195,7 +198,7 @@ Cache Keys Helper Functions
         );
 
 Cache Entropy Helper Functions
-------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code:: cpp
 

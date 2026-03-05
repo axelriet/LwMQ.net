@@ -2,8 +2,6 @@
 LwMQ Documentation
 ******************
 
-See the :doc:`about`, :doc:`guide/index`, and :doc:`api/index` sections for further information.
-
 .. note::
 
    Under construction.
@@ -15,4 +13,5 @@ Contents
 
    guide/index
    api/index
+   transports/index
    about

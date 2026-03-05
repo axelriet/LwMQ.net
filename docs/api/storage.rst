@@ -27,8 +27,11 @@ Dependencies
 
     api-lwmq-hash-1-0.dll
 
+Overview
+========
+
 Types
-=====
+-----
 
 .. code:: cpp
 
@@ -36,10 +39,10 @@ Types
     LMQ_KVSTOREKEY
  
 Key-Value Storage Functions
-===========================
+---------------------------
 
 Core KV-Store Functions
------------------------
+^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code:: cpp
 
@@ -87,7 +90,7 @@ Core KV-Store Functions
         );
 
 KV-Store Key Helpers Functions
-------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code:: cpp
 

@@ -8,7 +8,6 @@ html_static_path = ['_static']
 html_theme = "sphinx_rtd_theme"
 
 html_theme_options = {
-    'analytics_id': 'G-VW7BZSSV48',
     'analytics_anonymize_ip': False,
     'logo_only': False,
     'prev_next_buttons_location': 'bottom',
@@ -31,3 +30,7 @@ html_css_files = [
 ]
 
 html_show_sphinx = False
+
+def setup(app):
+    app.add_javascript("https://www.googletagmanager.com/gtag/js?id=G-VW7BZSSV48")
+    app.add_javascript("ga.js")

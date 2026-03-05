@@ -29,8 +29,11 @@ Dependencies
 
     api-lwmq-hash-1-0.dll
 
+Overview
+========
+
 Types
-=====
+-----
 
 .. code:: cpp
 
@@ -38,7 +41,7 @@ Types
     LMQ_COMPRESSEDDATABLOB
 
 Buffer Compression Functions
-============================
+----------------------------
 
 .. code:: cpp
 
@@ -74,7 +77,7 @@ Buffer Compression Functions
         );
 
 One-Shot Compression Functions (BLOB)
-=====================================
+-------------------------------------
 
 .. code:: cpp
 

@@ -1,6 +1,6 @@
-*****
-About
-*****
+**********
+About LwMQ
+**********
 
 LwMQ has been imagined, designed and implemented by Axel Rietschin.
 
