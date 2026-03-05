@@ -18,5 +18,5 @@ html.writer-html4 .rst-content dl:not(.docutils)>dt,html.writer-html5 .rst-conte
 
 html.writer-html5 .rst-content dl.citation, html.writer-html5 .rst-content dl.field-list, html.writer-html5 .rst-content dl.footnote
 {
-    margin-bottom: 18px;
+    margin-bottom: 14px;
 }
