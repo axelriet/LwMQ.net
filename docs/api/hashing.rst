@@ -2,9 +2,9 @@
 LwMQ Hashing API
 ****************
 
-LwMQ provides a set of hashing and HMAC functions that can be used for various purposes such as message integrity checks, caching, and more.
+LwMQ provides a set of fast hashing and HMAC functions that can be used for various purposes such as message integrity checks, and more.
 
-Remember that every hash function is subject to collisions, and the hashing functions provided by LwMQ are not cryptographic. They are designed for speed and should not be used for security-sensitive applications.
+Remember that every hash function is subject to collisions, and the hashing functions provided by LwMQ are not cryptographic. They are designed for speed and should not be used for security-sensitive applications. However, they provide a fast solution for everyday message integrity checks, enabling application to include checksums and HMACs at a reasonable performance cost.
 
 C and C++ Header File
 =====================

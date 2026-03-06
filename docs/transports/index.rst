@@ -23,6 +23,4 @@ LwMQ Transport Internals
 
    tli
    wire-format
-
-
-
+   

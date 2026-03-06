@@ -2,11 +2,11 @@
 LwMQ Compression API
 ********************
 
-LwMQ includes fast LZ4-based functions for compressing and decompressing data buffers, which can be used in conjunction with the key-value storage or independently.
+LwMQ includes fast LZ4-based functions for compressing and decompressing data buffers, which can be used in conjunction with the messaging features, or independently. The implementation uses fast processor-specific routines for optimal performance on modern hardware and should match or outperform most compression libraries as far as compression and decompression speed.
 
-The compression scheme offers fast compression and ultrafast decompression with reasonable compression ratio for most compressible payloads.
+The LZ4 compression scheme offers fast compression and ultrafast decompression with reasonable compression ratio for most compressible payloads.
 
-The API offers a one-shot BLOB mode that compresses a buffer into a blob that is allocated by the API, making usage straightforward.
+The API offers a one-shot BLOB mode that compresses a buffer into a blob that is allocated by the API, making usage straightforward, as well as a buffer-based compression API.
 
 C and C++ Header File
 =====================

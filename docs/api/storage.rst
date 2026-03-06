@@ -4,7 +4,7 @@ LwMQ Storage API
 
 LwMQ provides a key-value storage API that allows applications to create and manage on-disk key-value stores for various purposes such as caching, storing application state, and more.
 
-The storage API also includes fast functions for compressing and decompressing data buffers, which can be used in conjunction with the key-value storage or independently.
+The storage API also includes fast LZ4-based functions for compressing and decompressing data buffers, which can be used in conjunction with the key-value storage or independently.
 
 C and C++ Header File
 =====================

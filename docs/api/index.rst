@@ -4,7 +4,7 @@ LwMQ API Reference
 
 .. note::
 
-   Under construction.
+   Under construction. Most of the reference sections are in various stage of completion.
 
 Contents
 ========

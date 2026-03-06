@@ -17,10 +17,15 @@ html.writer-html5 .rst-content dl.citation, html.writer-html5 .rst-content dl.fi
 
 .rst-content .linenodiv pre, .rst-content div[class^=highlight] pre, .rst-content pre.literal-block
 {
-    font-size: 11.5pt;
+    font-size: 11.5pt; /* Code blocks font size */
 }
 
 .wy-side-nav-search>div.switch-menus
 {
-    display: none;
+    display: none; /* Hide the version switcher top-left combobox */
+}
+
+.wy-breadcrumbs>li.wy-breadcrumbs-aside
+{
+    display: none; /* Hide the View Page Source link */
 }
