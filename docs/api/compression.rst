@@ -20,7 +20,7 @@ Binaries
 
 .. code:: cpp
 
-    api-lwmq-storage.dll
+    api-lwmq-storage-1-0.dll
 
 Dependencies
 ============
@@ -62,7 +62,6 @@ Buffer Compression Functions
         LONG UncompressedBufferSize,
         PUCHAR CompressedBuffer,
         LONG CompressedBufferSize,
-        INT CompressionEffort,
         PLONG FinalCompressedSize,
         LMQ_COMPRESSIONWORKSPACE CompressionWorkspace
         );
@@ -85,7 +84,6 @@ One-Shot Compression Functions (BLOB)
     LmqCompressData (
         UCHAR const* UncompressedBuffer,
         LONG UncompressedBufferSize,
-        INT CompressionEffort,
         PLMQ_COMPRESSEDDATABLOB CompressedDataBlob,
         PLONG CompressedDataBlobSize
         );
@@ -106,6 +104,6 @@ One-Shot Compression Functions (BLOB)
 
     LMQAPI
     LmqFreeCompressedDataBlob (
-        LMQ_COMPRESSEDDATABLOB CompressedDataBlob
+        PLMQ_COMPRESSEDDATABLOB CompressedDataBlob
         );
     

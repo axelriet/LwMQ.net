@@ -1,14 +1,6 @@
 html.writer-html4 .rst-content dl:not(.docutils)>dt,html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.citation):not(.glossary):not(.simple)>dt
 {
-    display: table;
     margin: 14px 0;
-    font-size: 90%;
-    line-height: normal;
-    background: #e7f2fa;
-    color: #2980b9;
-    border-top: 3px solid #6ab0de;
-    padding: 6px;
-    position: relative
 }
 
 .rst-content section ul li>p:only-child, .rst-content section ul li>p:only-child:last-child
@@ -23,17 +15,10 @@ html.writer-html5 .rst-content dl.citation, html.writer-html5 .rst-content dl.fi
 
 .rst-content .linenodiv pre, .rst-content div[class^=highlight] pre, .rst-content pre.literal-block
 {
-    font-family: SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, Courier, monospace;
     font-size: 11.5pt;
-    line-height: 1.4;
-}
-
-.wy-breadcrumbs>li.wy-breadcrumbs-aside
-{
-    visibility: initial;
 }
 
 .wy-side-nav-search>div.switch-menus
 {
-    visibility: hidden;
+    display: none;
 }

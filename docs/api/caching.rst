@@ -22,7 +22,7 @@ Binaries
 
 .. code:: cpp
 
-    api-lwmq-cache.dll
+    api-lwmq-cache-1-0.dll
 
 Dependencies
 ============

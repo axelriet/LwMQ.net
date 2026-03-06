@@ -18,7 +18,7 @@ Binaries
 
 .. code:: cpp
 
-    api-lwmq-storage.dll
+    api-lwmq-storage-1-0.dll
 
 Dependencies
 ============
@@ -61,7 +61,7 @@ Core KV-Store Functions
         PCLMQ_KVSTOREKEY Key,
         PVOID Data,
         ULONG DataSize,
-        INT CompressionEffort
+        BOOL UseDataCompression
         );
 
     LMQAPI

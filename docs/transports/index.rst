@@ -16,8 +16,8 @@ LwMQ RDMA Transport
 
    Under construction.
 
-LwMQ Internals
-==============
+LwMQ Transport Internals
+========================
 
 .. toctree::
 

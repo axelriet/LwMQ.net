@@ -22,7 +22,7 @@ Binaries
 
 .. code:: cpp
 
-    api-lwmq-messaging.dll
+    api-lwmq-messaging-1-0.dll
 
 Dependencies
 ============

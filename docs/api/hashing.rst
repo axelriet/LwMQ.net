@@ -91,12 +91,14 @@ The intent is to provide a way for security architects to include message authen
 
 For highly secure cryptographic operations, consider using well known facilities such as `CryptoAPI`_, Crypto Next Generation (`CNG`_), or `OpenSSL`_.
 
-.. _CryptoAPI: https://docs.microsoft.com/en-us/windows/win32/seccrypto/cryptoapi
+.. _CryptoAPI: https://learn.microsoft.com/en-us/windows/win32/seccrypto/cryptoapi-system-architecture
 .. _CNG: https://docs.microsoft.com/en-us/windows/win32/seccng/cng-portal
 .. _OpenSSL: https://www.openssl.org/
 
 One-shot HMAC Functions
 ^^^^^^^^^^^^^^^^^^^^^^^
+
+THis set of functions is meant for cases where only a few HMACs need to be computed or verified, and the caller does not mind paying the cost of key setup every time. This simplicity comes at some preformance cost.
 
 .. code:: cpp
 
@@ -116,8 +118,10 @@ One-shot HMAC Functions
         PCLMQ_HMAC HMAC
         );
 
-Streaming HMAC Functions
-^^^^^^^^^^^^^^^^^^^^^^^^
+HMAC Functions
+^^^^^^^^^^^^^^
+
+This set of functions is meant for cases where many HMACs need to be computed or verified with the same key, and the caller wants to pay the cost of key setup only once. The called typically calls LmqInitHMACEx() once then calls LmqComputeHMACEx() or LmqVerifyHMACEx() as many times as needed, then calls LmqDestroyHMACEx() to free the context when no longer needed, for example at program exit.
 
 .. code:: cpp
 
@@ -150,6 +154,8 @@ Streaming HMAC Functions
 
 HMAC Comparison Functions
 ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This function provides a fast way to compare HMACs, which can be used for example to verify that a computed HMAC matches an expected value. The function is designed to be resistant to timing attacks by taking the same amount of time regardless of how many bytes match between the two HMACs.
 
 .. code:: cpp
 
