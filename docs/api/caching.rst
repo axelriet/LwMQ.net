@@ -6,7 +6,7 @@ LwMQ provides a caching API that allows applications to create and manage in-mem
 
 The cache scavenging strategy implemented in the LwMQ in-memory cache is Last Recently Used (LRU) and supports features such as time-to-live (TTL) for cache entries, encryption with additional entropy, compression, and more.
 
-The cache is passive in the sense that it does not use a background thread for housekeeping. It is designed to be fast and efficient with low to moderate contentions, making use of modern processor capabilities.
+The cache is passive in the sense that it does not use a background thread for housekeeping. It is designed to be fast and efficient with low to moderate contentions, making use of modern processor capabilities, with cache operation in the millions of operations per second on a single thread.
 
 The in-memory cache supports terabytes of RAM and can be extended at runtime. It is suitable for low-contentions scenarios where only one or a few threads concurrently add and retrieve data from the cache. For highly concurrent scenarios, LwMQ provides a segmented cache that is designed for high performance with many threads concurrently accessing the cache.
 
