@@ -97,7 +97,7 @@ Core KV-Store Functions
 
     LMQAPI
     LmqCloseKvStore (
-        LMQ_KVSTORE KvStore
+        PLMQ_KVSTORE KvStore
         );
 
 KV-Store Key Helpers Functions
