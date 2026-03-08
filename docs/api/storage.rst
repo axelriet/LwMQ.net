@@ -6,6 +6,16 @@ LwMQ provides a key-value storage API that allows applications to create and man
 
 The storage API also includes fast LZ4-based functions for compressing and decompressing data buffers, which can be used in conjunction with the key-value storage or independently.
 
+.. note::
+
+    The LwMQ Storage component is based, in part, on a modified version of LMDB, customized for use as part is the LwMQ Storage API.
+
+    Notable modifications include support for NTFS sparse files and alternate data streams.
+
+    LMDB is licensed under the `OpenLDAP Public License`_.
+
+.. _OpenLDAP Public License: https://github.com/LMDB/lmdb/blob/mdb.master/libraries/liblmdb/LICENSE
+
 C and C++ Header File
 =====================
 
