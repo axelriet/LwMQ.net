@@ -65,10 +65,11 @@ Core KV-Store Functions
         );
 
     LMQAPI
-    LmqTestKvStoreEntryExists (
+    LmqLookupKvStoreEntry (
         LMQ_KVSTORE KvStore,
-        PCLMQ_KVSTOREKEY Key
-        );
+        PCLMQ_KVSTOREKEY Key,
+        PULONG DataSize
+    );
 
     LMQAPI
     LmqRetrieveKvStoreEntry (

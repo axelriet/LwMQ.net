@@ -43,7 +43,7 @@ Types
 Hashing Functions
 -----------------
 
-The hashing functions are meant to be fast. They are not cryptographic and should not be used for security purposes.
+The hashing functions are meant to be fast. They are not cryptographic and should not be used for security purposes. The hash comparison function is designed to be resistant to timing attacks by taking the same amount of time regardless of how many bytes match between the two hashes.
 
 .. code:: cpp
 
@@ -69,7 +69,7 @@ The hashing functions are meant to be fast. They are not cryptographic and shoul
         );
 
     LMQAPI_(BOOL)
-    LmqCompareHashes (
+    LmqAreEqualHashes (
         _In_ PCLMQ_HASH Hash1,
         _In_ PCLMQ_HASH Hash2
         );
@@ -152,15 +152,15 @@ This set of functions is meant for cases where many HMACs need to be computed or
         PLMQ_HMAC_CONTEXT Context
         );
 
-HMAC Comparison Functions
-^^^^^^^^^^^^^^^^^^^^^^^^^
+HMAC Equality Functions
+^^^^^^^^^^^^^^^^^^^^^^^
 
 This function provides a fast way to compare HMACs, which can be used for example to verify that a computed HMAC matches an expected value. The function is designed to be resistant to timing attacks by taking the same amount of time regardless of how many bytes match between the two HMACs.
 
 .. code:: cpp
 
     LMQAPI_(BOOL)
-    LmqCompareHMACs (
+    LmqAreEqualHMACs (
         PCLMQ_HMAC HMAC1,
         PCLMQ_HMAC HMAC2
         );

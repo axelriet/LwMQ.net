@@ -2,15 +2,23 @@
 LwMQ Caching API
 ****************
 
-LwMQ provides a caching API that allows applications to create and manage in-memory caches for various purposes such as storing frequently accessed data, results of expensive computations, and more.
+LwMQ provides a caching API that allow applications to create and manage in-memory caches for various purposes such as storing frequently accessed data, results of expensive computations, and more, either in raw, encrypted, compressed, or compressed and encrypted form.
 
-The cache scavenging strategy implemented in the LwMQ in-memory cache is Last Recently Used (LRU) and supports features such as time-to-live (TTL) for cache entries, encryption with additional entropy, compression, and more.
+The cache scavenging strategy implemented in the LwMQ in-memory cache is Last Recently Used (LRU) and supports features such as time-to-live (TTL) for cache entries, encryption with additional per-entry entropy.
 
-The cache is passive in the sense that it does not use a background thread for housekeeping. It is designed to be fast and efficient with low to moderate contentions, making use of modern processor capabilities, with cache operation in the millions of operations per second on a single thread.
+The cache is passive in the sense that it does not use a background thread for housekeeping. It is designed to be fast and efficient in situations with low to moderate contentions, making use of modern processor capabilities, with cache operation in the millions of operations per second on a single thread.
 
-The in-memory cache supports terabytes of RAM and can be extended at runtime. It implements a custom memory management scheme that requests huge blocks directly from the system's memory manager for internal data structures. It is suitable for low-contentions scenarios where only one or a few threads concurrently add and retrieve data from the cache. For highly concurrent scenarios, LwMQ provides a segmented cache that is designed for high performance with many threads concurrently accessing the cache.
+The in-memory cache supports terabytes of RAM and can be extended at runtime. It implements a custom memory management scheme that requests huge blocks directly from the system's virtual memory manager for internal data structures.
 
-The cache also supports an elaborate "read through" mechanism that allows applications to provide a callback for cache misses, which is invoked by the cache when a cache miss occurs. The callback can then compute the value for the missing key and add it to the cache, allowing the original cache lookup to succeed without the caller having to implement its own retry logic. This mechanism is designed to be efficient and to minimize latency for cache misses, making it suitable for scenarios where cache misses are expected but should be handled gracefully without significant performance degradation. The cache also ensures correctness in concurrent scenarios where exactly one thread reads through while any other thread concurrently waiting for the same key blocks until it becomes available.
+It is suitable for low-contentions scenarios where only one or a few threads concurrently add and retrieve data from the cache. For highly concurrent scenarios, LwMQ provides a segmented cache that is designed for high performance with many threads concurrently accessing the cache.
+
+The cache also supports an elaborate "read through" mechanism that allow applications to provide a callback for cache misses, which is invoked by the cache when a cache miss occurs.
+
+The callback can then compute the value for the missing key and add it to the cache, allowing the original cache lookup to succeed without the caller having to implement its own retry logic.
+
+This callback mechanism is designed to be efficient and to minimize latency for cache misses, making it suitable for scenarios where cache misses are expected but should be handled gracefully without significant performance degradation.
+
+The cache also ensures correctness in concurrent scenarios where exactly one thread reads through while any other thread concurrently waiting for the same key blocks until it becomes available.
 
 C and C++ Header File
 =====================
