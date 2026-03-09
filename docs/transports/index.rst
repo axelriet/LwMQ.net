@@ -20,6 +20,7 @@ LwMQ Transport Internals
 ========================
 
 .. toctree::
+   :maxdepth: 1
 
    tli
    wire-format

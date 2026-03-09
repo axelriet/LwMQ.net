@@ -106,4 +106,10 @@ One-Shot Compression Functions (BLOB)
     LmqFreeCompressedDataBlob (
         PLMQ_COMPRESSEDDATABLOB CompressedDataBlob
         );
+
+        #ifdef __cplusplus
+        #define LmqCompressedDataBlobFromPointer(__Pointer__) reinterpret_cast<LMQ_COMPRESSEDDATABLOB>(__Pointer__)
+        #else
+        #define LmqCompressedDataBlobFromPointer(__Pointer__) ((LMQ_COMPRESSEDDATABLOB)(__Pointer__))
+        #endif
     
