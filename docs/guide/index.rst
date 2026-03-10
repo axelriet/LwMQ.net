@@ -9,7 +9,7 @@ Introduction
 ------------
 
 LwMQ is born from a simple observation: there is a gap in
-the message-oriented inter-process communication systems.
+message-oriented inter-process communication systems.
 
 At one end of the spectrum one finds sophisticated message
 brokers reachable over a network and requiring
@@ -23,14 +23,16 @@ abstractions such as BSD sockets, enabling local and remote
 communication between processes without an intermediate broker.
 
 LwMQ falls on the side of the second category, providing direct
-peer-to-peer inter-process communication without configuration.
+peer-to-peer inter-process communication without configuration
+or intermediate broker.
 
 Its key differentiators include the use of transport mechanisms
 that are not commonly available in other message-oriented
-communication mechanisms.
+communication mechanisms, and often reserved to server or
+datacenter environments only.
 
 Most competing solution leverage Unix Domain Sockets (UDS)
-for local communication as this transport is aligned in
+for local communications, as this transport is aligned in
 the continuity of the network-based paradigms those systems
 are built upon.
 
@@ -48,19 +50,34 @@ Similarly, LwMQ leverages Remote Direct Memory Access (RDMA)
 for remote peer-to-peer communication. RDMA bypasses the
 network stack almost entirely (the technology is known as
 "kernel bypass") and achieve higher throughput and lower
-latency that what can be achieved through typical network
-stacks.
+latency that what can be reached through typical network
+stacks on most operating systems.
 
 LwMQ supports three flavors of RDMA through NetworkDirect v2 providers:
 
-   * InfiniBand: A high-bandwidth, low-latency networking technology designed for RDMA.
+   * InfiniBand: A high-bandwidth, low-latency datacenter networking technology designed for RDMA.
 
    * RoCE (RDMA over Converged Ethernet): Enables RDMA over Ethernet networks, allowing RDMA to function in traditional network infrastructures.
 
    * iWARP (Internet Wide Area RDMA Protocol): Allows RDMA over TCP/IP, which is more scalable over long distances.
 
+In a sense, LwMQ brings datacenter-level network performance
+to regular workstations, provided they are equipped with
+an RDMA-capable network adapter with suitable drivers.
+
+Workstation adapters capable of RDMA operation over iWARP or
+RoCE (both atop Ethernet) can be readily obtained example from
+`Broadcom`, `NVIDIA (Mellanox)` or `Intel`, while `InfiniBand`
+adapters are now common on server hardware and some high-end
+workstations.
+
+.. _Broadcom: https://techdocs.broadcom.com/us/en/storage-and-ethernet-connectivity/ethernet-nic-controllers/bcm957xxx/adapters/RDMA-over-Converged-Ethernet.html
+.. _NVIDIA (Mellanox): https://docs.nvidia.com/networking/display/mlnxofedv497100lts/rdma+over+converged+ethernet+(roce)
+.. _Intel: https://www.intel.com/content/www/us/en/support/articles/000031905/ethernet-products/700-series-controllers-up-to-40gbe.html
+.. _InfiniBand: https://www.infinibandta.org/
+
 Finally, LwMQ supports Hyper-V specific transports that
-enable communication between the host OS and guest VMs
+enable communication between the host OS, guest VMs,
 and Containers without leveraging any network stack at
 all. Communication can be achieved at high speed between
 the host operating system and headless VMs and Containers
@@ -72,19 +89,67 @@ borders at the highest throughput allowed by the hardware.
 
 Nothing prevents LwMQ to also support network protocols
 such as regular TCP or UDP but LwMQ's design revolves
-around a DMA-first architecture that is optimized for
-high-speed shared-memory IPC and RDMA.
+around a DMA-first architecture that is optimized from
+the ground up for high-speed shared-memory IPC and RDMA,
+and is fundamentally a peer-to-peer communication system.
 
-Ultrafast IPC enable many scenarios including real-time
+Ultrafast IPC enables many scenarios including real-time
 financial data dissemination, locally-distributed agents,
 AI training and reinforcement learning, delegation of
 sensitive work to a separate, isolated process with
 minimal impact on performance, fast batching of commands
 for example to a graphic or HTML rendering engine hosted in
-a separate process, ane more.
+a separate process or container, and more.
 
 Philosophy
 ----------
+
+LwMQ is a low-level library. The user has control over the
+type of queues that are used to post messages, between
+single-producer unbounded queues, to multi-producer queues
+of various types. The multi-producer queues implement
+synchronization internally and therefore can be accessed
+concurrently from multiple threads without special precautions
+at some slight performance cost.
+
+The single-producer queues are meant to be access strictly
+from one and only one thread (as they don't perform internally
+synchronization) but they offer unprecedented performances
+where queuing a new message only requires a few machine
+instructions without any lock.
+
+LwMQ is therefore flexible and offers more control than
+typical libraries and subsystems, and does not force unwarranted
+cost to the application.
+
+Another example of the low-level philosophy that is
+pervasive through the entire design is the in-memory cache,
+which does not assume any particular key type.
+
+Most caches accept keys in form of a string, which in turn
+makes assumptions about the character type and encoding
+as well as the hashing function.
+
+LwMQ makes no such assumptions but standardizes all keys as
+128-bit entities.
+
+It is up to the application to supply the underlying keys,
+and decide how to create them: random or non-random MAC-based
+GUIDs, hashed strings or byte buffers, whatever suits the
+application at hand.
+
+LwMQ provide fast functions to transform a string or an arbitrary
+buffer into a key, as well as functions that create ideal
+keys the application can use as record identity, but LwMQ 
+does not make any assumption about the nature of the
+data ending up serving as key, but directly exposes the
+underlying native key type instead and give the application
+full control over how to create those keys.
+
+The general philosophy is therefore to give maximum control
+to the application and focus on the low-level aspects, with
+a strong emphasis on bomb-proof robustness while providing
+best-in-industry performances on every aspects.
 
 Architecture
 ------------
