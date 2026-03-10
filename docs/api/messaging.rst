@@ -237,6 +237,11 @@ Messages & Frames
         PUSHORT MaxInlineFrameSize
         );
 
+    LMQAPI
+    LmqDestroyUnpostedMessage (
+        PLMQ_MESSAGE Message
+        );
+
 Send and Receive
 ----------------
 
@@ -255,11 +260,6 @@ Send and Receive
         PLMQ_MESSAGE Message,
         LONG_PTR Tag,
         UINT32 TimeoutMs
-        );
-
-    LMQAPI
-    LmqDestroyUnpostedMessage (
-        PLMQ_MESSAGE Message
         );
 
     LMQAPI

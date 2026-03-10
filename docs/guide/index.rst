@@ -159,6 +159,23 @@ to the application and focus on the low-level aspects, with
 a strong emphasis on bomb-proof robustness while providing
 best-in-industry performances on every aspects.
 
+The API follows a C-style design, with a flat API and
+opaque types, and is designed to be easily callable from C,
+C++, Rust, Go, Python and more.
+
+The naming convention is to prefix all API functions with "Lmq"
+and all types with "\L\M\Q\_" to avoid any naming collision with
+other APIs or libraries. The name format follows the
+PrefixVerbNoun structure in TitleCase, with the verb describing
+the action performed by the foncton and the noun describing the
+main entity the function operates on. For example, LmqCreateChannel
+creates new channel, LmqPostMessage posts a message to a queue,
+and so on.
+
+Create verbs are complemented by Destroy verbs that free the
+resources allocated by the Create functions. Open -> Close,
+Allocate -> Free, and so on.
+
 Architecture
 ------------
 
