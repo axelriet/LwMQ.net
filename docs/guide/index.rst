@@ -31,10 +31,12 @@ that are not commonly available in other message-oriented
 communication mechanisms, and often reserved to server or
 datacenter environments only.
 
-Most competing solution leverage Unix Domain Sockets (UDS)
+Most competing solution leverage Unix Domain Sockets (`UDS`_)
 for local communications, as this transport is aligned in
 the continuity of the network-based paradigms those systems
 are built upon.
+
+.. _UDS: https://en.wikipedia.org/wiki/Unix_domain_socket
 
 In contrast, LwMQ provides its own shared-memory based
 physical layer for local communication, as well as its
@@ -61,13 +63,15 @@ LwMQ supports three flavors of RDMA through NetworkDirect v2 providers:
 
    * iWARP (Internet Wide Area RDMA Protocol): Allows RDMA over TCP/IP, which is more scalable over long distances.
 
-In a sense, LwMQ brings datacenter-level network performance
-to regular workstations, provided they are equipped with
-an RDMA-capable network adapter with suitable drivers.
+LwMQ brings unprecedented local IPC performance as well
+as datacenter-level network IPC performance to regular applications
+running on regular workstations, provided they are equipped with
+an RDMA-capable network adapter with suitable drivers. The same
+of course also applies to server applications.
 
 Workstation adapters capable of RDMA operation over iWARP or
 RoCE (both atop Ethernet) can be readily obtained example from
-`Broadcom`, `NVIDIA (Mellanox)` or `Intel`, while `InfiniBand`
+`Broadcom`_, `NVIDIA (Mellanox)`_ or `Intel`_, while `InfiniBand`_
 adapters are now common on server hardware and some high-end
 workstations.
 
@@ -100,6 +104,10 @@ sensitive work to a separate, isolated process with
 minimal impact on performance, fast batching of commands
 for example to a graphic or HTML rendering engine hosted in
 a separate process or container, and more.
+
+In these scenarios, LwMQ performs *many time faster* than
+existing solutions, even more so when the current solution
+involves HTTP/2 over a local socket connection.
 
 Philosophy
 ----------
