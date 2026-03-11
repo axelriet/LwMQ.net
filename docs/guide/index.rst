@@ -3,7 +3,7 @@ LwMQ User Guide
 
 .. note::
 
-   Under construction.
+   Under construction. Check back often for updates.
 
 Introduction
 ------------
@@ -208,7 +208,8 @@ software.
 
 The C code is compiled as C++ to benefit from stricter type checking
 of the latter language, a technique now used in the Windows kernel
-and other critical software projects.
+and other critical software projects, and the project takes maximum
+advantage of static analysis for compile-time defect detection.
 
 The code is designed to be robust and bomb-proof, with a strong
 emphasis on correctness and reliability, while providing
@@ -220,10 +221,11 @@ is best implemented in C++ [`GoF`_, p. 305ff]
 
 .. _GoF: https://a.co/d/02cPzhzs
 
-Some small portions are written in assembly language and the code
+Small portions are written in assembly language and the code
 often uses vector instructions (SIMD intrinsics) where appropriate.
 
-LwMQ requires AVX-2 instructions (Haswell, Ryzen, or later.)
+LwMQ requires AVX-2 instructions (Haswell, Ryzen, or later) and
+performs exceptionally well on contemporary hardware.
 
 Philosophy
 ----------
@@ -483,11 +485,17 @@ messages are then posted to the channel's output queue.
 Licensing
 ---------
 
-LwMQ's licensing terms are not decided at this time.
+LwMQ's licensing terms are not decided at the time of this writing.
+
+Inquiries should be directed to info@lwmq.net
 
 Getting Started
 ---------------
 
+   TBD
+
 Samples
 -------
+
+   TBD
 
