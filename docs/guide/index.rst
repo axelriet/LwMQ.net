@@ -209,7 +209,7 @@ connecting, open, etc, is best implemented in C++.
 Some small portions are written in assembly language and the code
 often uses vector instructions (SIMD intrinsics) where appropriate.
 
-LwMQ requires AVX-2 instructions (Haswell, Ryzen, or later)
+LwMQ requires AVX-2 instructions (Haswell, Ryzen, or later.)
 
 Philosophy
 ----------
@@ -230,35 +230,34 @@ instructions without any lock.
 
 LwMQ is therefore flexible and offers more control than
 typical libraries and subsystems, and does not force unwarranted
-cost to the application that don't need a particular guarantee.
+cost to applications that don't need a particular guarantee.
 
 Another example of the low-level philosophy that is
 pervasive through the entire design is the in-memory cache,
 which does not assume any particular key type.
 
-Most caches accept keys in form of a text string, which in turn
-makes assumptions about the character type and encoding, and
-the designers settled for a particular hashing function
-that they think will be suitable for most uses.
+Most existing caches accept keys in form of a text string, which
+in turn makes assumptions about the character type and encoding,
+and the cache designers settled for a particular hash function
+that they think should be suitable for most uses.
 
-LwMQ makes no such assumptions but standardizes all keys as
+LwMQ makes no such assumptions and standardizes all keys as
 128-bit (16-bytes) entities.
 
 It is up to the application to supply the keys and decide how
 to create them: random or non-random MAC-based GUIDs, hashed
-strings or byte buffers with whatever hashing algorithm that
-satisfies the application's requirements, whatever suits the
-application at hand.
+ANSI, UTF-8, or Unicode strings or byte buffers hashed with whatever
+hashing algorithm satisfying the application's requirements.
 
-LwMQ provide fast functions to transform a string or an arbitrary
-buffer into a key, as well as functions that create ideal
-keys the application can use as record identity, but LwMQ 
+LwMQ provide fast functions to transform any string or arbitrary
+byte buffer into a key, as well as functions that create ideal
+keys the application can also use as record identity, but LwMQ 
 does not make any assumption about the nature of the
 data ending up serving as key. It directly exposes the
 underlying native key type instead and give the application
 full control over how to create those keys. Some applications
 may find it advantageous to compute or create the keys in
-advance and store them as part of the data. This avoids
+advance and store them as part of their data. This avoids
 the runtime cost of hashing the data each time a key is
 needed.
 
@@ -272,11 +271,12 @@ to efficiently address your needs.
 
 The API follows a C-style design, with a flat API and
 opaque types, and is designed to be easily callable from C,
-C++, Rust, Go, Python and more.
+C++, Rust, Go, Python and more. Wrappers and bindings can
+also be created for other languages.
 
 The ABI (Application Binary Interface) remains stable between
 releases, ensuring backward compatibility: new versions of
-LwMQ will generally be drop-in replacements for previous
+LwMQ will generally be drop-in replacements for any previous
 versions, meaning the API surface is stable and extensions
 are made by adding new functions and types, rather than
 modifying existing ones. Existing functions will *never* be
@@ -291,7 +291,7 @@ The naming format follows the PrefixVerbNoun structure in TitleCase,
 with the verb describing the action performed by the function and
 the noun describing the main entity the function operates on.
 
-For example, LmqCreateChannel creates new channel, LmqPostMessage
+For example, LmqCreateChannel() creates new channel, LmqPostMessage()
 posts a message to a queue, and so on. No surprises.
 
 Create verbs are complemented by Destroy verbs that free the
@@ -312,10 +312,10 @@ adapter for the RDMA case, where the transfer is offloaded to
 the hardware.
 
 Other transports, such as Hyper-V's HvSocket, rely on an existing
-pipe-like infrastructure, while other transports, like
+pipe-like infrastructure, while yet other transports, like
 a possible TCP transport, rely on pinned memory windows that
 sit in-between user-mode and kernel-mode to minimize buffer
-copies.
+copies and kernel transitions.
 
 Sender Block Diagram
 ^^^^^^^^^^^^^^^^^^^^
@@ -399,7 +399,7 @@ and put to work in a half day.
 .. mermaid::
 
    ---
-   title: LwMQ Sender Side
+   title: LwMQ Sender Side (Simplified)
    config:
       theme: 'neutral'   
    ---
@@ -426,7 +426,7 @@ messages are then posted to the channel's output queue.
 .. mermaid::
 
    ---
-   title: LwMQ Receiver Side
+   title: LwMQ Receiver Side (Simplified)
    config:
       theme: 'neutral'
    ---
