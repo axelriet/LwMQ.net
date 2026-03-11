@@ -25,8 +25,7 @@ html_theme_options = {
     'sticky_navigation': True,
     'navigation_depth': 4,
     'includehidden': True,
-    'titles_only': False,
-    'display_viewer': False
+    'titles_only': False
 }
 
 html_css_files = [
