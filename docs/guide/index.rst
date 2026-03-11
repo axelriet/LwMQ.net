@@ -157,7 +157,9 @@ can be used to store partial results in AI inference scenarios,
 or to store often-served data with a precise expiration time.
 
 The segmented LRU cache supports massive caching scenarios with
-millions of entries under *heavy* multithreaded concurrent access.
+millions of entries under *heavy* multithreaded concurrent access,
+and both caches support compression and encryption with per-entry
+entropy.
 
 Supporting Features
 ^^^^^^^^^^^^^^^^^^^
@@ -169,18 +171,20 @@ build their solutions with the best possible performance and
 reliability, for example by adding checksums or HMACs to messages
 to detect and prevent data corruption or tampering, or by
 compressing large messages to reduce the amount of data
-that needs to be transferred, all with minimal impact on performance.
+that needs to be transferred, all with the least possible impact on
+performance.
 
 Depending on the data link speed and congestions, it is often
-advantageous to use some CPU time to compress/decompress the data and
+advantageous to use some CPU time to compress/decompress data and
 reduce the bandwith requirements for improved overall throughput.
 
 Platform
 ^^^^^^^^
 
 LwMQ is designed as a best-of-breed-performance library for
-Windows, Windows Server, and Azure Windows VMs. While there is
-nothing inherently platform-specific in the design, the
+Windows, Windows Server, and Windows VMs hosted on Azure or elsewhere.
+
+While there is nothing inherently platform-specific in the design, the
 implementation is currently Windows-specific and leverages
 Windows features and APIs to achieve the best possible
 performance.
@@ -191,22 +195,30 @@ performance and maintainability: sooner or later some compromises
 are made to accommodate the lowest common denominator, and the
 codebase becomes more complex and harder to maintain.
 
-LwMQ's concepts can readily be ported to any platform and the
-author looks forward to seeing native ports to other platforms,
+LwMQ's concepts can readily be ported and the author looks
+forward to seeing native ports to other platforms,
 possibly in other programming languages, in the future.
 
 Implementation
 ^^^^^^^^^^^^^^
 
 LwMQ is written in the C programming language following strict
-disciplines only found in kernel developement.
+disciplines mostly found in kernel developement and mission-critical
+software.
+
+The C code is compiled as C++ to benefit from stricter type checking
+of the latter language, a technique now used in the Windows kernel
+and other critical software projects.
 
 The code is designed to be robust and bomb-proof, with a strong
 emphasis on correctness and reliability, while providing
-best-in-industry performance on every aspect. Some light touches
-of C++ are used here and there, for example for the finite-state
-machine that governs the state of the transports, such as created,
-connecting, open, etc, is best implemented in C++.
+best-in-industry performance on every aspect.
+
+Some light touches of C++ are used here and there, for example the
+finite-state machine that governs the state of the transports
+is best implemented in C++ [`GoF`_, p. 305ff]
+
+.. _GoF: https://a.co/d/02cPzhzs
 
 Some small portions are written in assembly language and the code
 often uses vector instructions (SIMD intrinsics) where appropriate.
@@ -272,16 +284,21 @@ Whatever your scenario, LwMQ aims to provide multiple ways
 to efficiently address your needs.
 
 As an example, instead of opting for a turnkey "distributed cache" solution,
-LwMQ provides the individual building blocks that can be used
+consider that LwMQ provides the individual building blocks that can be used
 to assemble your own, tailored to your specific needs and requirements,
-and optimized for your particular scenario which, with a low-contention,
-highly concurrent LRU backend and a fast RDMA front-end will likely
-outperform any existing solution by a wide margin. Need a *secure* cache?
-Flip a switch to enable DPAPI encryption for tiny entries and AES-GCM encryption
-for large ones. Need a *compressed* cache? Flip another switchto enable LZ4
-compression. Need a *compressed and encrypted* cache? Flip both switches.
+and optimized for your particular scenario which, with a low-contention highly
+concurrent LRU backend and a fast RDMA front-end will likely
+outperform any existing solution by a wide margin, augmented with the
+inherent elasticity provided by queuing.
+
+Need a *secure* cache? Flip a switch to enable fast memory encryption for tiny
+entries and AES-GCM encryption for large ones. Need a *compressed* cache?
+Flip another switch to enable LZ4 compression. Need a *compressed and
+encrypted* cache? Flip both switches.
+
 The cache also optionally support hardware deflate through `Intel QAT`_ for
-very large payloads, if your server is equipped with the required accelerator.
+very large payloads, if your server is equipped with the required accelerator
+and drivers.
 
 .. _Intel QAT: https://www.intel.com/content/www/us/en/architecture-and-technology/intel-quick-assist-technology-overview.html
 
