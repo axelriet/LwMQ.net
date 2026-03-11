@@ -144,10 +144,10 @@ existing solutions, even more so when the current solution
 involves HTTP/2 over a local socket connection such as gRPC
 or a local REST API.
 
-Caching and Key-Value Storage
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+LRU Caching and Key-Value Storage
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Caching and key-value storage play supporting roles in LwMQ's
+LRU caching and key-value storage play supporting roles in LwMQ's
 design, as they are often needed to implement applications
 that leverage LwMQ's messaging capabilities.
 
@@ -156,6 +156,8 @@ the messaging subsystem. For example the in-memory LRU cache
 can be used to store partial results in AI inference scenarios,
 or to store often-served data with a precise expiration time.
 
+The segmented LRU cache supports massive caching scenarios with
+millions of entries under *heavy* multithreaded concurrent access.
 
 Supporting Features
 ^^^^^^^^^^^^^^^^^^^
@@ -268,6 +270,18 @@ best-in-industry performances on every aspects.
 
 Whatever your scenario, LwMQ aims to provide multiple ways
 to efficiently address your needs.
+
+Instead of opting for a turnkey "distributed cache" solution,
+LwMQ provides the individual building blocks that can be used
+to assemble your own, tailored to your specific needs and requirements,
+and optimized for your particular scenario which, with a low-contention
+LRU backend and a fast RDMA front-end will likely outperform any existing
+solution by a wide margin.
+
+That, in a nutshell, is the philosophy behind LwMQ.
+
+API Surface
+-----------
 
 The API follows a C-style design, with a flat API and
 opaque types, and is designed to be easily callable from C,
