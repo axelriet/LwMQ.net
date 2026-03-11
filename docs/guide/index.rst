@@ -183,6 +183,24 @@ LwMQ's concepts can readily be ported to any platform and the
 author looks forward to seeing native ports to other platforms,
 possibly in other programming languages, in the future.
 
+Implementation
+^^^^^^^^^^^^^^
+
+LwMQ is written in the C programming language following strict
+disciplines only found in kernel developement.
+
+The code is designed to be robust and bomb-proof, with a strong
+emphasis on correctness and reliability, while providing
+best-in-industry performance on every aspect. Some light touches
+of C++ are used here and there, for example for the finite-state
+machine that governs the state of the transports, such as created,
+connecting, open, etc, is best implemented in C++.
+
+Some small portions are written in assembly language and the code
+often uses vector instructions (SIMD intrinsics) where appropriate.
+
+LwMQ requires AVX-2 instructions (Haswell, Ryzen, or later)
+
 Philosophy
 ----------
 
@@ -256,8 +274,8 @@ removed, ensuring as much as possible that older applications
 can use newer versions of LwMQ without breaking.
 
 The naming convention is to prefix all API functions with "Lmq"
-and all types with "\L\M\Q\_" (and "\P\L\M\Q\_" for pointers to types) to avoid any naming collision with
-other APIs or libraries.
+and all types with "\L\M\Q\_" (and "\P\L\M\Q\_" for pointers to types)
+to avoid any naming collision with other APIs or libraries.
 
 The naming format follows the PrefixVerbNoun structure in TitleCase,
 with the verb describing the action performed by the function and
@@ -293,16 +311,29 @@ Sender Block Diagram
 ^^^^^^^^^^^^^^^^^^^^
 
 The diagram below shows a particular configuration where a channel
-has three input queues. The queues are connected to the input Scheduler
-on their consumer end.
+has three input queues as an example. The queues are connected to the
+input Scheduler on their consumer end.
 
 The input scheduler is responsible for gathering messages from
 queues according to the queue's priorities. The messages are
-sent to the message encoder which produces the "wire format"
-that is laid down to the transport buffers.
+sent to the message encoder in different manners: messages
+of various priorities can be interleaved and messages from
+queues at the same priority are collected in round-robin fashion,
+while messages from the same queue are always sent in the order
+they were posted.
+
+The message encoder produces the "wire format" that is laid down
+to the transport buffers.
 
 The transport buffers are then "shipped" to their respective
 device for actual transport.
+
+The scheduler never waits for potential messages to be posted
+before shipping the buffers to the device. It will club messages
+together as they come, but it will ship the buffers as soon as
+the buffers are full or the input queues are empty. The application
+controls the buffer size and their count and can therefore tune
+the system for the best possible performance for the scenario at hand.
 
 A channel can support any number of input queues. Using separate
 queues, as needed, help reduce contentions. Also, the priority
@@ -323,6 +354,37 @@ to system limits. When multiple transports are attached to a
 channel, the messages are laid down to each transport buffer
 separately. This is necessary as LwMQ often does not own the
 transport buffer: it often belongs to the device.
+
+Messages must fit in the transport buffers, so the application
+must size the buffers accordingly. If a message is larger than
+the transport buffer size, it is rejected by the message encoder
+and an error is returned to the application. This is the only
+way to ensure true atomic message delivery as any particular
+message is either send and delivered in its entirety or not
+at all.
+
+LwMQ's channels don't not maintain state related to messages: the
+application creates messages independently of any channel or connection
+and adds data frames and content to the message as it sees fit.
+
+The messages are only associated with a channel when the application
+posts it to one of the channel's input queues. This solves many
+issues that inherently prevent other messaging systems from
+supporting true multithreaded operations and true atomic message
+transport.
+
+Not maintaining state at the channel level also solves
+issues inherent to request-response patterns where an application
+can post any number of concurrent requests without waiting for
+any answer, while competing solutions often require the application
+to wait for the response to a request before posting the next one,
+which is a major bottleneck in concurrent scenarios and also causes
+the sender to be stuck indefinitely if the receiver fails to respond
+for any reason.
+
+LwMQ solves all those problems and more, while providing
+best-in-industry performance and a simple API that can be learned
+and put to work in a half day.
 
 .. mermaid::
 
