@@ -356,7 +356,7 @@ per sending thread to eliminate contentions.
 
 In situations where the application does not control its threads,
 for example when using a task or concurrency framework, LwMQ
-supplied multi-producer queues that implement internal locking.
+supplies multi-producer queues that implement internal synchronization.
 
 A channel can support an arbitrary number of transport and even
 multiple instances of the same transport, all of course subjected
@@ -374,7 +374,7 @@ message is either send and delivered in its entirety or not
 at all.
 
 LwMQ's channels don't not maintain state related to messages: the
-application creates messages independently of any channel or connection
+application creates messages independently of any channel or connection,
 and adds data frames and content to the message as it sees fit.
 
 The messages are only associated with a channel when the application
