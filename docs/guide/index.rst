@@ -218,6 +218,38 @@ copies.
 Sender Block Diagram
 ^^^^^^^^^^^^^^^^^^^^
 
+The diagram below shows a particular configuration where a channel
+has three input queues. The queues are connected to the input Scheduler
+on their consumer end.
+
+The input scheduler is responsible for gathering messages from
+queues according to the queue's priorities. The messages are
+sent to the message encoder which produces the "wire format"
+that is laid down to the transport buffers.
+
+The transport buffers are then "shipped" to their respective
+device for actual transport.
+
+A channel can support any number of input queues. Using separate
+queues, as needed, help reduce contentions. Also, the priority
+scheme is based on *queue priorities* rather than message
+priorities so a common use would be to have a normal priority
+input queue and one or more additional queues of different
+or same priorities as needed. If an application has multiple
+threads producing messages, it is advisable to use a queue
+per sending thread to eliminate contentions.
+
+In situations where the application does not control its threads,
+for example when using a task or concurrency framework, LwMQ
+supplied multi-producer queues that implement internal locking.
+
+A channel can support an arbitrary number of transport and even
+multiple instances of the same transport, all of course subjected
+to system limits. When multiple transports are attached to a
+channel, the messages are laid down to each transport buffer
+separately. This is necessary as LwMQ often does not own the
+transport buffer: it often belongs to the device.
+
 .. mermaid::
 
    ---
@@ -240,6 +272,10 @@ Sender Block Diagram
 
 Receiver Block Diagram
 ^^^^^^^^^^^^^^^^^^^^^^
+
+On the receiving side, transports are serviced by threads that
+collects messages from incoming transport buffers. The decoded
+messages are then posted to the channel's output queue.
 
 .. mermaid::
 
