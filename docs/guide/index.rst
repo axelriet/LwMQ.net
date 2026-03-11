@@ -394,7 +394,7 @@ for any reason.
 
 LwMQ solves all those problems and more, while providing
 best-in-industry performance and a simple API that can be learned
-and put to work in a half day.
+and put to work on day one.
 
 .. mermaid::
 
@@ -441,6 +441,11 @@ messages are then posted to the channel's output queue.
       MDA --> OQ(Output Queue)
       MDB --> OQ(Output Queue)
       MDC --> OQ(Output Queue)      
+
+Licensing
+---------
+
+LwMQ's licensing terms are not decided at this time.
 
 Getting Started
 ---------------
