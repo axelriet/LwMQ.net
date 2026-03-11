@@ -54,9 +54,10 @@ own data link and network layers on top if it.
 
 The result is much improved throughput, easily in the
 multi-million messages per second on common hardware for small
-payloads, as well as much reduced latency down to the low
-nanoseconds range for single message latency, while the
-nearest competing solutions claim low microseconds latency.
+payloads and reaching multi-GB per second with large payloads,
+as well as much reduced latency down to the low nanoseconds
+range for single one-way messages, while the nearest competing
+solutions claim low microseconds latency.
 
 Similarly, LwMQ leverages Remote Direct Memory Access (RDMA)
 for remote peer-to-peer communication. RDMA bypasses the
@@ -161,7 +162,16 @@ Supporting Features
 
 Supporting features such as 32, 64, and 128-bit hashing, HMACs,
 and key generation, ultrafast data compression and other utility
-features complete the offering.
+features complete the offering and enable platform architects to
+build their solutions with the best possible performance and
+reliability, for example by adding checksums or HMACs to messages
+to detect and prevent data corruption or tampering, or by
+compressing large messages to reduce the amount of data
+that needs to be transferred, all with minimal impact on performance.
+
+Depending on the data link speed and congestions, it is often
+advantageous to use a little CPU time to compress the data and
+reduce the bandwith requirements for improved overall throughput.
 
 Platform
 ^^^^^^^^
