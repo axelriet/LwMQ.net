@@ -160,8 +160,8 @@ or to store often-served data with a precise expiration time.
 Supporting Features
 ^^^^^^^^^^^^^^^^^^^
 
-Supporting features such as 32, 64, and 128-bit hashing, HMACs,
-and key generation, ultrafast data compression and other utility
+Supporting features such as ultrafast 32, 64, and 128-bit hashing, HMACs,
+and key generation, ultrafast LZ4 data compression and other utility
 features complete the offering and enable platform architects to
 build their solutions with the best possible performance and
 reliability, for example by adding checksums or HMACs to messages
@@ -170,7 +170,7 @@ compressing large messages to reduce the amount of data
 that needs to be transferred, all with minimal impact on performance.
 
 Depending on the data link speed and congestions, it is often
-advantageous to use a little CPU time to compress the data and
+advantageous to use some CPU time to compress/decompress the data and
 reduce the bandwith requirements for improved overall throughput.
 
 Platform
