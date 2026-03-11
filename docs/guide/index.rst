@@ -215,13 +215,15 @@ a possible TCP transport, rely on pinned memory windows that
 sit in-between user-mode and kernel-mode to minimize buffer
 copies.
 
-Overall Diagrams
-^^^^^^^^^^^^^^^^
+Sender Block Diagram
+^^^^^^^^^^^^^^^^^^^^
 
 .. mermaid::
 
    ---
    title: LwMQ Sender Side
+   config:
+      theme: 'neutral'   
    ---
 
    graph
@@ -235,6 +237,28 @@ Overall Diagrams
       H --> L(Transport A)
       I --> M(Transport B)
       J --> N(Transport C)
+
+Receiver Block Diagram
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. mermaid::
+
+   ---
+   title: LwMQ Receiver Side
+   config:
+      theme: 'neutral'
+   ---
+
+   graph
+      A(Transport A) --> TA(Transport Buffer A)
+      B(Transport B) --> TB(Transport Buffer B)
+      C(Transport C) --> TC(Transport Buffer C)
+      TA --> MDA(Message Decoder)
+      TB --> MDB(Message Decoder)
+      TC --> MDC(Message Decoder)
+      MDA --> OQ(Output Queue)
+      MDB --> OQ(Output Queue)
+      MDC --> OQ(Output Queue)      
 
 Getting Started
 ---------------
