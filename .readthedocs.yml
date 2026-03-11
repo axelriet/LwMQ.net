@@ -7,6 +7,7 @@ build:
     nodejs: "20"
   jobs:
     post_install:
+      - python -m pip install sphinxcontrib-mermaid
       - npm install -g @mermaid-js/mermaid-cli
 
 python:
