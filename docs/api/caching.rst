@@ -20,6 +20,8 @@ This callback mechanism is designed to be efficient and to minimize latency for 
 
 The cache also ensures correctness in concurrent scenarios where exactly one thread reads through while any other thread concurrently waiting for the same key blocks until it becomes available.
 
+Optionally, the segmented cache supports data compression (LZ4, and hardware deflate through Intel QAT for very large payloads) and AES-GCM encryption.
+
 C and C++ Header File
 =====================
 

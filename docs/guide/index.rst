@@ -271,12 +271,19 @@ best-in-industry performances on every aspects.
 Whatever your scenario, LwMQ aims to provide multiple ways
 to efficiently address your needs.
 
-Instead of opting for a turnkey "distributed cache" solution,
+As an example, instead of opting for a turnkey "distributed cache" solution,
 LwMQ provides the individual building blocks that can be used
 to assemble your own, tailored to your specific needs and requirements,
-and optimized for your particular scenario which, with a low-contention
-LRU backend and a fast RDMA front-end will likely outperform any existing
-solution by a wide margin.
+and optimized for your particular scenario which, with a low-contention,
+highly concurrent LRU backend and a fast RDMA front-end will likely
+outperform any existing solution by a wide margin. Need a *secure* cache?
+Flip a switch to enable DPAPI encryption for tiny entries and AES-GCM encryption
+for large ones. Need a *compressed* cache? Flip another switchto enable LZ4
+compression. Need a *compressed and encrypted* cache? Flip both switches.
+The cache also optionally support hardware deflate through `Intel QAT`_ for
+very large payloads, if your server is equipped with the required accelerator.
+
+.. _Intel QAT: https://www.intel.com/content/www/us/en/architecture-and-technology/intel-quick-assist-technology-overview.html
 
 That, in a nutshell, is the philosophy behind LwMQ.
 
