@@ -8,8 +8,18 @@ LwMQ User Guide
 Introduction
 ------------
 
-LwMQ is born from a simple observation: there is a gap in
-message-oriented inter-process communication systems.
+LwMQ is a systems and platform architect's LEGO® set, born
+from a simple observation: there is a gap in message-oriented
+inter-process communication systems.
+
+LwMQ provides messaging, caching, and key-value storage as
+well as supporting features such as hashing, HMAC and
+key generation, data compression, and more. Everything is
+ligweighted and optimized for the best possible performance on
+modern hardware.
+
+Messaging
+^^^^^^^^^
 
 At one end of the spectrum one finds sophisticated message
 brokers reachable over a network and requiring
@@ -24,7 +34,7 @@ communication between processes without an intermediate broker.
 
 LwMQ falls on the side of the second category, providing direct
 peer-to-peer inter-process communication without configuration
-or intermediate broker.
+or intermediate party.
 
 Its key differentiators include the use of transport mechanisms
 that are not commonly available in other message-oriented
@@ -38,20 +48,20 @@ are built upon.
 
 .. _UDS: https://en.wikipedia.org/wiki/Unix_domain_socket
 
-In contrast, LwMQ provides its own shared-memory based
+In contrast, LwMQ provides its own shared-memory-based
 physical layer for local communication, as well as its
 own data link and network layers on top if it.
 
 The result is much improved throughput, easily in the
-multi-million messages per second for small payloads,
-as well as much reduced latency down to the low nanoseconds
-range for single message latency while the nearest competing
-solutions claim low microseconds latency.
+multi-million messages per second on common hardware for small
+payloads, as well as much reduced latency down to the low
+nanoseconds range for single message latency, while the
+nearest competing solutions claim low microseconds latency.
 
 Similarly, LwMQ leverages Remote Direct Memory Access (RDMA)
 for remote peer-to-peer communication. RDMA bypasses the
 network stack almost entirely (the technology is known as
-"kernel bypass") and achieve higher throughput and lower
+"kernel bypass") and achieves higher throughput and lower
 latency that what can be reached through typical network
 stacks on most operating systems.
 
@@ -63,11 +73,21 @@ LwMQ supports three flavors of RDMA through NetworkDirect v2 providers:
 
    * iWARP (Internet Wide Area RDMA Protocol): Allows RDMA over TCP/IP, which is more scalable over long distances.
 
-LwMQ brings unprecedented local IPC performance as well
-as datacenter-level network IPC performance to regular applications
-running on regular workstations, provided they are equipped with
-an RDMA-capable network adapter with suitable drivers. The same
-of course also applies to server applications.
+LwMQ brings unprecedented local IPC performance without any
+special hardware requirements as well as datacenter-level
+remote IPC performance to regular applications running on regular
+workstations with unprecedented ease of use, provided they are
+equipped with an RDMA-capable network adapter with suitable
+drivers.
+
+The same of course also applies to server applications as well
+as RDMA-capable virtual machines now available on `Google Cloud`_,
+`AWS`_ and `Azure`_, provided they are equipped with suitable
+NDv2 drivers.
+
+.. _Google Cloud: https://docs.cloud.google.com/compute/docs/instances/create-vm-with-rdma
+.. _AWS: https://aws.amazon.com/ec2/instance-types/accelerated-computing/
+.. _Azure: https://learn.microsoft.com/en-us/azure/virtual-machines/extensions/enable-infiniband
 
 Workstation adapters capable of RDMA operation over iWARP or
 RoCE (both atop Ethernet) can be readily obtained example from
@@ -80,34 +100,88 @@ workstations.
 .. _Intel: https://www.intel.com/content/www/us/en/support/articles/000031905/ethernet-products/700-series-controllers-up-to-40gbe.html
 .. _InfiniBand: https://www.infinibandta.org/
 
+LwMQ does is not concerned about the details of the underlying
+physical transport provided the vendor supplies the appropriate
+drivers.
+
 Finally, LwMQ supports Hyper-V specific transports that
-enable communication between the host OS, guest VMs,
+enable communication between the Host OS, Guest VMs,
 and Containers without leveraging any network stack at
 all. Communication can be achieved at high speed between
 the host operating system and headless VMs and Containers
-without any virtual network hardware.
+having no virtual network hardware attached.
 
 Together, these features enable new scenarios for locally
 distributed and networked application communicating without
 borders at the highest throughput allowed by the hardware.
 
 Nothing prevents LwMQ to also support network protocols
-such as regular TCP or UDP but LwMQ's design revolves
+such as regular TCP/IP or UDP, but LwMQ's design revolves
 around a DMA-first architecture that is optimized from
 the ground up for high-speed shared-memory IPC and RDMA,
-and is fundamentally a peer-to-peer communication system.
+and is fundamentally a peer-to-peer (1:1) communication system
+where the application establishes peer connections through
+LwMQ's communication channels.
+
+In the future, LwMQ may support one-to-many (1:N) cardinality
+through reliable multicast transports where the message
+replication is offloaded to the network hardware, but v1
+focuses on the 1:1 use case, knowing there is no intrinsic
+limits on the number of channels an application can create
+and use concurrently.
 
 Ultrafast IPC enables many scenarios including real-time
 financial data dissemination, locally-distributed agents,
-AI training and reinforcement learning, delegation of
-sensitive work to a separate, isolated process with
-minimal impact on performance, fast batching of commands
-for example to a graphic or HTML rendering engine hosted in
-a separate process or container, and more.
+faster AI training and reinforcement learning and inference
+scenarios, delegation of sensitive work to a separate process
+with minimal impact on performance, i.e. fast batching of
+commands to a numeric solver, or a graphic or HTML renderer
+hosted in separate process, container, VM, or computer.
 
 In these scenarios, LwMQ performs *many time faster* than
 existing solutions, even more so when the current solution
-involves HTTP/2 over a local socket connection.
+involves HTTP/2 over a local socket connection such as gRPC
+or a local REST API.
+
+Caching and Key-Value Storage
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Caching and key-value storage play supporting roles in LwMQ's
+design, as they are often needed to implement applications
+that leverage LwMQ's messaging capabilities.
+
+Those features are designed to be used in conjunction with
+the messaging subsystem. For example the in-memory LRU cache
+can be used to store partial results in AI inference scenarios,
+or to store often-served data with a precise expiration time.
+
+
+Supporting Features
+^^^^^^^^^^^^^^^^^^^
+
+Supporting features such as 32, 64, and 128-bit hashing, HMACs,
+and key generation, ultrafast data compression and other utility
+features complete the offering.
+
+Platform
+^^^^^^^^
+
+LwMQ is designed as a best-of-breed-performance library for
+Windows, Windows Server, and Azure Windows VMs. While there is
+nothing inherently platform-specific in the design, the
+implementation is currently Windows-specific and leverages
+Windows features and APIs to achieve the best possible
+performance.
+
+The author is a firm believer in multiplatform *solutions* but
+cross-platform *code* often comes with a cost in terms of
+performance and maintainability: sooner or later some compromises
+are made to accommodate the lowest common denominator, and the
+codebase becomes more complex and harder to maintain.
+
+LwMQ's concepts can readily be ported to any platform and the
+author looks forward to seeing native ports to other platforms,
+possibly in other programming languages, in the future.
 
 Philosophy
 ----------
@@ -136,7 +210,7 @@ which does not assume any particular key type.
 
 Most caches accept keys in form of a text string, which in turn
 makes assumptions about the character type and encoding, and
-the designers settled for a particular the hashing function
+the designers settled for a particular hashing function
 that they think will be suitable for most uses.
 
 LwMQ makes no such assumptions but standardizes all keys as
