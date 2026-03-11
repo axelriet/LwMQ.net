@@ -3,7 +3,11 @@ copyright = 'Axel Rietschin Software Development, LLC'
 author = 'Axel Rietschin'
 release = '1.0'
 
-extensions = [ 'sphinx_rtd_theme' ]
+extensions = [
+    'sphinx_rtd_theme',
+    'sphinxcontrib.mermaid'
+]
+
 html_static_path = ['_static']
 html_theme = "sphinx_rtd_theme"
 
@@ -34,3 +38,5 @@ html_show_sphinx = False
 def setup(app):
     app.add_js_file("https://www.googletagmanager.com/gtag/js?id=G-VW7BZSSV48")
     app.add_js_file("ga.js")
+
+mermaid_params = ['-p', 'puppeteer-config.json']

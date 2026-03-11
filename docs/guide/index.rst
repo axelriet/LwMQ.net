@@ -128,49 +128,69 @@ instructions without any lock.
 
 LwMQ is therefore flexible and offers more control than
 typical libraries and subsystems, and does not force unwarranted
-cost to the application.
+cost to the application that don't need a particular guarantee.
 
 Another example of the low-level philosophy that is
 pervasive through the entire design is the in-memory cache,
 which does not assume any particular key type.
 
-Most caches accept keys in form of a string, which in turn
-makes assumptions about the character type and encoding
-as well as the hashing function.
+Most caches accept keys in form of a text string, which in turn
+makes assumptions about the character type and encoding, and
+the designers settled for a particular the hashing function
+that they think will be suitable for most uses.
 
 LwMQ makes no such assumptions but standardizes all keys as
-128-bit entities.
+128-bit (16-bytes) entities.
 
-It is up to the application to supply the underlying keys,
-and decide how to create them: random or non-random MAC-based
-GUIDs, hashed strings or byte buffers, whatever suits the
+It is up to the application to supply the keys and decide how
+to create them: random or non-random MAC-based GUIDs, hashed
+strings or byte buffers with whatever hashing algorithm that
+satisfies the application's requirements, whatever suits the
 application at hand.
 
 LwMQ provide fast functions to transform a string or an arbitrary
 buffer into a key, as well as functions that create ideal
 keys the application can use as record identity, but LwMQ 
 does not make any assumption about the nature of the
-data ending up serving as key, but directly exposes the
+data ending up serving as key. It directly exposes the
 underlying native key type instead and give the application
-full control over how to create those keys.
+full control over how to create those keys. Some applications
+may find it advantageous to compute or create the keys in
+advance and store them as part of the data. This avoids
+the runtime cost of hashing the data each time a key is
+needed.
 
 The general philosophy is therefore to give maximum control
 to the application and focus on the low-level aspects, with
 a strong emphasis on bomb-proof robustness while providing
 best-in-industry performances on every aspects.
 
+Whatever your scenario, LwMQ aims to provide multiple ways
+to efficiently address your needs.
+
 The API follows a C-style design, with a flat API and
 opaque types, and is designed to be easily callable from C,
 C++, Rust, Go, Python and more.
 
+The ABI (Application Binary Interface) remains stable between
+releases, ensuring backward compatibility: new versions of
+LwMQ will generally be drop-in replacements for previous
+versions, meaning the API surface is stable and extensions
+are made by adding new functions and types, rather than
+modifying existing ones. Existing functions will *never* be
+removed, ensuring as much as possible that older applications
+can use newer versions of LwMQ without breaking.
+
 The naming convention is to prefix all API functions with "Lmq"
-and all types with "\L\M\Q\_" to avoid any naming collision with
-other APIs or libraries. The name format follows the
-PrefixVerbNoun structure in TitleCase, with the verb describing
-the action performed by the foncton and the noun describing the
-main entity the function operates on. For example, LmqCreateChannel
-creates new channel, LmqPostMessage posts a message to a queue,
-and so on.
+and all types with "\L\M\Q\_" (and "\P\L\M\Q\_" for pointers to types) to avoid any naming collision with
+other APIs or libraries.
+
+The naming format follows the PrefixVerbNoun structure in TitleCase,
+with the verb describing the action performed by the function and
+the noun describing the main entity the function operates on.
+
+For example, LmqCreateChannel creates new channel, LmqPostMessage
+posts a message to a queue, and so on. No surprises.
 
 Create verbs are complemented by Destroy verbs that free the
 resources allocated by the Create functions. Open -> Close,
@@ -178,6 +198,43 @@ Allocate -> Free, and so on.
 
 Architecture
 ------------
+
+LwMQ messaging's architecture is DMA-first. What that means is
+the messaging framework revolves around the high-level concept
+of a memory window being "teleported" from one peer's address
+space to another.
+
+The actual transport happens either through directly shared
+memory (for the IPC transport) or with the help of the network
+adapter for the RDMA case, where the transfer is offloaded to
+the hardware.
+
+Other transports, such as Hyper-V's HvSocket, rely on an existing
+pipe-like infrastructure, while other transports, like
+a possible TCP transport, rely on pinned memory windows that
+sit in-between user-mode and kernel-mode to minimize buffer
+copies.
+
+Overall Diagrams
+^^^^^^^^^^^^^^^^
+
+.. mermaid::
+
+   ---
+   title: LwMQ Sender Side
+   ---
+
+   graph
+      A(Input Queue 1) --> F
+      B(Input Queue 2) --> F
+      C(Input Queue N) --> F(Input Scheduler)
+      F --> G(Message Encoder)
+      G --> H(Transport Buffer A)
+      G --> I(Transport Buffer B)
+      G --> J(Transport Buffer C)
+      H --> L(Transport A)
+      I --> M(Transport B)
+      J --> N(Transport C)
 
 Getting Started
 ---------------
