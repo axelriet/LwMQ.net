@@ -8,6 +8,6 @@ DMA-first, Lightweight, Brokerless, High-Performance Messaging
 <p>
 LwMQ is a DMA-first, lightweight, brokerless, zero-configuration, high-performance, and modern message queuing subsystem over RDMA (Infiniband, RoCE, iWARP) and Shared Memory, TCP, UDP, and PGM as well as to/from Virtual Machines and Containers through hypervisor-specific protocols.
 
-The documentation is at [docs.lwmq.net](https://docs.lwmq.net)
+The documentation is at [www.lwmq.net/docs](https://www.lwmq/docs)
 </p>
 
