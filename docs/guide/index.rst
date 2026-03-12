@@ -306,8 +306,8 @@ and drivers.
 
 That, in a nutshell, is the philosophy behind LwMQ.
 
-API Surface
------------
+Application Programming Interface (API)
+---------------------------------------
 
 The API follows a C-style design, with a flat API and
 opaque types, and is designed to be easily callable from C,
@@ -338,6 +338,118 @@ Create verbs are complemented by Destroy verbs that free the
 resources allocated by the Create functions. Open -> Close,
 Allocate -> Free, and so on.
 
+Save for a couple of rare exceptions, LwMQ's API calls return a status
+code (HRESULT) indicating success or failure.
+
+BugChecks (Fail Fast)
+^^^^^^^^^^^^^^^^^^^^^
+
+LwMQ embraces a *fail fast* philosophy: when a critical error is detected,
+the process will BugCheck (crash) immediately to prevent any potential
+data corruption or security breach. This occurs when a clear programmer
+error is detected, for example when passing an invalid object handle
+to an API function.
+
+This topic is always controversial in programming circles and subject
+to heated debates, but the author firmly believes that in a low-level library
+such as LwMQ, which is designed to be used in performance-critical and
+mission-critical scenarios, it is better to fail fast and loud rather
+than silently continue in a potentially corrupted state.
+
+LwMQ components does not fail fast for common errors, but are very strict
+about correct usage. By making misuses immediately apparent, LwMQ helps
+developers detect and fix bugs early in the development cycle, rather
+than allowing them to manifest later in production where they can
+cause more harm.
+
+Validation
+""""""""""
+
+Exemples of regular error return during parameter validation:
+
+.. code:: cpp
+
+   RETURN_HR_IF_MSG(E_INVALIDARG,
+                    BufferSizeBytes < 1,
+                    "BufferSizeBytes must be at least 1.");
+
+   RETURN_HR_IF_MSG(E_INVALIDARG,
+                    MaximumSizeBytes == 0,
+                    "MaximumSizeBytes must of > 0, realistically "
+                    "some number of megabytes/gigabytes.");
+
+There are approximately 300 locations across the codebase where LwMQ
+performs parameter validation and returns errors to the caller.
+
+Fail Fast
+"""""""""
+
+Exemple of a bugcheck for a critical programmer error:
+
+.. code:: cpp
+
+   if (LmqiIsValidWorkspace(WorkspaceInternal) == FALSE)
+   {
+      FAIL_FAST_HR_MSG(E_INVALIDARG,
+                       "Invalid compression workspace handle.");
+   }
+
+Exemple of a bugcheck for a critical internal error (i.e. a condition
+that should never occur regardless of circumstances, and is therefore
+likely a bug that must be adressed):
+
+.. code:: cpp
+
+   if (LastEntry == nullptr)
+         [[unlikely]]
+   {
+         FAIL_FAST_HR_MSG(E_UNEXPECTED,
+                          "LastEntry should not be null.");
+   }
+
+There are approximately 150 locations across the codebase where LwMQ
+performs critical validations and would bugcheck on errors.
+
+Tracing and Logging
+"""""""""""""""""""
+
+Note that LwMQ uses the error tracing/logging and reporting
+macros provided by the `Window Internal (or Implementation) Libraries (WIL)`_ to
+provide detailed error messages and context when a failure occurs,
+which can be invaluable for debugging and troubleshooting. Most errors have
+an associated message that provides succint details about the specific error
+condition, as illustrated above.
+
+LwMQ also makes *modest* use of the Windows TraceLogging facilities to log
+significant events which can be enabled and collected with tools such as
+`Windows Performance Recorder (WPR) and Windows Performance Analyzer (WPA)`_
+for in-depth analysis of the system's behavior, or simply viewed in
+real-time with tools such as `TraceView`_.
+
+.. _Window Internal (or Implementation) Libraries (WIL): https://github.com/microsoft/wil
+.. _TraceView: https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/traceview
+.. _Windows Performance Recorder (WPR) and Windows Performance Analyzer (WPA): https://learn.microsoft.com/en-us/windows-hardware/test/wpt/windows-performance-analyzer
+
+The ETW provider GUID for the messaging component is:
+
+.. code:: cpp
+
+   //
+   // "api-lwmq-messaging"
+   //
+   // {7da8eabe-76ce-556e-7a7e-63e75c6c78f5}
+   //
+
+Exceptions
+^^^^^^^^^^
+
+LwMQ does not use exceptions.
+
+Telemetry
+^^^^^^^^^^
+
+LwMQ does not emit telemetry.
+
 Architecture
 ------------
 
@@ -363,6 +475,26 @@ Sender Block Diagram
 The diagram below shows a particular configuration where a channel
 has three input queues as an example. The queues are connected to the
 input Scheduler on their consumer end.
+
+.. mermaid::
+
+   ---
+   title: LwMQ Sender Side (Simplified)
+   config:
+      theme: 'neutral'   
+   ---
+
+   graph
+      A(Input Queue 1) --> F
+      B(Input Queue 2) --> F
+      C(Input Queue N) --> F(Input Scheduler)
+      F --> G(Message Encoder)
+      G --> H(Transport Buffer A)
+      G --> I(Transport Buffer B)
+      G --> J(Transport Buffer C)
+      H --> L(Transport A)
+      I --> M(Transport B)
+      J --> N(Transport C)
 
 The input scheduler is responsible for gathering messages from
 queues according to the queue's priorities. The messages are
@@ -436,26 +568,6 @@ LwMQ solves all those problems and more, while providing
 best-in-industry performance and a simple API that can be learned
 and put to work on day one.
 
-.. mermaid::
-
-   ---
-   title: LwMQ Sender Side (Simplified)
-   config:
-      theme: 'neutral'   
-   ---
-
-   graph
-      A(Input Queue 1) --> F
-      B(Input Queue 2) --> F
-      C(Input Queue N) --> F(Input Scheduler)
-      F --> G(Message Encoder)
-      G --> H(Transport Buffer A)
-      G --> I(Transport Buffer B)
-      G --> J(Transport Buffer C)
-      H --> L(Transport A)
-      I --> M(Transport B)
-      J --> N(Transport C)
-
 Receiver Block Diagram
 ^^^^^^^^^^^^^^^^^^^^^^
 
@@ -492,7 +604,34 @@ Inquiries should be directed to info@lwmq.net
 Getting Started
 ---------------
 
-   TBD
+LwMQ is deployed in seconds using standard Windows Installer (MSI) packages,
+and can be used in any application by referencing the appropriate header
+files and linking against the provided libraries.
+
+Installation
+^^^^^^^^^^^^
+
+LwMQ ships in two distinct packages: the "Runtime" package,
+which contains the DLLs and other files needed to run applications
+that use LwMQ, and the "SDK" package which contains the header files,
+libraries, and other files needed to develop applications that use LwMQ.
+
+LwMQ is Datacenter and Host OS-ready: all LwMQ binaries and setup packages
+are `digitally signed`_ with our DigiCert Extended Validation (EV) code
+signing certificate to ensure their authenticity and integrity with the
+higest level of trust.
+
+.. _digitally signed: https://learn.microsoft.com/en-us/windows-hardware/drivers/install/authenticode
+
+Runtime Package
+"""""""""""""""
+
+   lwmq.setup.msi
+
+SDK Package
+"""""""""""
+
+   lwmq.sdk.setup.msi
 
 Samples
 -------
