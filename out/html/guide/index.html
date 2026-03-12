@@ -493,14 +493,32 @@ window.runMermaid = runMermaid;</script>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#philosophy">Philosophy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#api-surface">API Surface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#application-programming-interface-api">Application Programming Interface (API)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bugchecks-fail-fast">BugChecks (Fail Fast)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#validation">Validation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fail-fast">Fail Fast</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tracing-and-logging">Tracing and Logging</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#debug-symbols">Debug Symbols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exceptions">Exceptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#telemetry">Telemetry</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#architecture">Architecture</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#sender-block-diagram">Sender Block Diagram</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#receiver-block-diagram">Receiver Block Diagram</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#licensing">Licensing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting Started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#installation">Installation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#runtime-package">Runtime Package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sdk-package">SDK Package</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#samples">Samples</a></li>
 </ul>
 </li>
@@ -776,8 +794,8 @@ very large payloads, if your server is equipped with the required accelerator
 and drivers.</p>
 <p>That, in a nutshell, is the philosophy behind LwMQ.</p>
 </section>
-<section id="api-surface">
-<h2>API Surface<a class="headerlink" href="#api-surface" title="Link to this heading"></a></h2>
+<section id="application-programming-interface-api">
+<h2>Application Programming Interface (API)<a class="headerlink" href="#application-programming-interface-api" title="Link to this heading"></a></h2>
 <p>The API follows a C-style design, with a flat API and
 opaque types, and is designed to be easily callable from C,
 C++, Rust, Go, Python and more. Wrappers and bindings can
@@ -801,6 +819,107 @@ posts a message to a queue, and so on. No surprises.</p>
 <p>Create verbs are complemented by Destroy verbs that free the
 resources allocated by the Create functions. Open -&gt; Close,
 Allocate -&gt; Free, and so on.</p>
+<p>Save for a couple of rare exceptions, LwMQ’s API calls return a status
+code (HRESULT) indicating success or failure.</p>
+<section id="bugchecks-fail-fast">
+<h3>BugChecks (Fail Fast)<a class="headerlink" href="#bugchecks-fail-fast" title="Link to this heading"></a></h3>
+<p>LwMQ embraces a <em>fail fast</em> philosophy: when a critical error is detected,
+the process will BugCheck (crash) immediately to prevent any potential
+data corruption or security breach. This occurs when a clear programmer
+error is detected, for example when passing an invalid object handle
+to an API function.</p>
+<p>This topic is always controversial in programming circles and subject
+to heated debates, but the author firmly believes that in a low-level library
+such as LwMQ, which is designed to be used in performance-critical and
+mission-critical scenarios, it is better to fail fast and loud rather
+than silently continue in a potentially corrupted state.</p>
+<p>LwMQ components does not fail fast for common errors, but are very strict
+about correct usage. By making misuses immediately apparent, LwMQ helps
+developers detect and fix bugs early in the development cycle, rather
+than allowing them to manifest later in production where they can
+cause more harm.</p>
+<section id="validation">
+<h4>Validation<a class="headerlink" href="#validation" title="Link to this heading"></a></h4>
+<p>Exemples of regular error return during parameter validation:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">RETURN_HR_IF_MSG</span><span class="p">(</span><span class="n">E_INVALIDARG</span><span class="p">,</span>
+<span class="w">                 </span><span class="n">BufferSizeBytes</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">                 </span><span class="s">&quot;BufferSizeBytes must be at least 1.&quot;</span><span class="p">);</span>
+
+<span class="n">RETURN_HR_IF_MSG</span><span class="p">(</span><span class="n">E_INVALIDARG</span><span class="p">,</span>
+<span class="w">                 </span><span class="n">MaximumSizeBytes</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">                 </span><span class="s">&quot;MaximumSizeBytes must of &gt; 0, realistically &quot;</span>
+<span class="w">                 </span><span class="s">&quot;some number of megabytes/gigabytes.&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>There are approximately 300 locations across the codebase where LwMQ
+performs parameter validation and returns errors to the caller.</p>
+</section>
+<section id="fail-fast">
+<h4>Fail Fast<a class="headerlink" href="#fail-fast" title="Link to this heading"></a></h4>
+<p>Exemple of a bugcheck for a critical programmer error:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">LmqiIsValidWorkspace</span><span class="p">(</span><span class="n">WorkspaceInternal</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">FALSE</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">   </span><span class="n">FAIL_FAST_HR_MSG</span><span class="p">(</span><span class="n">E_INVALIDARG</span><span class="p">,</span>
+<span class="w">                    </span><span class="s">&quot;Invalid compression workspace handle.&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Exemple of a bugcheck for a critical internal error (i.e. a condition
+that should never occur regardless of circumstances, and is therefore
+likely a bug that must be adressed):</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">LastEntry</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="k">nullptr</span><span class="p">)</span>
+<span class="w">      </span><span class="p">[[</span><span class="n">unlikely</span><span class="p">]]</span>
+<span class="p">{</span>
+<span class="w">      </span><span class="n">FAIL_FAST_HR_MSG</span><span class="p">(</span><span class="n">E_UNEXPECTED</span><span class="p">,</span>
+<span class="w">                       </span><span class="s">&quot;LastEntry should not be null.&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>There are approximately 150 locations across the codebase where LwMQ
+performs critical validations and would bugcheck on errors.</p>
+</section>
+<section id="tracing-and-logging">
+<h4>Tracing and Logging<a class="headerlink" href="#tracing-and-logging" title="Link to this heading"></a></h4>
+<p>Note that LwMQ uses the error tracing/logging and reporting
+macros provided by the <a class="reference external" href="https://github.com/microsoft/wil">Window Internal (or Implementation) Libraries (WIL)</a> to
+provide detailed error messages and context when a failure occurs,
+which can be invaluable for debugging and troubleshooting. Most errors have
+an associated message that provides succint details about the specific error
+condition, as illustrated above.</p>
+<p>LwMQ also makes <em>modest</em> use of the Windows TraceLogging facilities to log
+significant events which can be enabled and collected with tools such as
+<a class="reference external" href="https://learn.microsoft.com/en-us/windows-hardware/test/wpt/windows-performance-analyzer">Windows Performance Recorder (WPR) and Windows Performance Analyzer (WPA)</a>
+for in-depth analysis of the system’s behavior, or simply viewed in
+real-time with tools such as <a class="reference external" href="https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/traceview">TraceView</a>.</p>
+<p>The ETW provider GUID for the messaging component is:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span>
+<span class="c1">// &quot;api-lwmq-messaging&quot;</span>
+<span class="c1">//</span>
+<span class="c1">// {7da8eabe-76ce-556e-7a7e-63e75c6c78f5}</span>
+<span class="c1">//</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="debug-symbols">
+<h3>Debug Symbols<a class="headerlink" href="#debug-symbols" title="Link to this heading"></a></h3>
+<p>We publish debug symbols for all LwMQ binaries to our symbol server. Debugging
+tools can be configured to automatically retrieve our public symbols when debugging
+or profiling applications that use LwMQ.</p>
+<p>The symbol server URL is:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="nl">https</span><span class="p">:</span><span class="c1">//www.lwmq.net/symbols</span>
+</pre></div>
+</div>
+<p>There is no user-browsable content at that address but debugging tools know how to use it.</p>
+</section>
+<section id="exceptions">
+<h3>Exceptions<a class="headerlink" href="#exceptions" title="Link to this heading"></a></h3>
+<p>LwMQ does not use exceptions.</p>
+</section>
+<section id="telemetry">
+<h3>Telemetry<a class="headerlink" href="#telemetry" title="Link to this heading"></a></h3>
+<p>LwMQ does not emit telemetry.</p>
+</section>
 </section>
 <section id="architecture">
 <h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h2>
@@ -822,7 +941,25 @@ copies and kernel transitions.</p>
 <p>The diagram below shows a particular configuration where a channel
 has three input queues as an example. The queues are connected to the
 input Scheduler on their consumer end.</p>
-<p>The input scheduler is responsible for gathering messages from
+<pre  class="mermaid">
+        ---
+title: LwMQ Sender Side (Simplified)
+config:
+   theme: 'neutral'
+---
+
+graph
+   A(Input Queue 1) --&gt; F
+   B(Input Queue 2) --&gt; F
+   C(Input Queue N) --&gt; F(Input Scheduler)
+   F --&gt; G(Message Encoder)
+   G --&gt; H(Transport Buffer A)
+   G --&gt; I(Transport Buffer B)
+   G --&gt; J(Transport Buffer C)
+   H --&gt; L(Transport A)
+   I --&gt; M(Transport B)
+   J --&gt; N(Transport C)
+    </pre><p>The input scheduler is responsible for gathering messages from
 queues according to the queue’s priorities. The messages are
 sent to the message encoder in different manners: messages
 of various priorities can be interleaved and messages from
@@ -882,25 +1019,7 @@ for any reason.</p>
 <p>LwMQ solves all those problems and more, while providing
 best-in-industry performance and a simple API that can be learned
 and put to work on day one.</p>
-<pre  class="mermaid">
-        ---
-title: LwMQ Sender Side (Simplified)
-config:
-   theme: 'neutral'
----
-
-graph
-   A(Input Queue 1) --&gt; F
-   B(Input Queue 2) --&gt; F
-   C(Input Queue N) --&gt; F(Input Scheduler)
-   F --&gt; G(Message Encoder)
-   G --&gt; H(Transport Buffer A)
-   G --&gt; I(Transport Buffer B)
-   G --&gt; J(Transport Buffer C)
-   H --&gt; L(Transport A)
-   I --&gt; M(Transport B)
-   J --&gt; N(Transport C)
-    </pre></section>
+</section>
 <section id="receiver-block-diagram">
 <h3>Receiver Block Diagram<a class="headerlink" href="#receiver-block-diagram" title="Link to this heading"></a></h3>
 <p>On the receiving side, transports are serviced by threads that
@@ -932,9 +1051,32 @@ graph
 </section>
 <section id="getting-started">
 <h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
+<p>LwMQ is deployed in seconds using standard Windows Installer (MSI) packages,
+and can be used in any application by referencing the appropriate header
+files and linking against the provided libraries.</p>
+<section id="installation">
+<h3>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h3>
+<p>LwMQ ships in two distinct packages: the “Runtime” package,
+which contains the DLLs and other files needed to run applications
+that use LwMQ, and the “SDK” package which contains the header files,
+libraries, and other files needed to develop applications that use LwMQ.</p>
+<p>LwMQ is Datacenter and Host OS-ready: all LwMQ binaries and setup packages
+are <a class="reference external" href="https://learn.microsoft.com/en-us/windows-hardware/drivers/install/authenticode">digitally signed</a> with our DigiCert Extended Validation (EV) code
+signing certificate to ensure their authenticity and integrity with the
+higest level of trust.</p>
+<section id="runtime-package">
+<h4>Runtime Package<a class="headerlink" href="#runtime-package" title="Link to this heading"></a></h4>
 <blockquote>
-<div><p>TBD</p>
+<div><p>lwmq.setup.msi</p>
 </div></blockquote>
+</section>
+<section id="sdk-package">
+<h4>SDK Package<a class="headerlink" href="#sdk-package" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>lwmq.sdk.setup.msi</p>
+</div></blockquote>
+</section>
+</section>
 </section>
 <section id="samples">
 <h2>Samples<a class="headerlink" href="#samples" title="Link to this heading"></a></h2>
