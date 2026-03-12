@@ -440,6 +440,21 @@ The ETW provider GUID for the messaging component is:
    // {7da8eabe-76ce-556e-7a7e-63e75c6c78f5}
    //
 
+Debug Symbols
+^^^^^^^^^^^^^
+
+We publish debug symbols for all LwMQ binaries to our symbol server. Debugging
+tools can be configured to automatically retrieve our public symbols when debugging
+or profiling applications that use LwMQ.
+
+The symbol server URL is:
+
+.. code:: cpp
+
+   https://www.lwmq.net/symbols
+
+There is no user-browsable content at that address but debugging tools know how to use it.
+
 Exceptions
 ^^^^^^^^^^
 
