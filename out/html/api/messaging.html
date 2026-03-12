@@ -1,0 +1,1262 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LwMQ Messaging API &mdash; LwMQ 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=4b23a867" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="https://www.googletagmanager.com/gtag/js?id=G-VW7BZSSV48"></script>
+      <script src="../_static/ga.js?v=3f0458de"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="LwMQ Caching API" href="caching.html" />
+    <link rel="prev" title="LwMQ API Reference" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            LwMQ
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../guide/index.html">LwMQ User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">LwMQ API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#contents">Contents</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">LwMQ Messaging API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#c-and-c-header-file">C and C++ Header File</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#binaries">Binaries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Initialization and Termination</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#messages">Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">Channels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id9">Transports</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#posting-and-receiving">Posting and Receiving</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="caching.html">LwMQ Caching API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmented-cache.html">LwMQ Segmented Cache API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hashing.html">LwMQ Hashing API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="storage.html">LwMQ Storage API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="compression.html">LwMQ Compression API</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../transports/index.html">LwMQ Transports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About LwMQ</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">LwMQ</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">LwMQ API Reference</a></li>
+      <li class="breadcrumb-item active">LwMQ Messaging API</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/messaging.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="lwmq-messaging-api">
+<h1>LwMQ Messaging API<a class="headerlink" href="#lwmq-messaging-api" title="Link to this heading"></a></h1>
+<p>This section documents LwMQ’s core messaging APIs, which are transport-agnostic and form the basis for LwMQ’s messaging capabilities.</p>
+<p>These APIs allow applications to create messages, append data frames to messages, and post ad receive messages through communication channels.</p>
+<p>The messaging APIs are designed for high performance with high throughput and low latency through a DMA-first underlying architecture, making them suitable for a wide range of applications that require efficient ultra-high-performance message-based communication.</p>
+<section id="c-and-c-header-file">
+<h2>C and C++ Header File<a class="headerlink" href="#c-and-c-header-file" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;api-lwmq-messaging.h&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="binaries">
+<h2>Binaries<a class="headerlink" href="#binaries" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">api</span><span class="o">-</span><span class="n">lwmq</span><span class="o">-</span><span class="n">messaging</span><span class="mi">-1</span><span class="mf">-0.</span><span class="n">dll</span>
+</pre></div>
+</div>
+</section>
+<section id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">api</span><span class="o">-</span><span class="n">lwmq</span><span class="o">-</span><span class="n">heap</span><span class="mi">-1</span><span class="mf">-0.</span><span class="n">dll</span>
+<span class="n">api</span><span class="o">-</span><span class="n">lwmq</span><span class="o">-</span><span class="n">time</span><span class="mi">-1</span><span class="mf">-0.</span><span class="n">dll</span>
+<span class="n">api</span><span class="o">-</span><span class="n">lwmq</span><span class="o">-</span><span class="n">hash</span><span class="mi">-1</span><span class="mf">-0.</span><span class="n">dll</span>
+</pre></div>
+</div>
+</section>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<section id="types">
+<h3>Types<a class="headerlink" href="#types" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">PLMQ_CHANNEL</span>
+<span class="n">LMQ_CHANNELTYPE</span>
+<span class="n">LMQ_CHANNELROLE</span>
+<span class="n">LMQ_CHANNELCONTROLCODE</span>
+<span class="n">LMQ_RECEIVEQUEUETYPE</span>
+<span class="n">LMQ_SENDQUEUE</span>
+<span class="n">LMQ_SENDQUEUETYPE</span>
+<span class="n">LMQ_SENDQUEUEPRIORITY</span>
+<span class="n">LMQ_TRANSPORT</span>
+<span class="n">LMQ_TRANSPORTBUFFERLIMITS</span>
+<span class="n">LMQ_MESSAGE</span>
+<span class="n">LMQ_MESSAGECALLBACK</span>
+<span class="n">LMQ_MESSAGEFRAMEENUMHINT</span>
+</pre></div>
+</div>
+</section>
+<section id="initialization-and-termination">
+<h3>Initialization and Termination<a class="headerlink" href="#initialization-and-termination" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#define LMQ_CURRENT_API_VERSION MAKEWORD(1, 0)</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqInitialize</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">WORD</span><span class="w"> </span><span class="n">VersionRequested</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqTerminate</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">VOID</span>
+<span class="w">    </span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="channels">
+<h3>Channels<a class="headerlink" href="#channels" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
+<span class="nf">LmqCreateChannel</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_CHANNELTYPE</span><span class="w"> </span><span class="n">ChannelType</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLMQ_CHANNEL</span><span class="w"> </span><span class="n">Channel</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqOpenChannel</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_CHANNEL</span><span class="w"> </span><span class="n">Channel</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_CHANNELROLE</span><span class="w"> </span><span class="n">ChannelRole</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_RECEIVEQUEUETYPE</span><span class="w"> </span><span class="n">ReceiveQueueType</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LONG</span><span class="w"> </span><span class="n">ReceiveQueueCapacity</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqChannelControl</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_CHANNEL</span><span class="w"> </span><span class="n">Channel</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_CHANNELCONTROLCODE</span><span class="w"> </span><span class="n">ControlCode</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">InputBuffer</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ULONG</span><span class="w"> </span><span class="n">InputBufferLengthBytes</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">OutputBuffer</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ULONG</span><span class="w"> </span><span class="n">OutputBufferLengthBytes</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PULONG</span><span class="w"> </span><span class="n">BytesReturned</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqFlushChannel</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_CHANNEL</span><span class="w"> </span><span class="n">Channel</span><span class="p">,</span>
+<span class="w">    </span><span class="n">UINT32</span><span class="w"> </span><span class="n">TimeoutMs</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqCloseChannel</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_CHANNEL</span><span class="w"> </span><span class="n">Channel</span><span class="p">,</span>
+<span class="w">    </span><span class="n">UINT32</span><span class="w"> </span><span class="n">LingerTimeoutMs</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqDestroyChannel</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PLMQ_CHANNEL</span><span class="w"> </span><span class="n">Channel</span>
+<span class="w">    </span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="queues">
+<h3>Queues<a class="headerlink" href="#queues" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
+<span class="nf">LmqAddSendQueue</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_CHANNEL</span><span class="w"> </span><span class="n">Channel</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUETYPE</span><span class="w"> </span><span class="n">QueueType</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUEPRIORITY</span><span class="w"> </span><span class="n">QueuePriority</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LONG</span><span class="w"> </span><span class="n">Capacity</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLMQ_SENDQUEUE</span><span class="w"> </span><span class="n">SendQueue</span>
+<span class="w">    </span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="transports">
+<h3>Transports<a class="headerlink" href="#transports" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
+<span class="nf">LmqQueryTransportBufferLimits</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PCWSTR</span><span class="w"> </span><span class="n">TransportDescriptor</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLMQ_TRANSPORTBUFFERLIMITS</span><span class="w"> </span><span class="n">BufferLimits</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ULONG</span><span class="w"> </span><span class="n">BufferLimitsSizeBytes</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqAddTransport</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_CHANNEL</span><span class="w"> </span><span class="n">Channel</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCWSTR</span><span class="w"> </span><span class="n">TransportDescriptor</span><span class="p">,</span>
+<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">BufferSizeBytes</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LONG</span><span class="w"> </span><span class="n">MaxPendingSendBuffers</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LONG</span><span class="w"> </span><span class="n">MaxPendingReceiveBuffers</span><span class="p">,</span>
+<span class="w">    </span><span class="n">UINT32</span><span class="w"> </span><span class="n">CreationFlags</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLMQ_TRANSPORT</span><span class="w"> </span><span class="n">Transport</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqTransportControl</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_TRANSPORT</span><span class="w"> </span><span class="n">Transport</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ULONG</span><span class="w"> </span><span class="n">ControlCode</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">InputBuffer</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ULONG</span><span class="w"> </span><span class="n">InputBufferLengthBytes</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">OutputBuffer</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ULONG</span><span class="w"> </span><span class="n">OutputBufferLengthBytes</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PULONG</span><span class="w"> </span><span class="n">BytesReturned</span>
+<span class="w">    </span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="messages-frames">
+<h3>Messages &amp; Frames<a class="headerlink" href="#messages-frames" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
+<span class="nf">LmqCreateMessage</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">USHORT</span><span class="w"> </span><span class="n">FrameCountHint</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLMQ_MESSAGE</span><span class="w"> </span><span class="n">Message</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqCreateMessageRef</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_MESSAGE</span><span class="w"> </span><span class="n">Message</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLMQ_MESSAGE</span><span class="w"> </span><span class="n">Clone</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqAppendFrame</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_MESSAGE</span><span class="w"> </span><span class="n">Message</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
+<span class="w">    </span><span class="n">UINT64</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ULONG64</span><span class="w"> </span><span class="n">Timestamp</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqAppendStaticFrame</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_MESSAGE</span><span class="w"> </span><span class="n">Message</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
+<span class="w">    </span><span class="n">UINT64</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ULONG64</span><span class="w"> </span><span class="n">Timestamp</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqAppendExternalFrame</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_MESSAGE</span><span class="w"> </span><span class="n">Message</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
+<span class="w">    </span><span class="n">UINT64</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ULONG64</span><span class="w"> </span><span class="n">Timestamp</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLMQ_MESSAGECALLBACK</span><span class="w"> </span><span class="n">Callback</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">Context</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqGetFrameCount</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_MESSAGE</span><span class="w"> </span><span class="n">Message</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PUSHORT</span><span class="w"> </span><span class="n">FrameCount</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PUINT64</span><span class="w"> </span><span class="n">PayloadSizeBytes</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqGetFrameData</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_MESSAGE</span><span class="w"> </span><span class="n">Message</span><span class="p">,</span>
+<span class="w">    </span><span class="n">USHORT</span><span class="w"> </span><span class="n">FrameIndex</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">**</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PUINT64</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PULONG64</span><span class="w"> </span><span class="n">Timestamp</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLMQ_MESSAGEFRAMEENUMHINT</span><span class="w"> </span><span class="n">EnumHint</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqInitFrameEnumHint</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">_Pre_invalid_</span><span class="w"> </span><span class="n">PLMQ_MESSAGEFRAMEENUMHINT</span><span class="w"> </span><span class="n">EnumHint</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqQueryMaxInlineFrameSize</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PUSHORT</span><span class="w"> </span><span class="n">MaxInlineFrameSize</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqDestroyUnpostedMessage</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PLMQ_MESSAGE</span><span class="w"> </span><span class="n">Message</span>
+<span class="w">    </span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="send-and-receive">
+<h3>Send and Receive<a class="headerlink" href="#send-and-receive" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
+<span class="nf">LmqPostMessage</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUE</span><span class="w"> </span><span class="n">SendQueue</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLMQ_MESSAGE</span><span class="w"> </span><span class="n">Message</span><span class="p">,</span>
+<span class="w">    </span><span class="n">UINT32</span><span class="w"> </span><span class="n">TimeoutMs</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqPostMessageWithTag</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUE</span><span class="w"> </span><span class="n">SendQueue</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLMQ_MESSAGE</span><span class="w"> </span><span class="n">Message</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LONG_PTR</span><span class="w"> </span><span class="n">Tag</span><span class="p">,</span>
+<span class="w">    </span><span class="n">UINT32</span><span class="w"> </span><span class="n">TimeoutMs</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqReceiveMessage</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_CHANNEL</span><span class="w"> </span><span class="n">Channel</span><span class="p">,</span>
+<span class="w">    </span><span class="n">UINT32</span><span class="w"> </span><span class="n">TimeoutMs</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PUSHORT</span><span class="w"> </span><span class="n">FrameCount</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PUINT64</span><span class="w"> </span><span class="n">PayloadSizeBytes</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLMQ_MESSAGE</span><span class="w"> </span><span class="n">Message</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqDisposeReceivedMessage</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PLMQ_MESSAGE</span><span class="w"> </span><span class="n">Message</span>
+<span class="w">    </span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id1">
+<h2>Initialization and Termination<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<section id="macros">
+<h3>Macros<a class="headerlink" href="#macros" title="Link to this heading"></a></h3>
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.LMQ_CURRENT_API_VERSION">
+<span class="sig-name descname"><span class="n"><span class="pre">LMQ_CURRENT_API_VERSION</span></span></span><a class="headerlink" href="#c.LMQ_CURRENT_API_VERSION" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</section>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.LmqInitialize">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqInitialize</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">WORD</span></span><span class="w"> </span><span class="n"><span class="pre">VersionRequested</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqInitialize" title="Link to this definition"></a><br /></dt>
+<dd><p>Initializes LwMQ and allocates internal global ressources.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>VersionRequested</strong> – Pass the supplied LMQ_CURRENT_API_VERSION macro.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This function must be called before any other LwMQ function. Multiple calls are allowed but must be matched by a corresponding call to LmqTerminate().</p>
+</div>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.LmqTerminate">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqTerminate</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqTerminate" title="Link to this definition"></a><br /></dt>
+<dd><p>Shuts down LwMQ and deallocate internal ressources.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This function must be called once for each calls made to LmqInitialize().</p>
+</div>
+</dd></dl>
+
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;api-lwmq-messaging.h&gt;</span>
+
+<span class="n">HRESULT</span><span class="w"> </span><span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqInitialize</span><span class="p">(</span><span class="n">LMQ_CURRENT_API_VERSION</span><span class="p">);</span>
+
+<span class="c1">// ...</span>
+
+<span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqTerminate</span><span class="p">();</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="messages">
+<h2>Messages<a class="headerlink" href="#messages" title="Link to this heading"></a></h2>
+<p>Messages are structured entities composed of one or more data frames. The
+general philosophy is the messages belong to LwMQ and the application only holds
+references to messages, which are automatically freed by LwMQ once they are no
+longer needed. This design allows for efficient message handling and minimizes
+the risk of memory leaks or dangling pointers in the application.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span>
+<span class="c1">// General idea with most error checking</span>
+<span class="c1">// and details omitted for clarity.</span>
+<span class="c1">//</span>
+
+<span class="n">LMQ_MESSAGE</span><span class="w"> </span><span class="n">Message</span><span class="p">;</span>
+
+<span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqCreateMessage</span><span class="p">(</span><span class="n">LMQ_MESSAGEFRAMECOUNT_DEFAULT</span><span class="p">,</span>
+<span class="w">                      </span><span class="o">&amp;</span><span class="n">Message</span><span class="p">);</span>
+
+<span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqAppendFrame</span><span class="p">(</span><span class="n">Message</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">MessageContent</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">MessageSize</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">Timestamp</span><span class="p">);</span>
+
+<span class="c1">//</span>
+<span class="c1">// Queue the message for sending. After this call, the</span>
+<span class="c1">// application can&#39;t access the message anymore as the</span>
+<span class="c1">// ownership has been transferred to LwMQ, and it will</span>
+<span class="c1">// be asynchronously destroyed at some future point.</span>
+<span class="c1">//</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">FAILED</span><span class="p">(</span><span class="n">LmqPostMessage</span><span class="p">(</span><span class="n">SendQueue</span><span class="p">,</span>
+<span class="w">                          </span><span class="o">&amp;</span><span class="n">Message</span><span class="p">,</span>
+<span class="w">                          </span><span class="n">TimeoutMs</span><span class="p">)))</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="c1">// Messages that failed to post can be retried or</span>
+<span class="w">    </span><span class="c1">// must be destroyed to free their resources.</span>
+<span class="w">    </span><span class="c1">//</span>
+
+<span class="w">    </span><span class="n">LmqDestroyUnpostedMessage</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Message</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<section id="id2">
+<h3>Types<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<dl class="c type">
+<dt class="sig sig-object c" id="c.LMQ_MESSAGE">
+<span class="k"><span class="pre">type</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LMQ_MESSAGE</span></span></span><span class="p"><span class="pre">;</span></span><a class="headerlink" href="#c.LMQ_MESSAGE" title="Link to this definition"></a><br /></dt>
+<dd><p>An opaque message instance.</p>
+</dd></dl>
+
+</section>
+<section id="id3">
+<h3>Functions<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.LmqCreateMessage">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqCreateMessage</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">USHORT</span></span><span class="w"> </span><span class="n"><span class="pre">FrameCountHint</span></span>, <span class="n"><span class="pre">PLMQ_MESSAGE</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqCreateMessage" title="Link to this definition"></a><br /></dt>
+<dd><p>Creates a new message instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>FrameCountHint</strong> – A hint for the number of frames that will be added to the message. For most applications, pass LMQ_MESSAGEFRAMECOUNT_DEFAULT.</p></li>
+<li><p><strong>Message</strong> – A pointer to a variable that receives the created message instance.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The FrameCountHint value is indicative and does not represent a limit. LwMQ may optimize internal allocations knowing the number of frames that will be added to a message, but applications are not required to provide an accurate hint. Extremely performance-sensitive applications benefit from using single-frame messages, which is the default value used when passing LMQ_MESSAGEFRAMECOUNT_DEFAULT.</p>
+</div>
+</dd></dl>
+
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQ_MESSAGE</span><span class="w"> </span><span class="n">Message</span><span class="p">;</span>
+
+<span class="n">HRESULT</span><span class="w"> </span><span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqCreateMessage</span><span class="p">(</span><span class="n">LMQ_MESSAGEFRAMECOUNT_DEFAULT</span><span class="p">,</span>
+<span class="w">                              </span><span class="o">&amp;</span><span class="n">Message</span><span class="p">);</span>
+</pre></div>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.LmqCreateMessageRef">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqCreateMessageRef</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.LMQ_MESSAGE" title="LMQ_MESSAGE"><span class="n"><span class="pre">LMQ_MESSAGE</span></span></a><span class="w"> </span><span class="n"><span class="pre">Message</span></span>, <span class="n"><span class="pre">PLMQ_MESSAGE</span></span><span class="w"> </span><span class="n"><span class="pre">MessageRef</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqCreateMessageRef" title="Link to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Message</strong> – The message to create a reference from.</p></li>
+<li><p><strong>MessageRef</strong> – A pointer to a variable that receives the created message reference. The reference shares the same data frames as the original message and is independent of the original message’s lifetime.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Creating a message reference offers a way to send the same message through more than one communication channel. The normal behavior is the application returns ownership of the message to LwMQ when queuing them for sending. Since sending messages is asynchronous, the application cannot keep a reference to the message sent, as it will be destroyed asynchronously at some point in the future. Creating a message reference allows the application to send the original and retain a reference to be sent through another channel. Unsent references must be destroyed through LmqDestroyUnpostedMessage(). LwMQ takes care of reference counting and manages the lifetime of the messages handed back to it. Creating a message reference is a lightweight operation, as the reference shares the same data frames as the original message. The reference is independent of the original message’s lifetime, and can be safely used even after the original message has been sent and destroyed by LwMQ.</p>
+</div>
+</dd></dl>
+
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQ_MESSAGE</span><span class="w"> </span><span class="n">MessageRef</span><span class="p">;</span>
+
+<span class="n">HRESULT</span><span class="w"> </span><span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqCreateMessageRef</span><span class="p">(</span><span class="n">Message</span><span class="p">,</span>
+<span class="w">                                 </span><span class="o">&amp;</span><span class="n">MessageRef</span><span class="p">);</span>
+</pre></div>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.LmqAppendFrame">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqAppendFrame</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.LMQ_MESSAGE" title="LMQ_MESSAGE"><span class="n"><span class="pre">LMQ_MESSAGE</span></span></a><span class="w"> </span><span class="n"><span class="pre">Message</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">BYTE</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">Data</span></span>, <span class="n"><span class="pre">UINT64</span></span><span class="w"> </span><span class="n"><span class="pre">DataSize</span></span>, <span class="n"><span class="pre">ULONG64</span></span><span class="w"> </span><span class="n"><span class="pre">Timestamp</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqAppendFrame" title="Link to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Message</strong> – The message to append the frame to.</p></li>
+<li><p><strong>Data</strong> – A pointer to the frame data. The data is copied into the message and can be freed or reused by the caller after the function returns.</p></li>
+<li><p><strong>DataSize</strong> – The size of the frame data in bytes. Note that small payloads are copied “inline” without requiring additional internal memory allocation, therefore improving performance. Use LmqQueryMaxInlineFrameSize() to determine the maximum payload size that can be stored inline, if that is important for your application.</p></li>
+<li><p><strong>Timestamp</strong> – An optional timestamp associated with the frame, or one of three special values: LMQ_TIMESTAMP_NONE, LMQ_TIMESTAMP_USE_SYSTEMTIME, suitable for most applications, or LMQ_TIMESTAMP_USE_SYSTEMTIME_PRECISE for applications requiring the the highest possible level of precision (&lt;1 µs) at some performance expense.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If supplied explicitly, the timestamp must be specified in Windows NT time format: a 64-bit integer representing the number of 100-nanosecond intervals that have elapsed since January 1, 1601. All timestamps are in UTC format so they are not affected by changes in time zone or daylight saving time.</p>
+</div>
+</dd></dl>
+
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">HRESULT</span><span class="w"> </span><span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqAppendFrame</span><span class="p">(</span><span class="n">Message</span><span class="p">,</span>
+<span class="w">                            </span><span class="p">(</span><span class="n">BYTE</span><span class="o">*</span><span class="p">)</span><span class="s">&quot;Hello, World!&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// Copied.</span>
+<span class="w">                            </span><span class="mi">13</span><span class="p">,</span>
+<span class="w">                            </span><span class="n">LMQ_TIMESTAMP_NONE</span><span class="p">);</span>
+</pre></div>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.LmqAppendStaticFrame">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqAppendStaticFrame</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.LMQ_MESSAGE" title="LMQ_MESSAGE"><span class="n"><span class="pre">LMQ_MESSAGE</span></span></a><span class="w"> </span><span class="n"><span class="pre">Message</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">BYTE</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">Data</span></span>, <span class="n"><span class="pre">UINT64</span></span><span class="w"> </span><span class="n"><span class="pre">DataSize</span></span>, <span class="n"><span class="pre">ULONG64</span></span><span class="w"> </span><span class="n"><span class="pre">Timestamp</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqAppendStaticFrame" title="Link to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Message</strong> – The message to append the frame to.</p></li>
+<li><p><strong>Data</strong> – A pointer to the frame data. The data is not copied into the message and must remain valid for the lifetime of the communication channel to which the message will be queued, as well as the lifetime of any message references created from the message. Static frames are intended to send static data, for example a static string, or some static binary data outliving the lifespan of the communication channel. The data will be accessed asynchronously by LwMQ when sending messages, and the application must ensure that the data remains valid until the message is sent and all message references are destroyed, which is guaranteed to be the case if the data is static or global. Static frames are not copied into the message, therefore they can be more efficient for sending static data that is reused across multiple messages, for example a common header or a common payload.</p></li>
+<li><p><strong>DataSize</strong> – The size of the frame data in bytes. The data is not copied into the message.</p></li>
+<li><p><strong>Timestamp</strong> – An optional timestamp associated with the frame. See the Timestamp parameter of LmqAppendFrame() for important details.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">HRESULT</span><span class="w"> </span><span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqAppendStaticFrame</span><span class="p">(</span><span class="n">Message</span><span class="p">,</span>
+<span class="w">                                  </span><span class="p">(</span><span class="n">BYTE</span><span class="o">*</span><span class="p">)</span><span class="s">&quot;Hello, World!&quot;</span><span class="p">,</span>
+<span class="w">                                  </span><span class="mi">13</span><span class="p">,</span>
+<span class="w">                                  </span><span class="n">LMQ_TIMESTAMP_USE_SYSTEMTIME</span><span class="p">);</span>
+</pre></div>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.LmqAppendExternalFrame">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqAppendExternalFrame</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.LMQ_MESSAGE" title="LMQ_MESSAGE"><span class="n"><span class="pre">LMQ_MESSAGE</span></span></a><span class="w"> </span><span class="n"><span class="pre">Message</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">BYTE</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">Data</span></span>, <span class="n"><span class="pre">UINT64</span></span><span class="w"> </span><span class="n"><span class="pre">DataSize</span></span>, <span class="n"><span class="pre">ULONG64</span></span><span class="w"> </span><span class="n"><span class="pre">Timestamp</span></span>, <span class="n"><span class="pre">PLMQ_MESSAGECALLBACK</span></span><span class="w"> </span><span class="n"><span class="pre">Callback</span></span>, <span class="n"><span class="pre">PVOID</span></span><span class="w"> </span><span class="n"><span class="pre">Context</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqAppendExternalFrame" title="Link to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Message</strong> – The message to append the frame to.</p></li>
+<li><p><strong>Data</strong> – A pointer to the frame data. The data is not copied into the message and must remain valid until the callback is invoked with the RELEASE_DATA reason.</p></li>
+<li><p><strong>DataSize</strong> – The size of the frame data in bytes. The data is not copied into the message.</p></li>
+<li><p><strong>Timestamp</strong> – An optional timestamp associated with the frame. See the Timestamp parameter of LmqAppendFrame() for important details.</p></li>
+<li><p><strong>Callback</strong> – A callback function that will be invoked when the message is no longer needed by the communication channel. The callback is responsible for freeing or otherwise releasing the frame data. The callback is also called with a reason of ACQUIRE_DATA when the message is being prepared for sending, allowing the application to perform any necessary preparations on the data before it is sent, for example pinning memory or flushing CPU caches. The callback will be called at exactly once with a reason of ACQUIRE_DATA, and exactly once with a reason of RELEASE_DATA.</p></li>
+<li><p><strong>Context</strong> – An optional user-defined context pointer or value that will be passed to the callback function.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span>
+<span class="c1">// From &lt;api-lwmq-messaging.h&gt;</span>
+<span class="c1">//</span>
+
+<span class="k">typedef</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="nc">_LQM_MESSAGECALLBACKREASON</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">ACQUIRE_DATA</span><span class="p">,</span>
+<span class="w">    </span><span class="n">RELEASE_DATA</span>
+<span class="p">}</span>
+<span class="n">LQM_MESSAGECALLBACKREASON</span><span class="p">;</span>
+
+<span class="k">typedef</span><span class="w"> </span><span class="n">HRESULT</span><span class="p">(</span><span class="n">REENTRANT_CALLBACK</span><span class="o">*</span><span class="w"> </span><span class="n">PLMQ_MESSAGECALLBACK</span><span class="p">)</span><span class="w"> </span><span class="p">(</span>
+<span class="w">                </span><span class="n">LQM_MESSAGECALLBACKREASON</span><span class="w"> </span><span class="n">Reason</span><span class="p">,</span>
+<span class="w">                </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
+<span class="w">                </span><span class="n">UINT64</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
+<span class="w">                </span><span class="n">PVOID</span><span class="w"> </span><span class="n">Context</span><span class="p">);</span>
+
+<span class="c1">//</span>
+<span class="c1">// Example of appending an external frame with a callback to</span>
+<span class="c1">// release the data when the message is no longer needed by</span>
+<span class="c1">// the communication channel.</span>
+<span class="c1">//</span>
+
+<span class="n">HRESULT</span><span class="w"> </span><span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqAppendExternalFrame</span><span class="p">(</span><span class="n">Message</span><span class="p">,</span>
+<span class="w">                                    </span><span class="n">DataBuffer</span><span class="p">,</span>
+<span class="w">                                    </span><span class="n">DataBufferSizeBytes</span><span class="p">,</span>
+<span class="w">                                    </span><span class="n">LMQ_TIMESTAMP_NONE</span><span class="p">,</span>
+<span class="w">                                    </span><span class="n">CallbackFunction</span><span class="p">,</span>
+<span class="w">                                    </span><span class="n">CallbackContext</span><span class="p">);</span>
+</pre></div>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.LmqGetFrameCount">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqGetFrameCount</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.LMQ_MESSAGE" title="LMQ_MESSAGE"><span class="n"><span class="pre">LMQ_MESSAGE</span></span></a><span class="w"> </span><span class="n"><span class="pre">Message</span></span>, <span class="n"><span class="pre">PUSHORT</span></span><span class="w"> </span><span class="n"><span class="pre">FrameCount</span></span>, <span class="n"><span class="pre">PUINT64</span></span><span class="w"> </span><span class="n"><span class="pre">PayloadSizeBytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqGetFrameCount" title="Link to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Message</strong> – The message to query.</p></li>
+<li><p><strong>FrameCount</strong> – A pointer to a variable that receives the number of frames in the message.</p></li>
+<li><p><strong>PayloadSizeBytes</strong> – An optional pointer to a variable that receives the total size of all frame payloads in bytes.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">USHORT</span><span class="w"> </span><span class="n">FrameCount</span><span class="p">;</span>
+<span class="n">UINT64</span><span class="w"> </span><span class="n">PayloadSizeBytes</span><span class="p">;</span>
+
+<span class="n">HRESULT</span><span class="w"> </span><span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqGetFrameCount</span><span class="p">(</span><span class="n">Message</span><span class="p">,</span>
+<span class="w">                              </span><span class="o">&amp;</span><span class="n">FrameCount</span><span class="p">,</span>
+<span class="w">                              </span><span class="o">&amp;</span><span class="n">PayloadSizeBytes</span><span class="p">);</span>
+</pre></div>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.LmqGetFrameData">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqGetFrameData</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.LMQ_MESSAGE" title="LMQ_MESSAGE"><span class="n"><span class="pre">LMQ_MESSAGE</span></span></a><span class="w"> </span><span class="n"><span class="pre">Message</span></span>, <span class="n"><span class="pre">USHORT</span></span><span class="w"> </span><span class="n"><span class="pre">FrameIndex</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">BYTE</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">Data</span></span>, <span class="n"><span class="pre">PUINT64</span></span><span class="w"> </span><span class="n"><span class="pre">DataSize</span></span>, <span class="n"><span class="pre">PULONG64</span></span><span class="w"> </span><span class="n"><span class="pre">Timestamp</span></span>, <span class="n"><span class="pre">PLMQ_MESSAGEFRAMEENUMHINT</span></span><span class="w"> </span><span class="n"><span class="pre">EnumHint</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqGetFrameData" title="Link to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Message</strong> – The message to query.</p></li>
+<li><p><strong>FrameIndex</strong> – The zero-based index of the frame to query.</p></li>
+<li><p><strong>Data</strong> – A pointer to a variable that receives a pointer to the frame data wthin the message. The data is read-only and owned by the message. It must not be modified or freed by the caller.</p></li>
+<li><p><strong>DataSize</strong> – A pointer to a variable that receives the size of the frame data in bytes.</p></li>
+<li><p><strong>Timestamp</strong> – An optional pointer to a variable that receives the timestamp associated with the frame. The value is zero if no timestamp was associated with the frame. See the Timestamp parameter of LmqAppendFrame() for important details.</p></li>
+<li><p><strong>EnumHint</strong> – An optional pointer to an enumeration hint structure that can be used to optimize enumeration of multiple frames in a message. If supplied, the caller must initialize the hint via LmqInitFrameEnumHint(). The enumeration hint is valid for all subsequent calls to LmqGetFrameData() for the same message until either the message is destroyed or LmqInitFrameEnumHint() is called again for the same enumeration hint structure.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Data</span><span class="p">;</span>
+<span class="n">UINT64</span><span class="w"> </span><span class="n">DataSizeBytes</span><span class="p">;</span>
+<span class="n">ULONG64</span><span class="w"> </span><span class="n">Timestamp</span><span class="p">;</span>
+
+<span class="n">HRESULT</span><span class="w"> </span><span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqGetFrameData</span><span class="p">(</span><span class="n">Message</span><span class="p">,</span>
+<span class="w">                             </span><span class="n">FrameIndex</span><span class="p">,</span>
+<span class="w">                             </span><span class="o">&amp;</span><span class="n">Data</span><span class="p">,</span>
+<span class="w">                             </span><span class="o">&amp;</span><span class="n">DataSizeBytes</span><span class="p">,</span>
+<span class="w">                             </span><span class="o">&amp;</span><span class="n">Timestamp</span><span class="p">,</span>
+<span class="w">                             </span><span class="k">nullptr</span><span class="p">);</span><span class="w"> </span><span class="c1">// Hint not used.</span>
+</pre></div>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.LmqInitFrameEnumHint">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqInitFrameEnumHint</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">PLMQ_MESSAGEFRAMEENUMHINT</span></span><span class="w"> </span><span class="n"><span class="pre">EnumHint</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqInitFrameEnumHint" title="Link to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>EnumHint</strong> – A pointer to an opaque enumeration hint structure to initialize.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Data</span><span class="p">;</span>
+<span class="n">UINT64</span><span class="w"> </span><span class="n">DataSizeBytes</span><span class="p">;</span>
+<span class="n">ULONG64</span><span class="w"> </span><span class="n">Timestamp</span><span class="p">;</span>
+<span class="n">LMQ_MESSAGEFRAMEENUMHINT</span><span class="w"> </span><span class="n">EnumHint</span><span class="p">;</span>
+
+<span class="n">HRESULT</span><span class="w"> </span><span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqInitFrameEnumHint</span><span class="p">(</span><span class="o">&amp;</span><span class="n">EnumHint</span><span class="p">);</span>
+
+<span class="c1">// ...</span>
+
+<span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqGetFrameData</span><span class="p">(</span><span class="n">Message</span><span class="p">,</span>
+<span class="w">                     </span><span class="n">FrameIndex</span><span class="p">,</span>
+<span class="w">                     </span><span class="o">&amp;</span><span class="n">Data</span><span class="p">,</span>
+<span class="w">                     </span><span class="o">&amp;</span><span class="n">DataSizeBytes</span><span class="p">,</span>
+<span class="w">                     </span><span class="o">&amp;</span><span class="n">Timestamp</span><span class="p">,</span>
+<span class="w">                     </span><span class="o">&amp;</span><span class="n">EnumHint</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The use of an enumeration hint is optional but recommended for performance reasons when enumerating multiple frames in a message with many frames. Moreover, the performance is optimal when accessing frames in monotonic increasing order.</p>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.LmqQueryMaxInlineFrameSize">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqQueryMaxInlineFrameSize</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">PUSHORT</span></span><span class="w"> </span><span class="n"><span class="pre">MaxInlineFrameSize</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqQueryMaxInlineFrameSize" title="Link to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>MaxInlineFrameSize</strong> – A pointer to a variable that receives the maximum frame payload size in bytes that can be stored “inline” within the message without requiring additional internal memory allocation.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The value is indicative and does not represent a limit. The value is static and depends on LwMQ’s build, therefore you only need to call this function once per application lifetime. Applications that are extremely performance-sensitive benefit from keeping their data frame’s payloads at or below this size, as well as indicating the expected number of frames they intend to add to a message upon message creation.</p>
+</div>
+</dd></dl>
+
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">USHORT</span><span class="w"> </span><span class="n">MaxInlineFrameSizeBytes</span><span class="p">;</span>
+
+<span class="n">HRESULT</span><span class="w"> </span><span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqQueryMaxInlineFrameSize</span><span class="p">(</span><span class="o">&amp;</span><span class="n">MaxInlineFrameSizeBytes</span><span class="p">);</span>
+</pre></div>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.LmqDestroyUnpostedMessage">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqDestroyUnpostedMessage</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">PLMQ_MESSAGE</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqDestroyUnpostedMessage" title="Link to this definition"></a><br /></dt>
+<dd><p>Destroys a message that was created but not sent. This function is only necessary if the message (or message reference) was created but will not be sent, for example because the application encountered an error after creating the message but before sending it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Message</strong> – A pointer to the message to destroy. The pointer is set to NULL before the function returns.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Messages that are successfully posted (queued for sending) do not need to be explicitly destroyed, as they are automatically destroyed by LwMQ once they are no longer needed. However, if a message or message reference was created but will not be sent, for example because the application encountered an error after creating the message or reference but before sending it, then this function must be called to free the resources associated with the message, and the message or reference itself.</p>
+</div>
+</dd></dl>
+
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQ_MESSAGE</span><span class="w"> </span><span class="n">Message</span><span class="p">;</span>
+
+<span class="n">HRESULT</span><span class="w"> </span><span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqCreateMessage</span><span class="p">(</span><span class="n">LMQ_MESSAGEFRAMECOUNT_DEFAULT</span><span class="p">,</span>
+<span class="w">                              </span><span class="o">&amp;</span><span class="n">Message</span><span class="p">);</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">SUCCEEDED</span><span class="p">(</span><span class="n">hr</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="c1">// The message has been successfuly created but</span>
+<span class="w">    </span><span class="c1">// an error occured afterward such as you could</span>
+<span class="w">    </span><span class="c1">// not acquire the data to send, or you changed</span>
+<span class="w">    </span><span class="c1">// your mind about sending the message.</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="c1">// In this case you must destroy the message to</span>
+<span class="w">    </span><span class="c1">// free its memory resources, since the message</span>
+<span class="w">    </span><span class="c1">// will not be handed out to LwMQ and thus will</span>
+<span class="w">    </span><span class="c1">// not be automatically destroyed.</span>
+<span class="w">    </span><span class="c1">//</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">SOME_ERROR_CONDITION</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//</span>
+<span class="w">        </span><span class="c1">// The message that will never be sent.</span>
+<span class="w">        </span><span class="c1">//</span>
+
+<span class="w">        </span><span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqDestroyUnpostedMessage</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Message</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id4">
+<h2>Channels<a class="headerlink" href="#id4" title="Link to this heading"></a></h2>
+<section id="id5">
+<h3>Types<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<dl class="c type">
+<dt class="sig sig-object c" id="c.PLMQ_CHANNEL">
+<span class="k"><span class="pre">type</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PLMQ_CHANNEL</span></span></span><a class="headerlink" href="#c.PLMQ_CHANNEL" title="Link to this definition"></a><br /></dt>
+<dd><p>An opaque channel instance.</p>
+</dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv415LMQ_CHANNELTYPE">
+<span id="_CPPv315LMQ_CHANNELTYPE"></span><span id="_CPPv215LMQ_CHANNELTYPE"></span><span id="LMQ_CHANNELTYPE"></span><span class="k"><span class="pre">type</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LMQ_CHANNELTYPE</span></span></span><a class="headerlink" href="#_CPPv415LMQ_CHANNELTYPE" title="Link to this definition"></a><br /></dt>
+<dd><p>An enumerated type representing the type of a communication channel.</p>
+</dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv415LMQ_CHANNELROLE">
+<span id="_CPPv315LMQ_CHANNELROLE"></span><span id="_CPPv215LMQ_CHANNELROLE"></span><span id="LMQ_CHANNELROLE"></span><span class="k"><span class="pre">type</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LMQ_CHANNELROLE</span></span></span><a class="headerlink" href="#_CPPv415LMQ_CHANNELROLE" title="Link to this definition"></a><br /></dt>
+<dd><p>An enumerated type representing the role of a communication channel once opened.</p>
+</dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv420LMQ_RECEIVEQUEUETYPE">
+<span id="_CPPv320LMQ_RECEIVEQUEUETYPE"></span><span id="_CPPv220LMQ_RECEIVEQUEUETYPE"></span><span id="LMQ_RECEIVEQUEUETYPE"></span><span class="k"><span class="pre">type</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LMQ_RECEIVEQUEUETYPE</span></span></span><a class="headerlink" href="#_CPPv420LMQ_RECEIVEQUEUETYPE" title="Link to this definition"></a><br /></dt>
+<dd><p>An enumerated type representing the type of receive queue to use for incoming messages when adding one or more transports as receivers.</p>
+</dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv422LMQ_CHANNELCONTROLCODE">
+<span id="_CPPv322LMQ_CHANNELCONTROLCODE"></span><span id="_CPPv222LMQ_CHANNELCONTROLCODE"></span><span id="LMQ_CHANNELCONTROLCODE"></span><span class="k"><span class="pre">type</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LMQ_CHANNELCONTROLCODE</span></span></span><a class="headerlink" href="#_CPPv422LMQ_CHANNELCONTROLCODE" title="Link to this definition"></a><br /></dt>
+<dd><p>An enumerated type representing the control codes for performing a control operation on a communication channel.</p>
+</dd></dl>
+
+</section>
+<section id="id6">
+<h3>Functions<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.LmqCreateChannel">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqCreateChannel</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">LMQ_CHANNELTYPE</span></span><span class="w"> </span><span class="n"><span class="pre">ChannelType</span></span>, <a class="reference internal" href="#c.PLMQ_CHANNEL" title="PLMQ_CHANNEL"><span class="n"><span class="pre">PLMQ_CHANNEL</span></span></a><span class="w"> </span><span class="n"><span class="pre">Channel</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqCreateChannel" title="Link to this definition"></a><br /></dt>
+<dd><p>Creates a new communication channel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ChannelType</strong> – The type of the communication channel to create.</p></li>
+<li><p><strong>Channel</strong> – A pointer to a variable that receives the created channel instance.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQ_CHANNEL</span><span class="w"> </span><span class="n">Channel</span><span class="p">;</span>
+
+<span class="n">HRESULT</span><span class="w"> </span><span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqCreateChannel</span><span class="p">(</span><span class="n">LMQ_CHANNELTYPE_ONE_TO_ONE</span><span class="p">,</span>
+<span class="w">                              </span><span class="o">&amp;</span><span class="n">Channel</span><span class="p">);</span>
+</pre></div>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.LmqOpenChannel">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqOpenChannel</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">LMQ_CHANNEL</span></span><span class="w"> </span><span class="n"><span class="pre">Channel</span></span>, <span class="n"><span class="pre">LMQ_CHANNELROLE</span></span><span class="w"> </span><span class="n"><span class="pre">ChannelRole</span></span>, <span class="n"><span class="pre">LMQ_RECEIVEQUEUETYPE</span></span><span class="w"> </span><span class="n"><span class="pre">ReceiveQueueType</span></span>, <span class="n"><span class="pre">LONG</span></span><span class="w"> </span><span class="n"><span class="pre">ReceiveQueueCapacity</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqOpenChannel" title="Link to this definition"></a><br /></dt>
+<dd><p>Opens a communication channel for sending or receiving messages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Channel</strong> – The communication channel to open.</p></li>
+<li><p><strong>ChannelRole</strong> – The role that the channel will play once opened, either server or client. While there is no proper server or client in LwMQ, you can think of the server as the side that binds and listens, and the client as the side who connects.</p></li>
+<li><p><strong>ReceiveQueueType</strong> – If the channel has any transport that can receive data, the type of receive queue to use for incoming messages. If the channel has multiple transports that can receive data, they will all share the same receive queue. This parameter must be LMQ_RECEIVEQUEUETYPE_NA if the channel has no transport that can receive data.</p></li>
+<li><p><strong>ReceiveQueueCapacity</strong> – If the channel has any transport that can receive data and the receive queue type is one of the bounded types, the maximum number of messages that can be queued for receiving at any given time. This parameter must be zero if the channel does not have a bounded receive queue or if the channel has no transport that can receive data.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Transports must be added before the channel is opened, and cannot be added once the channel is opened. The channel will not be able to be opened until at least one transport has been added. All parameters must be consistent. For example you must indicate a queue type if any transport can receive, you can only indicate a capacity only if the queue is bounded, etc.</p>
+</div>
+</dd></dl>
+
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span>
+<span class="c1">// Create channel, add transport, add send</span>
+<span class="c1">// queue if needed, then open the channel.</span>
+<span class="c1">//</span>
+
+<span class="n">HRESULT</span><span class="w"> </span><span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqOpenChannel</span><span class="p">(</span><span class="n">Channel</span><span class="p">,</span>
+<span class="w">                            </span><span class="n">LMQ_CHANNELROLE_SERVER</span><span class="p">,</span>
+<span class="w">                            </span><span class="n">LMQ_RECEIVEQUEUETYPE_MONOCONSUMER_UNBOUNDED</span><span class="p">,</span>
+<span class="w">                            </span><span class="n">LMQ_QUEUECAPACITY_UNBOUNDED</span><span class="p">);</span>
+</pre></div>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.LmqChannelControl">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqChannelControl</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">LMQ_CHANNEL</span></span><span class="w"> </span><span class="n"><span class="pre">Channel</span></span>, <span class="n"><span class="pre">LMQ_CHANNELCONTROLCODE</span></span><span class="w"> </span><span class="n"><span class="pre">ControlCode</span></span>, <span class="n"><span class="pre">PVOID</span></span><span class="w"> </span><span class="n"><span class="pre">InputBuffer</span></span>, <span class="n"><span class="pre">ULONG</span></span><span class="w"> </span><span class="n"><span class="pre">InputBufferLengthBytes</span></span>, <span class="n"><span class="pre">PVOID</span></span><span class="w"> </span><span class="n"><span class="pre">OutputBuffer</span></span>, <span class="n"><span class="pre">ULONG</span></span><span class="w"> </span><span class="n"><span class="pre">OutputBufferLengthBytes</span></span>, <span class="n"><span class="pre">PULONG</span></span><span class="w"> </span><span class="n"><span class="pre">BytesReturned</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqChannelControl" title="Link to this definition"></a><br /></dt>
+<dd><p>Performs a control operation on a communication channel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Channel</strong> – The communication channel to perform the control operation on.</p></li>
+<li><p><strong>ControlCode</strong> – The control code representing the control operation to perform.</p></li>
+<li><p><strong>InputBuffer</strong> – An optional pointer to a buffer containing input data for the control operation.</p></li>
+<li><p><strong>InputBufferLengthBytes</strong> – The size of the input buffer in bytes.</p></li>
+<li><p><strong>OutputBuffer</strong> – An optional pointer to a buffer that receives output data from the control operation.</p></li>
+<li><p><strong>OutputBufferLengthBytes</strong> – The size of the output buffer in bytes.</p></li>
+<li><p><strong>BytesReturned</strong> – An optional pointer to a variable that receives the size of the data returned in the output buffer in bytes.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">HRESULT</span><span class="w"> </span><span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqChannelControl</span><span class="p">(</span><span class="n">Channel</span><span class="p">,</span>
+<span class="w">                               </span><span class="n">ControlCode</span><span class="p">,</span>
+<span class="w">                               </span><span class="n">InputBuffer</span><span class="p">,</span>
+<span class="w">                               </span><span class="n">InputBufferLengthBytes</span><span class="p">,</span>
+<span class="w">                               </span><span class="n">OutputBuffer</span><span class="p">,</span>
+<span class="w">                               </span><span class="n">OutputBufferLengthBytes</span><span class="p">,</span>
+<span class="w">                               </span><span class="o">&amp;</span><span class="n">BytesReturned</span><span class="p">);</span>
+</pre></div>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.LmqFlushChannel">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqFlushChannel</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">LMQ_CHANNEL</span></span><span class="w"> </span><span class="n"><span class="pre">Channel</span></span>, <span class="n"><span class="pre">UINT32</span></span><span class="w"> </span><span class="n"><span class="pre">TimeoutMs</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqFlushChannel" title="Link to this definition"></a><br /></dt>
+<dd><p>Flushes a communication channel, ensuring that all pending messages are sent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Channel</strong> – The communication channel to flush.</p></li>
+<li><p><strong>TimeoutMs</strong> – The maximum time to wait for the flush operation to complete, in milliseconds. A value of INFINITE can be used to wait indefinitely.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This function blocks until all pending messages are sent, or until the specified timeout elapses. If the flush operation does not complete within the specified timeout, the function returns a timeout error code, but any pending messages or send buffers will still be processed, assuming the communication link is still active. You can call this function periodically when sending messages at a sustained rapid pace through an unbounded queue, if message transport or processing is not fast enough on the other side of the channel, which causes the number of queued messages on the sending side to keep growing. Flushing the channel allows the application to apply backpressure and avoid excessive memory usage. The timeout is not necessarily millisecond-accurate as the thread can enter a sleeping state while waiting for the channel to be flushed.</p>
+</div>
+</dd></dl>
+
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span>
+<span class="c1">// Wait up to 1 second for the channel to be flushed.</span>
+<span class="c1">//</span>
+
+<span class="n">HRESULT</span><span class="w"> </span><span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqFlushChannel</span><span class="p">(</span><span class="n">Channel</span><span class="p">,</span>
+<span class="w">                             </span><span class="mi">1000</span><span class="p">);</span>
+</pre></div>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.LmqCloseChannel">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqCloseChannel</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">LMQ_CHANNEL</span></span><span class="w"> </span><span class="n"><span class="pre">Channel</span></span>, <span class="n"><span class="pre">UINT32</span></span><span class="w"> </span><span class="n"><span class="pre">LingerTimeoutMs</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqCloseChannel" title="Link to this definition"></a><br /></dt>
+<dd><p>Closes a communication channel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Channel</strong> – The communication channel to close.</p></li>
+<li><p><strong>LingerTimeoutMs</strong> – The maximum time to wait for any pending messages to be sent before forcefully closing the channel, in milliseconds. A value of INFINITE can be used to wait indefinitely.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If LingerTimeoutMs &gt; 0 the function blocks until all pending messages are sent and all received messages are processed by the applicationbefore closing the channel. If the flush operation does not complete within the LingerTimeoutMs time, the channel is forcefully closed anyway. The timeout is not necessarily millisecond-accurate as the thread can enter a sleeping state while waiting for the channel to be flushed.</p>
+</div>
+</dd></dl>
+
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span>
+<span class="c1">// Wait up to 1 second for any queued messages</span>
+<span class="c1">// to be sent before closing the channel.</span>
+<span class="c1">//</span>
+
+<span class="n">HRESULT</span><span class="w"> </span><span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqCloseChannel</span><span class="p">(</span><span class="n">Channel</span><span class="p">,</span>
+<span class="w">                             </span><span class="mi">1000</span><span class="p">);</span>
+</pre></div>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.LmqDestroyChannel">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqDestroyChannel</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.PLMQ_CHANNEL" title="PLMQ_CHANNEL"><span class="n"><span class="pre">PLMQ_CHANNEL</span></span></a><span class="w"> </span><span class="n"><span class="pre">Channel</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqDestroyChannel" title="Link to this definition"></a><br /></dt>
+<dd><p>Destroys a communication channel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Channel</strong> – A pointer to the communication channel to destroy.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">HRESULT</span><span class="w"> </span><span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqDestroyChannel</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Channel</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="id7">
+<h3>Types<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<dl class="c type">
+<dt class="sig sig-object c" id="c.LMQ_SENDQUEUE">
+<span class="k"><span class="pre">type</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LMQ_SENDQUEUE</span></span></span><a class="headerlink" href="#c.LMQ_SENDQUEUE" title="Link to this definition"></a><br /></dt>
+<dd><p>An opaque send queue instance.</p>
+</dd></dl>
+
+<dl class="c type">
+<dt class="sig sig-object c" id="c.LMQ_SENDQUEUETYPE">
+<span class="k"><span class="pre">type</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LMQ_SENDQUEUETYPE</span></span></span><a class="headerlink" href="#c.LMQ_SENDQUEUETYPE" title="Link to this definition"></a><br /></dt>
+<dd><p>An enumerated type representing the type of a send queue.</p>
+</dd></dl>
+
+<dl class="c type">
+<dt class="sig sig-object c" id="c.LMQ_SENDQUEUEPRIORITY">
+<span class="k"><span class="pre">type</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LMQ_SENDQUEUEPRIORITY</span></span></span><a class="headerlink" href="#c.LMQ_SENDQUEUEPRIORITY" title="Link to this definition"></a><br /></dt>
+<dd><p>An enumerated type representing the priority of a send queue relative to other send queues on the same channel.</p>
+</dd></dl>
+
+</section>
+<section id="id8">
+<h3>Functions<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.LmqAddSendQueue">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqAddSendQueue</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">LMQ_CHANNEL</span></span><span class="w"> </span><span class="n"><span class="pre">Channel</span></span>, <a class="reference internal" href="#c.LMQ_SENDQUEUETYPE" title="LMQ_SENDQUEUETYPE"><span class="n"><span class="pre">LMQ_SENDQUEUETYPE</span></span></a><span class="w"> </span><span class="n"><span class="pre">QueueType</span></span>, <a class="reference internal" href="#c.LMQ_SENDQUEUEPRIORITY" title="LMQ_SENDQUEUEPRIORITY"><span class="n"><span class="pre">LMQ_SENDQUEUEPRIORITY</span></span></a><span class="w"> </span><span class="n"><span class="pre">QueuePriority</span></span>, <span class="n"><span class="pre">LONG</span></span><span class="w"> </span><span class="n"><span class="pre">Capacity</span></span>, <span class="n"><span class="pre">PLMQ_SENDQUEUE</span></span><span class="w"> </span><span class="n"><span class="pre">SendQueue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqAddSendQueue" title="Link to this definition"></a><br /></dt>
+<dd><p>Adds a send queue to a communication channel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Channel</strong> – The communication channel to add the send queue to.</p></li>
+<li><p><strong>QueueType</strong> – The type of the send queue to add.</p></li>
+<li><p><strong>QueuePriority</strong> – The priority of the send queue relative to other send queues on the same channel. This parameter is only relevant if the channel has multiple send queues. For most use cases, pass LMQ_SENDQUEUEPRIORITY_NORMAL.</p></li>
+<li><p><strong>Capacity</strong> – The maximum number of messages that can be queued for sending at any given time in the send queue, provided the queue type is one of the bounded types. This parameter must be zero if the queue type is unbounded.</p></li>
+<li><p><strong>SendQueue</strong> – A pointer to a variable that receives the created send queue instance.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A channel can have multiple send queues, but only one receive queue. Transports are added to the channel, and messages are sent through a specific send queue on the channel. Each message is sent though each sending transport in the channel. The send queue priority is used to determine the order in which messages are sent when there are multiple send queues on the same channel. Messages queued on higher priority send queues tend to be sent before messages queued on lower priority send queues, but LwMQ uses a weigthed round-robin scheduling algorithm to ensure some fairness among send queues. Two special priorities are not subjected to the prioritized scheduling: LMQ_SENDQUEUEPRIORITY_TIME_CRITICAL and LMQ_SENDQUEUEPRIORITY_IDLE. All pending messages queued on a LMQ_SENDQUEUEPRIORITY_TIME_CRITICAL send queue are always sent before messages on all other priority levels, possibly starving other queues, and messages queued on a LMQ_SENDQUEUEPRIORITY_IDLE send queue are always sent after all other messages, possibly getting starved. The two extreme priorities are useful for applications that need to send some messages with very low latency, for example to trigger some action on the receiving side, or to send some messages very low importance, for example some telemetry data that is nice to have on the receiving side but not worth delaying the delivery of other messages. Messages at the same priority are sent in order. Messages can capture the timestamp at which they were posted (queued for sending), which is useful for example for progress messages where the recipient can compute accurate rates based on the queuing time and not the reception time, which is subject to queuing latencies induced by traffic congestions or interruptions, and fluctuations in the actual transport time.</p>
+</div>
+</dd></dl>
+
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span>
+<span class="c1">// From &lt;api-lwmq-messaging.h&gt;</span>
+<span class="c1">//</span>
+
+<span class="k">typedef</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="nc">_LMQ_SENDQUEUETYPE</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUETYPE_NA</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUETYPE_MONOPRODUCER_UNBOUNDED</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUETYPE_MULTIPRODUCER_UNBOUNDED</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUETYPE_MULTIPRODUCER_UNBOUNDED_TAGGED</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_DISCARD_OLDEST</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_DISCARD_NEWEST</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_TAGGED_DISCARD_OLDEST</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_TAGGED_DISCARD_NEWEST</span>
+<span class="p">}</span>
+<span class="n">LMQ_SENDQUEUETYPE</span><span class="p">;</span>
+
+<span class="k">typedef</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="nc">_LMQ_SENDQUEUEPRIORITY</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUEPRIORITY_TIME_CRITICAL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUEPRIORITY_HIGHEST</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUEPRIORITY_ABOVE_NORMAL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUEPRIORITY_NORMAL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUEPRIORITY_BELOW_NORMAL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUEPRIORITY_LOWEST</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUEPRIORITY_IDLE</span>
+<span class="p">}</span>
+<span class="n">LMQ_SENDQUEUEPRIORITY</span><span class="p">;</span>
+
+<span class="c1">//</span>
+<span class="c1">// Example of adding an unbounded monoproducer send queue to a channel.</span>
+<span class="c1">//</span>
+
+<span class="n">LMQ_SENDQUEUE</span><span class="w"> </span><span class="n">SendQueue</span><span class="p">;</span>
+
+<span class="n">HRESULT</span><span class="w"> </span><span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqAddSendQueue</span><span class="p">(</span><span class="n">Channel</span><span class="p">,</span>
+<span class="w">                             </span><span class="n">LMQ_SENDQUEUETYPE_MONOPRODUCER_UNBOUNDED</span><span class="p">,</span>
+<span class="w">                             </span><span class="n">LMQ_SENDQUEUEPRIORITY_NORMAL</span><span class="p">,</span>
+<span class="w">                             </span><span class="n">LMQ_QUEUECAPACITY_UNBOUNDED</span><span class="p">,</span>
+<span class="w">                             </span><span class="o">&amp;</span><span class="n">SendQueue</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id9">
+<h2>Transports<a class="headerlink" href="#id9" title="Link to this heading"></a></h2>
+<section id="id10">
+<h3>Types<a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
+<dl class="c type">
+<dt class="sig sig-object c" id="c.LMQ_TRANSPORT">
+<span class="k"><span class="pre">type</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LMQ_TRANSPORT</span></span></span><a class="headerlink" href="#c.LMQ_TRANSPORT" title="Link to this definition"></a><br /></dt>
+<dd><p>An opaque transport instance.</p>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.LMQ_TRANSPORTBUFFERLIMITS">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LMQ_TRANSPORTBUFFERLIMITS</span></span></span><a class="headerlink" href="#c.LMQ_TRANSPORTBUFFERLIMITS" title="Link to this definition"></a><br /></dt>
+<dd><p>A structure representing the buffer limits of a transport.</p>
+</dd></dl>
+
+</section>
+<section id="id11">
+<h3>Functions<a class="headerlink" href="#id11" title="Link to this heading"></a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.LmqAddTransport">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqAddTransport</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">LMQ_CHANNEL</span></span><span class="w"> </span><span class="n"><span class="pre">Channel</span></span>, <span class="n"><span class="pre">PCWSTR</span></span><span class="w"> </span><span class="n"><span class="pre">TransportDescriptor</span></span>, <span class="n"><span class="pre">SIZE_T</span></span><span class="w"> </span><span class="n"><span class="pre">BufferSizeBytes</span></span>, <span class="n"><span class="pre">LONG</span></span><span class="w"> </span><span class="n"><span class="pre">MaxPendingSendBuffers</span></span>, <span class="n"><span class="pre">LONG</span></span><span class="w"> </span><span class="n"><span class="pre">MaxPendingReceiveBuffers</span></span>, <span class="n"><span class="pre">UINT32</span></span><span class="w"> </span><span class="n"><span class="pre">CreationFlags</span></span>, <span class="n"><span class="pre">PLMQ_TRANSPORT</span></span><span class="w"> </span><span class="n"><span class="pre">Transport</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqAddTransport" title="Link to this definition"></a><br /></dt>
+<dd><p>Adds a transport to a communication channel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Channel</strong> – The communication channel to add the transport to.</p></li>
+<li><p><strong>TransportDescriptor</strong> – The descriptor of the transport to add. The format of the transport descriptor is transport-specific. For example, for a RDMA transport, the descriptor is in the format “rdma://hostname:port” while the IPC transport uses the format “ipc://some-arbitrary-string”.</p></li>
+<li><p><strong>BufferSizeBytes</strong> – The size of the buffers to use for sending and receiving messages through the transport, in bytes. See the note below for important details about the buffer size.</p></li>
+<li><p><strong>MaxPendingSendBuffers</strong> – The maximum number of send buffers that can be pending for sending through the transport at any given time. This parameter must be zero if the transport cannot send, or at least 1 otherwise. For best sending performance, multiple send buffers are recommended to allow for fully asynchronous overlapped operations. The sweet spot is transport-dependent but generally tends to be around 4-16 buffers.</p></li>
+<li><p><strong>MaxPendingReceiveBuffers</strong> – The maximum number of receive buffers that can be pending for receiving through the transport at any given time. This parameter must be zero if the transport cannot receive, or at least 1 otherwise. For best receiving performance, multiple receive buffers are recommended to allow for fully asynchronous overlapped operations. The sweet spot is transport-dependent but generally tends to be around 4-16 buffers.</p></li>
+<li><p><strong>CreationFlags</strong> – Flags controlling the creation of the transport, either TRANSPORT_CREATIONFLAGS_SEND, TRANSPORT_CREATIONFLAGS_RECEIVE, or TRANSPORT_CREATIONFLAGS_SENDRECEIVE.</p></li>
+<li><p><strong>Transport</strong> – An optional pointer to a variable that receives the created transport instance.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The bufer size parameter must be at least as large as the largest single message, plus the frame and message header wire encoding overhead, that will be sent or received through the transport. Ideally, the buffer size should be much larger than the typical message size, which enables message clubbing when messages are sent in rapid successions. For example, an application that sends, say, 80 bytes messages at very high rate (millions per second) will greatly benefit from using large buffers in the 1MB range. Moreover, all transports added to a particular channel must share the same buffer size. The actual maximum message size that cen be sent for a particular buffer size depends on various factors as the wire format use variable-length encoding for compacity. As a rule of thumb, consider ~1% overhead. For large payload, consider single-frame messages and add 4096 bytes to the expected payload size: if sending data in single-frame messages with 1MB of payload data (1,048,576 bytes) each - assuming the underlying transport supports that size - use a buffer size of 1,048,576 + 4,096 = 1,052,672 which allows for up to 4KB bytes of overhead, which is more than enough for the frame and message headers while aligning the buffer to a page boundary. Make sure you use at least 3-4 such buffers so your app can generate the next payload while the previous ones are transmitted. If sending messages with multiple frames or messages with very small payloads, the overhead can be higher in percentage, therefore you might want to use a larger buffer size to achieve optimal performance. There is no exact guidance regarding the optimal buffer size and count for each application. You need to experiment with different values to find the optimal configuration for your application, transport, and workload. The transport instance can be used to perform transport-specific control operations on the transport through LmqTransportControl(). This parameter is optional.</p>
+</div>
+</dd></dl>
+
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">HRESULT</span><span class="w"> </span><span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqAddTransport</span><span class="p">(</span><span class="n">Channel</span><span class="p">,</span>
+<span class="w">                             </span><span class="sa">L</span><span class="s">&quot;ipc://mycompany/myapp/myport&quot;</span><span class="p">,</span>
+<span class="w">                             </span><span class="mi">1052672</span><span class="p">,</span><span class="w">  </span><span class="c1">// 1MB payload + 4KB overhead.</span>
+<span class="w">                             </span><span class="mi">8</span><span class="p">,</span><span class="w">        </span><span class="c1">// Send buffers.</span>
+<span class="w">                             </span><span class="mi">8</span><span class="p">,</span><span class="w">        </span><span class="c1">// Receive buffers.</span>
+<span class="w">                             </span><span class="n">TRANSPORT_CREATIONFLAGS_SENDRECEIVE</span><span class="p">,</span>
+<span class="w">                             </span><span class="k">nullptr</span><span class="p">);</span><span class="w"> </span><span class="c1">// Instance not needed.</span>
+</pre></div>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.LmqQueryTransportBufferLimits">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqQueryTransportBufferLimits</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">PCWSTR</span></span><span class="w"> </span><span class="n"><span class="pre">TransportDescriptor</span></span>, <span class="n"><span class="pre">PLMQ_TRANSPORTBUFFERLIMITS</span></span><span class="w"> </span><span class="n"><span class="pre">BufferLimits</span></span>, <span class="n"><span class="pre">ULONG</span></span><span class="w"> </span><span class="n"><span class="pre">BufferLimitsSizeBytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqQueryTransportBufferLimits" title="Link to this definition"></a><br /></dt>
+<dd><p>Queries the buffer limits for a transport.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TransportDescriptor</strong> – The descriptor of the transport to query.</p></li>
+<li><p><strong>BufferLimits</strong> – A pointer to a variable that receives the buffer limits of the transport.</p></li>
+<li><p><strong>BufferLimitsSizeBytes</strong> – The size of the BufferLimits structure in bytes. This parameter allows for future extensibility of the BufferLimits structure. It must be set to sizeof(LMQ_TRANSPORTBUFFERLIMITS).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQ_TRANSPORTBUFFERLIMITS</span><span class="w"> </span><span class="n">BufferLimits</span><span class="p">;</span>
+
+<span class="n">HRESULT</span><span class="w"> </span><span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqQueryTransportBufferLimits</span><span class="p">(</span><span class="n">TransportDescriptor</span><span class="p">,</span>
+<span class="w">                                           </span><span class="o">&amp;</span><span class="n">BufferLimits</span><span class="p">,</span>
+<span class="w">                                           </span><span class="k">sizeof</span><span class="p">(</span><span class="n">BufferLimits</span><span class="p">));</span>
+</pre></div>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.LmqTransportControl">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqTransportControl</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.LMQ_TRANSPORT" title="LMQ_TRANSPORT"><span class="n"><span class="pre">LMQ_TRANSPORT</span></span></a><span class="w"> </span><span class="n"><span class="pre">Transport</span></span>, <span class="n"><span class="pre">ULONG</span></span><span class="w"> </span><span class="n"><span class="pre">ControlCode</span></span>, <span class="n"><span class="pre">PVOID</span></span><span class="w"> </span><span class="n"><span class="pre">InputBuffer</span></span>, <span class="n"><span class="pre">ULONG</span></span><span class="w"> </span><span class="n"><span class="pre">InputBufferLengthBytes</span></span>, <span class="n"><span class="pre">PVOID</span></span><span class="w"> </span><span class="n"><span class="pre">OutputBuffer</span></span>, <span class="n"><span class="pre">ULONG</span></span><span class="w"> </span><span class="n"><span class="pre">OutputBufferLengthBytes</span></span>, <span class="n"><span class="pre">PULONG</span></span><span class="w"> </span><span class="n"><span class="pre">BytesReturned</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqTransportControl" title="Link to this definition"></a><br /></dt>
+<dd><p>Performs a control operation on a transport.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Transport</strong> – The transport to perform the control operation on.</p></li>
+<li><p><strong>ControlCode</strong> – The control code representing the control operation to perform. This parameter is transport-specific.</p></li>
+<li><p><strong>InputBuffer</strong> – An optional pointer to a buffer containing input data for the control operation.</p></li>
+<li><p><strong>InputBufferLengthBytes</strong> – The size of the input buffer in bytes.</p></li>
+<li><p><strong>OutputBuffer</strong> – An optional pointer to a buffer that receives output data from the control operation.</p></li>
+<li><p><strong>OutputBufferLengthBytes</strong> – The size of the output buffer in bytes.</p></li>
+<li><p><strong>BytesReturned</strong> – An optional pointer to a variable that receives the size of the data returned in the output buffer in bytes.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">HRESULT</span><span class="w"> </span><span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqTransportControl</span><span class="p">(</span><span class="n">Transport</span><span class="p">,</span>
+<span class="w">                                 </span><span class="n">ControlCode</span><span class="p">,</span>
+<span class="w">                                 </span><span class="n">InputBuffer</span><span class="p">,</span>
+<span class="w">                                 </span><span class="n">InputBufferLengthBytes</span><span class="p">,</span>
+<span class="w">                                 </span><span class="n">OutputBuffer</span><span class="p">,</span>
+<span class="w">                                 </span><span class="n">OutputBufferLengthBytes</span><span class="p">,</span>
+<span class="w">                                 </span><span class="o">&amp;</span><span class="n">BytesReturned</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="posting-and-receiving">
+<h2>Posting and Receiving<a class="headerlink" href="#posting-and-receiving" title="Link to this heading"></a></h2>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.LmqPostMessage">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqPostMessage</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.LMQ_SENDQUEUE" title="LMQ_SENDQUEUE"><span class="n"><span class="pre">LMQ_SENDQUEUE</span></span></a><span class="w"> </span><span class="n"><span class="pre">SendQueue</span></span>, <span class="n"><span class="pre">PLMQ_MESSAGE</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span>, <span class="n"><span class="pre">UINT32</span></span><span class="w"> </span><span class="n"><span class="pre">TimeoutMs</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqPostMessage" title="Link to this definition"></a><br /></dt>
+<dd><p>Queues a message for sending through a communication channel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>SendQueue</strong> – The send queue to send the message through.</p></li>
+<li><p><strong>Message</strong> – A pointer to the message to send. After this call, the application can’t access the message anymore as the ownership has been transferred to LwMQ, and it will be asynchronously destroyed at some future point. This parameter being a <em>pointer</em> to the message, the function will null it before returning on successful execution, preventing any further use.</p></li>
+<li><p><strong>TimeoutMs</strong> – The maximum time to wait for the message to be accepted for sending, in milliseconds. A value of INFINITE can be used to wait indefinitely. This parameter has no effect for unbounded send queues and must be zero, as they are always ready to accept messages for sending.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">HRESULT</span><span class="w"> </span><span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqPostMessage</span><span class="p">(</span><span class="n">SendQueue</span><span class="p">,</span>
+<span class="w">                            </span><span class="o">&amp;</span><span class="n">Message</span><span class="p">,</span>
+<span class="w">                            </span><span class="mi">1000</span><span class="p">);</span><span class="w"> </span><span class="c1">// Wait up to 1 second.</span>
+</pre></div>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.LmqPostMessageWithTag">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqPostMessageWithTag</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.LMQ_SENDQUEUE" title="LMQ_SENDQUEUE"><span class="n"><span class="pre">LMQ_SENDQUEUE</span></span></a><span class="w"> </span><span class="n"><span class="pre">SendQueue</span></span>, <span class="n"><span class="pre">PLMQ_MESSAGE</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span>, <span class="n"><span class="pre">LONG_PTR</span></span><span class="w"> </span><span class="n"><span class="pre">Tag</span></span>, <span class="n"><span class="pre">UINT32</span></span><span class="w"> </span><span class="n"><span class="pre">TimeoutMs</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqPostMessageWithTag" title="Link to this definition"></a><br /></dt>
+<dd><p>Queues a message for sending through a communication channel with an associated user-defined tag.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>SendQueue</strong> – The tagged send queue to send the message through.</p></li>
+<li><p><strong>Message</strong> – A pointer to the message to send. After this call, the application can’t access the message anymore as the ownership has been transferred to LwMQ, and it will be asynchronously destroyed at some future point. This parameter being a <em>pointer</em> to the message, the function will null it before returning on successful execution, preventing any further use.</p></li>
+<li><p><strong>Tag</strong> – A user-defined tag value that is associated with the message. This value is interpreted by LwMQ while queueing the message, and any message with the same tag still in the queue at the time of insertion is removed before the new message is queued. A value of 0 means “no tag” and the message is queued normally in FIFO order.</p></li>
+<li><p><strong>TimeoutMs</strong> – The maximum time to wait for the message to be accepted for sending, in milliseconds. A value of INFINITE can be used to wait indefinitely. This parameter has no effect for unbounded send queues and must be zero, as they are always ready to accept messages for sending.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This function is useful for sending messages that supersede previous messages with the same tag, for example progress messages where only the latest message is relevant. By using the same tag for all progress messages, you can ensure that only the latest progress message is queued for sending, and any previous progress messages still in the queue are removed, which helps reduce unnecessary message processing on the receiving side. Note, however, that the tagged queues inccurs some overhead as they keep track of the tagged items in the queue for fast access. The coalescing only happen within messages that are qued but not already sent. Sent messages (i.e. mesages that have left, or about to leave in a trnasmission buffer) will not be rescinded. The tag is not transmitted and is only a locally processed artefact. The send queue must be one of the tagged queues: LMQ_SENDQUEUETYPE_MULTIPRODUCER_UNBOUNDED_TAGGED, LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_TAGGED_DISCARD_OLDEST, LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_TAGGED_DISCARD_NEWEST, otherwise the function will fail with an error.</p>
+</div>
+</dd></dl>
+
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">HRESULT</span><span class="w"> </span><span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqPostMessageWithTag</span><span class="p">(</span><span class="n">SendQueue</span><span class="p">,</span>
+<span class="w">                                   </span><span class="o">&amp;</span><span class="n">Message</span><span class="p">,</span>
+<span class="w">                                   </span><span class="n">ProgressMessageTag</span><span class="p">,</span><span class="w"> </span><span class="c1">// Coalesce per tag.</span>
+<span class="w">                                   </span><span class="mi">1000</span><span class="p">);</span><span class="w"> </span><span class="c1">// Wait up to 1 second.</span>
+</pre></div>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.LmqReceiveMessage">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqReceiveMessage</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">LMQ_CHANNEL</span></span><span class="w"> </span><span class="n"><span class="pre">Channel</span></span>, <span class="n"><span class="pre">UINT32</span></span><span class="w"> </span><span class="n"><span class="pre">TimeoutMs</span></span>, <span class="n"><span class="pre">PUSHORT</span></span><span class="w"> </span><span class="n"><span class="pre">FrameCount</span></span>, <span class="n"><span class="pre">PUINT64</span></span><span class="w"> </span><span class="n"><span class="pre">PayloadSizeBytes</span></span>, <span class="n"><span class="pre">PLMQ_MESSAGE</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqReceiveMessage" title="Link to this definition"></a><br /></dt>
+<dd><p>Receives a message from a communication channel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Channel</strong> – The communication channel to receive the message from.</p></li>
+<li><p><strong>TimeoutMs</strong> – The maximum time to wait for a message to be received, in milliseconds. A value of INFINITE can be used to wait indefinitely. All types of receive queues are waitable. Use a value of zero to return immediately (with an error) on an empty queue.</p></li>
+<li><p><strong>FrameCount</strong> – A pointer to a variable that receives the number of frames in the received message if successful. If the function fails, the value is set to zero.</p></li>
+<li><p><strong>PayloadSizeBytes</strong> – An optional pointer to a variable that receives the total size of all frame payloads in bytes in the received message. If the function fails and this pointer was supplied, the value is set to zero.</p></li>
+<li><p><strong>Message</strong> – A pointer to a variable that receives the received message instance on success. The application takes ownership of the received message and is responsible for destroying it when it is no longer needed by calling LmqDisposeReceivedMessage().</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">USHORT</span><span class="w"> </span><span class="n">FrameCount</span><span class="p">;</span>
+<span class="n">LMQ_MESSAGE</span><span class="w"> </span><span class="n">Message</span><span class="p">;</span>
+<span class="n">UINT64</span><span class="w"> </span><span class="n">PayloadSizeBytes</span><span class="p">;</span>
+
+<span class="n">HRESULT</span><span class="w"> </span><span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqReceiveMessage</span><span class="p">(</span><span class="n">Channel</span><span class="p">,</span>
+<span class="w">                               </span><span class="n">INFINITE</span><span class="p">,</span><span class="w"> </span><span class="c1">// Wait indefinitely.</span>
+<span class="w">                               </span><span class="o">&amp;</span><span class="n">FrameCount</span><span class="p">,</span>
+<span class="w">                               </span><span class="o">&amp;</span><span class="n">PayloadSizeBytes</span><span class="p">,</span>
+<span class="w">                               </span><span class="o">&amp;</span><span class="n">Message</span><span class="p">);</span>
+</pre></div>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.LmqDisposeReceivedMessage">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqDisposeReceivedMessage</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">PLMQ_MESSAGE</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqDisposeReceivedMessage" title="Link to this definition"></a><br /></dt>
+<dd><p>Disposes a received message that is no longer needed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Message</strong> – A pointer to the received message to dispose. The pointer is set to NULL before the function returns.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">HRESULT</span><span class="w"> </span><span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqDisposeReceivedMessage</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Message</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="LwMQ API Reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="caching.html" class="btn btn-neutral float-right" title="LwMQ Caching API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Axel Rietschin Software Development, LLC.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

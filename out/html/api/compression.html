@@ -1,0 +1,232 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LwMQ Compression API &mdash; LwMQ 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=4b23a867" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="https://www.googletagmanager.com/gtag/js?id=G-VW7BZSSV48"></script>
+      <script src="../_static/ga.js?v=3f0458de"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="LwMQ Transports" href="../transports/index.html" />
+    <link rel="prev" title="LwMQ Storage API" href="storage.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            LwMQ
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../guide/index.html">LwMQ User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">LwMQ API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#contents">Contents</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="messaging.html">LwMQ Messaging API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="caching.html">LwMQ Caching API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmented-cache.html">LwMQ Segmented Cache API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hashing.html">LwMQ Hashing API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="storage.html">LwMQ Storage API</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">LwMQ Compression API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#c-and-c-header-file">C and C++ Header File</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#binaries">Binaries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#overview">Overview</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../transports/index.html">LwMQ Transports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About LwMQ</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">LwMQ</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">LwMQ API Reference</a></li>
+      <li class="breadcrumb-item active">LwMQ Compression API</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/compression.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="lwmq-compression-api">
+<h1>LwMQ Compression API<a class="headerlink" href="#lwmq-compression-api" title="Link to this heading"></a></h1>
+<p>LwMQ includes fast LZ4-based functions for compressing and decompressing data buffers, which can be used in conjunction with the messaging features, or independently. The implementation uses fast processor-specific routines for optimal performance on modern hardware and should match or outperform most compression libraries as far as compression and decompression speed.</p>
+<p>The LZ4 compression scheme offers fast compression and ultrafast decompression with reasonable compression ratio for most compressible payloads.</p>
+<p>The API offers a one-shot BLOB mode that compresses a buffer into a blob that is allocated by the API, making usage straightforward, as well as a buffer-based compression API.</p>
+<section id="c-and-c-header-file">
+<h2>C and C++ Header File<a class="headerlink" href="#c-and-c-header-file" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;api-lwmq-storage.h&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="binaries">
+<h2>Binaries<a class="headerlink" href="#binaries" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">api</span><span class="o">-</span><span class="n">lwmq</span><span class="o">-</span><span class="n">storage</span><span class="mi">-1</span><span class="mf">-0.</span><span class="n">dll</span>
+</pre></div>
+</div>
+</section>
+<section id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">api</span><span class="o">-</span><span class="n">lwmq</span><span class="o">-</span><span class="n">hash</span><span class="mi">-1</span><span class="mf">-0.</span><span class="n">dll</span>
+</pre></div>
+</div>
+</section>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<section id="types">
+<h3>Types<a class="headerlink" href="#types" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQ_COMPRESSIONWORKSPACE</span>
+<span class="n">LMQ_COMPRESSEDDATABLOB</span>
+</pre></div>
+</div>
+</section>
+<section id="buffer-compression-functions">
+<h3>Buffer Compression Functions<a class="headerlink" href="#buffer-compression-functions" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
+<span class="nf">LmqAllocateCompressionWorkspace</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LONG</span><span class="w"> </span><span class="n">MaxUncompressedBufferSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLMQ_COMPRESSIONWORKSPACE</span><span class="w"> </span><span class="n">CompressionWorkspace</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqFreeCompressionWorkspace</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_COMPRESSIONWORKSPACE</span><span class="w"> </span><span class="n">CompressionWorkspace</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqCompressBuffer</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">UCHAR</span><span class="w"> </span><span class="k">const</span><span class="o">*</span><span class="w"> </span><span class="n">UncompressedBuffer</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LONG</span><span class="w"> </span><span class="n">UncompressedBufferSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PUCHAR</span><span class="w"> </span><span class="n">CompressedBuffer</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LONG</span><span class="w"> </span><span class="n">CompressedBufferSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLONG</span><span class="w"> </span><span class="n">FinalCompressedSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_COMPRESSIONWORKSPACE</span><span class="w"> </span><span class="n">CompressionWorkspace</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqDecompressBuffer</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PUCHAR</span><span class="w"> </span><span class="n">UncompressedBuffer</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LONG</span><span class="w"> </span><span class="n">UncompressedBufferSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">UCHAR</span><span class="w"> </span><span class="k">const</span><span class="o">*</span><span class="w"> </span><span class="n">CompressedBuffer</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LONG</span><span class="w"> </span><span class="n">CompressedBufferSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLONG</span><span class="w"> </span><span class="n">FinalUncompressedSize</span>
+<span class="w">    </span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="one-shot-compression-functions-blob">
+<h3>One-Shot Compression Functions (BLOB)<a class="headerlink" href="#one-shot-compression-functions-blob" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
+<span class="nf">LmqCompressData</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">UCHAR</span><span class="w"> </span><span class="k">const</span><span class="o">*</span><span class="w"> </span><span class="n">UncompressedBuffer</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LONG</span><span class="w"> </span><span class="n">UncompressedBufferSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLMQ_COMPRESSEDDATABLOB</span><span class="w"> </span><span class="n">CompressedDataBlob</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLONG</span><span class="w"> </span><span class="n">CompressedDataBlobSize</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqDecompressData</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_COMPRESSEDDATABLOB</span><span class="w"> </span><span class="n">CompressedDataBlob</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PUCHAR</span><span class="w"> </span><span class="n">UncompressedBuffer</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLONG</span><span class="w"> </span><span class="n">UncompressedBufferSize</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqGetCompressedDataBlobSizes</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_COMPRESSEDDATABLOB</span><span class="w"> </span><span class="n">CompressedDataBlob</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLONG</span><span class="w"> </span><span class="n">CompressedBlobSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLONG</span><span class="w"> </span><span class="n">UncompressedDataSize</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqFreeCompressedDataBlob</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PLMQ_COMPRESSEDDATABLOB</span><span class="w"> </span><span class="n">CompressedDataBlob</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="cp">#ifdef __cplusplus</span>
+<span class="cp">#define LmqCompressedDataBlobFromPointer(__Pointer__) reinterpret_cast&lt;LMQ_COMPRESSEDDATABLOB&gt;(__Pointer__)</span>
+<span class="cp">#else</span>
+<span class="cp">#define LmqCompressedDataBlobFromPointer(__Pointer__) ((LMQ_COMPRESSEDDATABLOB)(__Pointer__))</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="storage.html" class="btn btn-neutral float-left" title="LwMQ Storage API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../transports/index.html" class="btn btn-neutral float-right" title="LwMQ Transports" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Axel Rietschin Software Development, LLC.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

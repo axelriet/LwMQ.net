@@ -1,0 +1,975 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LwMQ User Guide &mdash; LwMQ 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=4b23a867" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="https://www.googletagmanager.com/gtag/js?id=G-VW7BZSSV48"></script>
+      <script src="../_static/ga.js?v=3f0458de"></script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+
+
+
+
+const initStyles = () => {
+    const defaultStyle = document.createElement('style');
+    defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}`;
+    document.head.appendChild(defaultStyle);
+
+    const fullscreenStyle = document.createElement('style');
+    fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+    document.head.appendChild(fullscreenStyle);
+}
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    // We use a set of heuristics:
+    // 1. Check for common dark mode classes or attributes
+    // 2. Check computed background color brightness
+    if (document.documentElement.classList.contains('dark') ||
+        document.documentElement.getAttribute('data-theme') === 'dark' ||
+        document.body.classList.contains('dark') ||
+        document.body.getAttribute('data-theme') === 'dark') {
+        // console.log("Dark theme detected via class/attribute");
+        return true;
+    }
+    if (document.documentElement.classList.contains('light') ||
+        document.documentElement.getAttribute('data-theme') === 'light' ||
+        document.body.classList.contains('light') ||
+        document.body.getAttribute('data-theme') === 'light') {
+        // console.log("Light theme detected via class/attribute");
+        return false;
+    }
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        // console.log("Dark theme detected via prefers-color-scheme");
+        return true;
+    }
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        // console.log("Background color brightness:", brightness);
+        return brightness < 128;
+    }
+    // console.log("No dark or light theme detected, defaulting to light theme");
+    return false;
+};
+
+let darkTheme = isDarkTheme();
+let modal = null;
+let modalContent = null;
+let previousScrollOffset = [window.scrollX, window.scrollY];
+
+const runMermaid = async (rerun) => {
+    console.log("Running mermaid diagrams, rerun =", rerun);
+    // clear all existing mermaid charts
+    let all_mermaids = document.querySelectorAll(".mermaid");
+
+    if (rerun) {
+        all_mermaids.forEach((el) => {
+            if(!el.hasAttribute("data-original-code")) {
+                // store original code
+                // console.log(`Storing original code for first run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+            if(el.getAttribute("data-processed") === "true") {
+                // remove and restore original
+                el.removeAttribute("data-processed");
+                // console.log(`Restoring original code for re-run: `, el.getAttribute('data-original-code'));
+                el.innerHTML = el.getAttribute('data-original-code');
+            } else {
+                // store original code
+                // console.log(`Storing original code for re-run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+        });
+        await mermaid.run();
+    }
+
+    all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("False" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(() => runMermaid(false), 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(() => runMermaid(false), 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(() => runMermaid(false), 200);
+        return;
+    }
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    if (modal !== null ) {
+        // Destroy existing modal
+        modal.remove();
+        modal = null;
+        modalContent = null;
+    }
+
+    modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            // Already processed, adjust button class if needed
+            const existingBtn = mermaidDiv.parentNode.querySelector('.mermaid-fullscreen-btn');
+            if (existingBtn) {
+                existingBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+            }
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("False" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        container.appendChild(fullscreenBtn);
+    });
+};
+
+const load = async () => {
+    initStyles();
+
+    await runMermaid(true);
+
+    const reRunIfThemeChanges = async () => {
+        const newDarkTheme = isDarkTheme();
+        if (newDarkTheme !== darkTheme) {
+            darkTheme = newDarkTheme;
+            console.log("Theme change detected, re-running mermaid with", darkTheme ? "dark" : "default", "theme");
+            await mermaid.initialize(
+                {...JSON.parse(
+                    `{"startOnLoad": false}`
+                ),
+                ...{ darkMode: darkTheme, theme: darkTheme ? 'dark' : 'default' },
+                }
+            );
+            await runMermaid(true);
+        }
+    };
+
+    // Update theme classes when theme changes
+    const themeObserver = new MutationObserver(reRunIfThemeChanges);
+    themeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    themeObserver.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+};
+
+
+
+
+
+console.log("Initializing mermaid with", darkTheme ? "dark" : "default", "theme");
+mermaid.initialize(
+    {...JSON.parse(
+        `{"startOnLoad": false}`
+    ),
+    ...{ darkMode: darkTheme, theme: darkTheme ? 'dark' : 'default' },
+    }
+);
+
+window.addEventListener("load", load);
+window.runMermaid = runMermaid;</script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="LwMQ API Reference" href="../api/index.html" />
+    <link rel="prev" title="LwMQ Documentation" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            LwMQ
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">LwMQ User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#messaging">Messaging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lru-caching-and-key-value-storage">LRU Caching and Key-Value Storage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#supporting-features">Supporting Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#platform">Platform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#implementation">Implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#philosophy">Philosophy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api-surface">API Surface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#architecture">Architecture</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sender-block-diagram">Sender Block Diagram</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#receiver-block-diagram">Receiver Block Diagram</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#licensing">Licensing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#samples">Samples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">LwMQ API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../transports/index.html">LwMQ Transports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About LwMQ</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">LwMQ</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">LwMQ User Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guide/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="lwmq-user-guide">
+<h1>LwMQ User Guide<a class="headerlink" href="#lwmq-user-guide" title="Link to this heading"></a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Under construction. Check back often for updates.</p>
+</div>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>LwMQ is a systems and platform architect’s LEGO® set, born
+from a simple observation: there is a gap in message-oriented
+inter-process communication systems.</p>
+<p>LwMQ provides messaging, caching, and key-value storage as
+well as supporting features such as hashing, HMAC and
+key generation, data compression, and more. Everything is
+ligweighted and optimized for the best possible performance on
+modern hardware.</p>
+<section id="messaging">
+<h3>Messaging<a class="headerlink" href="#messaging" title="Link to this heading"></a></h3>
+<p>At one end of the spectrum one finds sophisticated message
+brokers reachable over a network and requiring
+complex deployment, configuration and maintenance, often
+with companies specializing in deploying and supporting
+such systems.</p>
+<p>At the other end of the spectrum one find libraries providing
+message-oriented communication often patterned after well-known
+abstractions such as BSD sockets, enabling local and remote
+communication between processes without an intermediate broker.</p>
+<p>LwMQ falls on the side of the second category, providing direct
+peer-to-peer inter-process communication without configuration
+or intermediate party.</p>
+<p>Its key differentiators include the use of transport mechanisms
+that are not commonly available in other message-oriented
+communication mechanisms, and often reserved to server or
+datacenter environments only.</p>
+<p>Most competing solution leverage Unix Domain Sockets (<a class="reference external" href="https://en.wikipedia.org/wiki/Unix_domain_socket">UDS</a>)
+for local communications, as this transport is aligned in
+the continuity of the network-based paradigms those systems
+are built upon.</p>
+<p>In contrast, LwMQ provides its own shared-memory-based
+physical layer for local communication, as well as its
+own data link and network layers on top if it.</p>
+<p>The result is much improved throughput, easily in the
+multi-million messages per second on common hardware for small
+payloads and reaching multi-GB per second with large payloads,
+as well as much reduced latency down to the low nanoseconds
+range for single one-way messages, while the nearest competing
+solutions claim low microseconds latency.</p>
+<p>Similarly, LwMQ leverages Remote Direct Memory Access (RDMA)
+for remote peer-to-peer communication. RDMA bypasses the
+network stack almost entirely (the technology is known as
+“kernel bypass”) and achieves higher throughput and lower
+latency that what can be reached through typical network
+stacks on most operating systems.</p>
+<p>LwMQ supports three flavors of RDMA through NetworkDirect v2 providers:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>InfiniBand: A high-bandwidth, low-latency datacenter networking technology designed for RDMA.</p></li>
+<li><p>RoCE (RDMA over Converged Ethernet): Enables RDMA over Ethernet networks, allowing RDMA to function in traditional network infrastructures.</p></li>
+<li><p>iWARP (Internet Wide Area RDMA Protocol): Allows RDMA over TCP/IP, which is more scalable over long distances.</p></li>
+</ul>
+</div></blockquote>
+<p>LwMQ brings unprecedented local IPC performance without any
+special hardware requirements as well as datacenter-level
+remote IPC performance to regular applications running on regular
+workstations with unprecedented ease of use, provided they are
+equipped with an RDMA-capable network adapter with suitable
+drivers.</p>
+<p>The same of course also applies to server applications as well
+as RDMA-capable virtual machines now available on <a class="reference external" href="https://docs.cloud.google.com/compute/docs/instances/create-vm-with-rdma">Google Cloud</a>,
+<a class="reference external" href="https://aws.amazon.com/ec2/instance-types/accelerated-computing/">AWS</a> and <a class="reference external" href="https://learn.microsoft.com/en-us/azure/virtual-machines/extensions/enable-infiniband">Azure</a>, provided they are equipped with suitable
+NDv2 drivers.</p>
+<p>Workstation adapters capable of RDMA operation over iWARP or
+RoCE (both atop Ethernet) can be readily obtained example from
+<a class="reference external" href="https://techdocs.broadcom.com/us/en/storage-and-ethernet-connectivity/ethernet-nic-controllers/bcm957xxx/adapters/RDMA-over-Converged-Ethernet.html">Broadcom</a>, <a class="reference external" href="https://docs.nvidia.com/networking/display/mlnxofedv497100lts/rdma+over+converged+ethernet+(roce)">NVIDIA (Mellanox)</a> or <a class="reference external" href="https://www.intel.com/content/www/us/en/support/articles/000031905/ethernet-products/700-series-controllers-up-to-40gbe.html">Intel</a>, while <a class="reference external" href="https://www.infinibandta.org/">InfiniBand</a>
+adapters are now common on server hardware and some high-end
+workstations.</p>
+<p>LwMQ does is not concerned about the details of the underlying
+physical transport provided the vendor supplies the appropriate
+drivers.</p>
+<p>Finally, LwMQ supports Hyper-V specific transports that
+enable communication between the Host OS, Guest VMs,
+and Containers without leveraging any network stack at
+all. Communication can be achieved at high speed between
+the host operating system and headless VMs and Containers
+having no virtual network hardware attached.</p>
+<p>Together, these features enable new scenarios for locally
+distributed and networked application communicating without
+borders at the highest throughput allowed by the hardware.</p>
+<p>Nothing prevents LwMQ to also support network protocols
+such as regular TCP/IP or UDP, but LwMQ’s design revolves
+around a DMA-first architecture that is optimized from
+the ground up for high-speed shared-memory IPC and RDMA,
+and is fundamentally a peer-to-peer (1:1) communication system
+where the application establishes peer connections through
+LwMQ’s communication channels.</p>
+<p>In the future, LwMQ may support one-to-many (1:N) cardinality
+through reliable multicast transports where the message
+replication is offloaded to the network hardware, but v1
+focuses on the 1:1 use case, knowing there is no intrinsic
+limits on the number of channels an application can create
+and use concurrently.</p>
+<p>Ultrafast IPC enables many scenarios including real-time
+financial data dissemination, locally-distributed agents,
+faster AI training and reinforcement learning and inference
+scenarios, delegation of sensitive work to a separate process
+with minimal impact on performance, i.e. fast batching of
+commands to a numeric solver, or a graphic or HTML renderer
+hosted in separate process, container, VM, or computer.</p>
+<p>In these scenarios, LwMQ performs <em>many time faster</em> than
+existing solutions, even more so when the current solution
+involves HTTP/2 over a local socket connection such as gRPC
+or a local REST API.</p>
+</section>
+<section id="lru-caching-and-key-value-storage">
+<h3>LRU Caching and Key-Value Storage<a class="headerlink" href="#lru-caching-and-key-value-storage" title="Link to this heading"></a></h3>
+<p>LRU caching and key-value storage play supporting roles in LwMQ’s
+design, as they are often needed to implement applications
+that leverage LwMQ’s messaging capabilities.</p>
+<p>Those features are designed to be used in conjunction with
+the messaging subsystem. For example the in-memory LRU cache
+can be used to store partial results in AI inference scenarios,
+or to store often-served data with a precise expiration time.</p>
+<p>The segmented LRU cache supports massive caching scenarios with
+millions of entries under <em>heavy</em> multithreaded concurrent access,
+and both caches support compression and encryption with per-entry
+entropy.</p>
+</section>
+<section id="supporting-features">
+<h3>Supporting Features<a class="headerlink" href="#supporting-features" title="Link to this heading"></a></h3>
+<p>Supporting features such as ultrafast 32, 64, and 128-bit hashing, HMACs,
+and key generation, ultrafast LZ4 data compression and other utility
+features complete the offering and enable platform architects to
+build their solutions with the best possible performance and
+reliability, for example by adding checksums or HMACs to messages
+to detect and prevent data corruption or tampering, or by
+compressing large messages to reduce the amount of data
+that needs to be transferred, all with the least possible impact on
+performance.</p>
+<p>Depending on the data link speed and congestions, it is often
+advantageous to use some CPU time to compress/decompress data and
+reduce the bandwith requirements for improved overall throughput.</p>
+</section>
+<section id="platform">
+<h3>Platform<a class="headerlink" href="#platform" title="Link to this heading"></a></h3>
+<p>LwMQ is designed as a best-of-breed-performance library for
+Windows, Windows Server, and Windows VMs hosted on Azure or elsewhere.</p>
+<p>While there is nothing inherently platform-specific in the design, the
+implementation is currently Windows-specific and leverages
+Windows features and APIs to achieve the best possible
+performance.</p>
+<p>The author is a firm believer in multiplatform <em>solutions</em> but
+cross-platform <em>code</em> often comes with a cost in terms of
+performance and maintainability: sooner or later some compromises
+are made to accommodate the lowest common denominator, and the
+codebase becomes more complex and harder to maintain.</p>
+<p>LwMQ’s concepts can readily be ported and the author looks
+forward to seeing native ports to other platforms,
+possibly in other programming languages, in the future.</p>
+</section>
+<section id="implementation">
+<h3>Implementation<a class="headerlink" href="#implementation" title="Link to this heading"></a></h3>
+<p>LwMQ is written in the C programming language following strict
+disciplines mostly found in kernel developement and mission-critical
+software.</p>
+<p>The C code is compiled as C++ to benefit from stricter type checking
+of the latter language, a technique now used in the Windows kernel
+and other critical software projects, and the project takes maximum
+advantage of static analysis for compile-time defect detection.</p>
+<p>The code is designed to be robust and bomb-proof, with a strong
+emphasis on correctness and reliability, while providing
+best-in-industry performance on every aspect.</p>
+<p>Some light touches of C++ are used here and there, for example the
+finite-state machine that governs the state of the transports
+is best implemented in C++ [<a class="reference external" href="https://a.co/d/02cPzhzs">GoF</a>, p. 305ff]</p>
+<p>Small portions are written in assembly language and the code
+often uses vector instructions (SIMD intrinsics) where appropriate.</p>
+<p>LwMQ requires AVX-2 instructions (Haswell, Ryzen, or later) and
+performs exceptionally well on contemporary hardware.</p>
+</section>
+</section>
+<section id="philosophy">
+<h2>Philosophy<a class="headerlink" href="#philosophy" title="Link to this heading"></a></h2>
+<p>LwMQ is a low-level library. The user has control over the
+type of queues that are used to post messages, between
+single-producer unbounded queues, to multi-producer queues
+of various types. The multi-producer queues implement
+synchronization internally and therefore can be accessed
+concurrently from multiple threads without special precautions
+at some slight performance cost.</p>
+<p>The single-producer queues are meant to be access strictly
+from one and only one thread (as they don’t perform internally
+synchronization) but they offer unprecedented performances
+where queuing a new message only requires a few machine
+instructions without any lock.</p>
+<p>LwMQ is therefore flexible and offers more control than
+typical libraries and subsystems, and does not force unwarranted
+cost to applications that don’t need a particular guarantee.</p>
+<p>Another example of the low-level philosophy that is
+pervasive through the entire design is the in-memory cache,
+which does not assume any particular key type.</p>
+<p>Most existing caches accept keys in form of a text string, which
+in turn makes assumptions about the character type and encoding,
+and the cache designers settled for a particular hash function
+that they think should be suitable for most uses.</p>
+<p>LwMQ makes no such assumptions and standardizes all keys as
+128-bit (16-bytes) entities.</p>
+<p>It is up to the application to supply the keys and decide how
+to create them: random or non-random MAC-based GUIDs, hashed
+ANSI, UTF-8, or Unicode strings or byte buffers hashed with whatever
+hashing algorithm satisfying the application’s requirements.</p>
+<p>LwMQ provide fast functions to transform any string or arbitrary
+byte buffer into a key, as well as functions that create ideal
+keys the application can also use as record identity, but LwMQ
+does not make any assumption about the nature of the
+data ending up serving as key. It directly exposes the
+underlying native key type instead and give the application
+full control over how to create those keys. Some applications
+may find it advantageous to compute or create the keys in
+advance and store them as part of their data. This avoids
+the runtime cost of hashing the data each time a key is
+needed.</p>
+<p>The general philosophy is therefore to give maximum control
+to the application and focus on the low-level aspects, with
+a strong emphasis on bomb-proof robustness while providing
+best-in-industry performances on every aspects.</p>
+<p>Whatever your scenario, LwMQ aims to provide multiple ways
+to efficiently address your needs.</p>
+<p>As an example, instead of opting for a turnkey “distributed cache” solution,
+consider that LwMQ provides the individual building blocks that can be used
+to assemble your own, tailored to your specific needs and requirements,
+and optimized for your particular scenario which, with a low-contention highly
+concurrent LRU backend and a fast RDMA front-end will likely
+outperform any existing solution by a wide margin, augmented with the
+inherent elasticity provided by queuing.</p>
+<p>Need a <em>secure</em> cache? Flip a switch to enable fast memory encryption for tiny
+entries and AES-GCM encryption for large ones. Need a <em>compressed</em> cache?
+Flip another switch to enable LZ4 compression. Need a <em>compressed and
+encrypted</em> cache? Flip both switches.</p>
+<p>The cache also optionally support hardware deflate through <a class="reference external" href="https://www.intel.com/content/www/us/en/architecture-and-technology/intel-quick-assist-technology-overview.html">Intel QAT</a> for
+very large payloads, if your server is equipped with the required accelerator
+and drivers.</p>
+<p>That, in a nutshell, is the philosophy behind LwMQ.</p>
+</section>
+<section id="api-surface">
+<h2>API Surface<a class="headerlink" href="#api-surface" title="Link to this heading"></a></h2>
+<p>The API follows a C-style design, with a flat API and
+opaque types, and is designed to be easily callable from C,
+C++, Rust, Go, Python and more. Wrappers and bindings can
+also be created for other languages.</p>
+<p>The ABI (Application Binary Interface) remains stable between
+releases, ensuring backward compatibility: new versions of
+LwMQ will generally be drop-in replacements for any previous
+versions, meaning the API surface is stable and extensions
+are made by adding new functions and types, rather than
+modifying existing ones. Existing functions will <em>never</em> be
+removed, ensuring as much as possible that older applications
+can use newer versions of LwMQ without breaking.</p>
+<p>The naming convention is to prefix all API functions with “Lmq”
+and all types with “LMQ_” (and “PLMQ_” for pointers to types)
+to avoid any naming collision with other APIs or libraries.</p>
+<p>The naming format follows the PrefixVerbNoun structure in TitleCase,
+with the verb describing the action performed by the function and
+the noun describing the main entity the function operates on.</p>
+<p>For example, LmqCreateChannel() creates new channel, LmqPostMessage()
+posts a message to a queue, and so on. No surprises.</p>
+<p>Create verbs are complemented by Destroy verbs that free the
+resources allocated by the Create functions. Open -&gt; Close,
+Allocate -&gt; Free, and so on.</p>
+</section>
+<section id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h2>
+<p>LwMQ messaging’s architecture is DMA-first. What that means is
+the messaging framework revolves around the high-level concept
+of a memory window being “teleported” from one peer’s address
+space to another.</p>
+<p>The actual transport happens either through directly shared
+memory (for the IPC transport) or with the help of the network
+adapter for the RDMA case, where the transfer is offloaded to
+the hardware.</p>
+<p>Other transports, such as Hyper-V’s HvSocket, rely on an existing
+pipe-like infrastructure, while yet other transports, like
+a possible TCP transport, rely on pinned memory windows that
+sit in-between user-mode and kernel-mode to minimize buffer
+copies and kernel transitions.</p>
+<section id="sender-block-diagram">
+<h3>Sender Block Diagram<a class="headerlink" href="#sender-block-diagram" title="Link to this heading"></a></h3>
+<p>The diagram below shows a particular configuration where a channel
+has three input queues as an example. The queues are connected to the
+input Scheduler on their consumer end.</p>
+<p>The input scheduler is responsible for gathering messages from
+queues according to the queue’s priorities. The messages are
+sent to the message encoder in different manners: messages
+of various priorities can be interleaved and messages from
+queues at the same priority are collected in round-robin fashion,
+while messages from the same queue are always sent in the order
+they were posted.</p>
+<p>The message encoder produces the “wire format” that is laid down
+to the transport buffers.</p>
+<p>The transport buffers are then “shipped” to their respective
+device for actual transport.</p>
+<p>The scheduler never waits for potential messages to be posted
+before shipping the buffers to the device. It will club messages
+together as they come, but it will ship the buffers as soon as
+the buffers are full or the input queues are empty. The application
+controls the buffer size and their count and can therefore tune
+the system for the best possible performance for the scenario at hand.</p>
+<p>A channel can support any number of input queues. Using separate
+queues, as needed, help reduce contentions. Also, the priority
+scheme is based on <em>queue priorities</em> rather than message
+priorities so a common use would be to have a normal priority
+input queue and one or more additional queues of different
+or same priorities as needed. If an application has multiple
+threads producing messages, it is advisable to use a queue
+per sending thread to eliminate contentions.</p>
+<p>In situations where the application does not control its threads,
+for example when using a task or concurrency framework, LwMQ
+supplies multi-producer queues that implement internal synchronization.</p>
+<p>A channel can support an arbitrary number of transport and even
+multiple instances of the same transport, all of course subjected
+to system limits. When multiple transports are attached to a
+channel, the messages are laid down to each transport buffer
+separately. This is necessary as LwMQ often does not own the
+transport buffer: it often belongs to the device.</p>
+<p>Messages must fit in the transport buffers, so the application
+must size the buffers accordingly. If a message is larger than
+the transport buffer size, it is rejected by the message encoder
+and an error is returned to the application. This is the only
+way to ensure true atomic message delivery as any particular
+message is either send and delivered in its entirety or not
+at all.</p>
+<p>LwMQ’s channels don’t not maintain state related to messages: the
+application creates messages independently of any channel or connection,
+and adds data frames and content to the message as it sees fit.</p>
+<p>The messages are only associated with a channel when the application
+posts it to one of the channel’s input queues. This solves many
+issues that inherently prevent other messaging systems from
+supporting true multithreaded operations and true atomic message
+transport.</p>
+<p>Not maintaining state at the channel level also solves
+issues inherent to request-response patterns where an application
+can post any number of concurrent requests without waiting for
+any answer, while competing solutions often require the application
+to wait for the response to a request before posting the next one,
+which is a major bottleneck in concurrent scenarios and also causes
+the sender to be stuck indefinitely if the receiver fails to respond
+for any reason.</p>
+<p>LwMQ solves all those problems and more, while providing
+best-in-industry performance and a simple API that can be learned
+and put to work on day one.</p>
+<pre  class="mermaid">
+        ---
+title: LwMQ Sender Side (Simplified)
+config:
+   theme: 'neutral'
+---
+
+graph
+   A(Input Queue 1) --&gt; F
+   B(Input Queue 2) --&gt; F
+   C(Input Queue N) --&gt; F(Input Scheduler)
+   F --&gt; G(Message Encoder)
+   G --&gt; H(Transport Buffer A)
+   G --&gt; I(Transport Buffer B)
+   G --&gt; J(Transport Buffer C)
+   H --&gt; L(Transport A)
+   I --&gt; M(Transport B)
+   J --&gt; N(Transport C)
+    </pre></section>
+<section id="receiver-block-diagram">
+<h3>Receiver Block Diagram<a class="headerlink" href="#receiver-block-diagram" title="Link to this heading"></a></h3>
+<p>On the receiving side, transports are serviced by threads that
+collects messages from incoming transport buffers. The decoded
+messages are then posted to the channel’s output queue.</p>
+<pre  class="mermaid">
+        ---
+title: LwMQ Receiver Side (Simplified)
+config:
+   theme: 'neutral'
+---
+
+graph
+   A(Transport A) --&gt; TA(Transport Buffer A)
+   B(Transport B) --&gt; TB(Transport Buffer B)
+   C(Transport C) --&gt; TC(Transport Buffer C)
+   TA --&gt; MDA(Message Decoder)
+   TB --&gt; MDB(Message Decoder)
+   TC --&gt; MDC(Message Decoder)
+   MDA --&gt; OQ(Output Queue)
+   MDB --&gt; OQ(Output Queue)
+   MDC --&gt; OQ(Output Queue)
+    </pre></section>
+</section>
+<section id="licensing">
+<h2>Licensing<a class="headerlink" href="#licensing" title="Link to this heading"></a></h2>
+<p>LwMQ’s licensing terms are not decided at the time of this writing.</p>
+<p>Inquiries should be directed to <a class="reference external" href="mailto:info&#37;&#52;&#48;lwmq&#46;net">info<span>&#64;</span>lwmq<span>&#46;</span>net</a></p>
+</section>
+<section id="getting-started">
+<h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
+<blockquote>
+<div><p>TBD</p>
+</div></blockquote>
+</section>
+<section id="samples">
+<h2>Samples<a class="headerlink" href="#samples" title="Link to this heading"></a></h2>
+<blockquote>
+<div><p>TBD</p>
+</div></blockquote>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="LwMQ Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../api/index.html" class="btn btn-neutral float-right" title="LwMQ API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Axel Rietschin Software Development, LLC.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

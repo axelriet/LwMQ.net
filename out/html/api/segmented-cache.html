@@ -1,0 +1,286 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LwMQ Segmented Cache API &mdash; LwMQ 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=4b23a867" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="https://www.googletagmanager.com/gtag/js?id=G-VW7BZSSV48"></script>
+      <script src="../_static/ga.js?v=3f0458de"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="LwMQ Hashing API" href="hashing.html" />
+    <link rel="prev" title="LwMQ Caching API" href="caching.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            LwMQ
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../guide/index.html">LwMQ User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">LwMQ API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#contents">Contents</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="messaging.html">LwMQ Messaging API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="caching.html">LwMQ Caching API</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">LwMQ Segmented Cache API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#c-and-c-header-file">C and C++ Header File</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#binaries">Binaries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#overview">Overview</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hashing.html">LwMQ Hashing API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="storage.html">LwMQ Storage API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="compression.html">LwMQ Compression API</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../transports/index.html">LwMQ Transports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About LwMQ</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">LwMQ</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">LwMQ API Reference</a></li>
+      <li class="breadcrumb-item active">LwMQ Segmented Cache API</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/segmented-cache.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="lwmq-segmented-cache-api">
+<h1>LwMQ Segmented Cache API<a class="headerlink" href="#lwmq-segmented-cache-api" title="Link to this heading"></a></h1>
+<p>Beyond the LwMQ in-memory cache, LwMQ provides a segmented (partitionned) cache built on top of the regular in-memory cache.</p>
+<p>The segmented cache partitions the key space and assigns each key segment to its own underlying LRU cache. The result is a composite cache that reduces contentions to enable higher insertions and lookup rate than possible with a single cache with a central LRU list.</p>
+<p>The drawback is the cache assumes a uniform distribution of keys. The API provides for indicating which bits in the key are used for partitioning, giving the caller some control.</p>
+<p>The segmented cache supports up to 1,024 segments, and each segment can hold millions of entries. By creating as many segments as available CPU cores, up to 1,024, contentions are minimized and the cache througput can reach hundreds of millions of lookups per second, only subject to memory bandwidth, available CPU cores, and cache entry sizes.</p>
+<p>The segmented cache supports terabytes of RAM and the number of entries it holdscan be extended at runtime. It implements a custom memory management scheme that requests huge blocks directly from the system’s virtual memory manager for internal data structures.</p>
+<p>The segmented cache is suitable for highly concurrent scenarios where many threads concurrently add and retrieve cache entries, and where the key distribution is reasonably uniform or can be made uniform through the choice of partitioning bits in the key.</p>
+<p>In such scenarios, LwMQ’a segmented cache is many times faster than existing popular in-memory LRU caches, easily surpassing 100 million operations/sec on common server hardware with full LRU and TTL operations, assuming uniformly distributed keys.</p>
+<p>The cache also supports an elaborate “read through” mechanism that allow applications to provide a callback for cache misses, which is invoked by the cache when a cache miss occurs.</p>
+<p>The callback can then compute the value for the missing key and add it to the cache, allowing the original cache lookup to succeed without the caller having to implement its own retry logic.</p>
+<p>This callback mechanism is designed to be efficient and to minimize latency for cache misses, making it suitable for scenarios where cache misses are expected but should be handled gracefully without significant performance degradation.</p>
+<p>The cache also ensures correctness in concurrent scenarios where exactly one thread reads through while any other thread concurrently waiting for the same key blocks until it becomes available.</p>
+<p>Optionally, the segmented cache supports data compression (LZ4, and hardware deflate through Intel QAT for very large payloads) and AES-GCM encryption.</p>
+<section id="c-and-c-header-file">
+<h2>C and C++ Header File<a class="headerlink" href="#c-and-c-header-file" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;api-lwmq-segmented-cache.h&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="binaries">
+<h2>Binaries<a class="headerlink" href="#binaries" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">api</span><span class="o">-</span><span class="n">lwmq</span><span class="o">-</span><span class="n">cache</span><span class="mi">-1</span><span class="mf">-0.</span><span class="n">dll</span>
+</pre></div>
+</div>
+</section>
+<section id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">api</span><span class="o">-</span><span class="n">lwmq</span><span class="o">-</span><span class="n">heap</span><span class="mi">-1</span><span class="mf">-0.</span><span class="n">dll</span>
+<span class="n">api</span><span class="o">-</span><span class="n">lwmq</span><span class="o">-</span><span class="n">hash</span><span class="mi">-1</span><span class="mf">-0.</span><span class="n">dll</span>
+</pre></div>
+</div>
+</section>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<section id="types">
+<h3>Types<a class="headerlink" href="#types" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQ_SEGMENTEDCACHE</span>
+<span class="n">LMQ_SEGMENTEDCACHE_METRICS</span>
+<span class="n">LMQ_SEGMENTEDCACHE_KEYTYPE</span>
+</pre></div>
+</div>
+</section>
+<section id="segmented-cache-functions">
+<h3>Segmented Cache Functions<a class="headerlink" href="#segmented-cache-functions" title="Link to this heading"></a></h3>
+<section id="core-segmented-cache-functions">
+<h4>Core Segmented Cache Functions<a class="headerlink" href="#core-segmented-cache-functions" title="Link to this heading"></a></h4>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
+<span class="nf">LmqCreateSegmentedCache</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PCLMQ_CACHEPARAMETERS</span><span class="w"> </span><span class="n">Parameters</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SEGMENTEDCACHE_KEYTYPE</span><span class="w"> </span><span class="n">KeyType</span><span class="p">,</span>
+<span class="w">    </span><span class="n">BYTE</span><span class="w"> </span><span class="n">KeyWordOffset</span><span class="p">,</span>
+<span class="w">    </span><span class="n">WORD</span><span class="w"> </span><span class="n">Segments</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLMQ_SEGMENTEDCACHE</span><span class="w"> </span><span class="n">Cache</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqClearSegmentedCache</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_SEGMENTEDCACHE</span><span class="w"> </span><span class="n">Cache</span><span class="p">,</span>
+<span class="w">    </span><span class="n">BOOL</span><span class="w"> </span><span class="n">RemoveExtents</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqDestroySegmentedCache</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PLMQ_SEGMENTEDCACHE</span><span class="w"> </span><span class="n">Cache</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqGetSegmentedCacheMetrics</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_SEGMENTEDCACHE</span><span class="w"> </span><span class="n">Cache</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLMQ_SEGMENTEDCACHE_METRICS</span><span class="w"> </span><span class="n">Metrics</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqAddSegmentedCacheEntry</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_SEGMENTEDCACHE</span><span class="w"> </span><span class="n">Cache</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCLMQ_CACHEKEY</span><span class="w"> </span><span class="n">Key</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ULONG</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCLMQ_CACHEENTROPY</span><span class="w"> </span><span class="n">AdditionalEntropy</span><span class="p">,</span>
+<span class="w">    </span><span class="n">WORD</span><span class="w"> </span><span class="n">EntryFlags</span><span class="p">,</span>
+<span class="w">    </span><span class="n">FLOAT</span><span class="w"> </span><span class="n">TTLSec</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqAddSegmentedCacheEntryFromCallback</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_CACHE</span><span class="w"> </span><span class="n">Cache</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_CACHECOOKIE</span><span class="w"> </span><span class="n">Cookie</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ULONG</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCLMQ_CACHEENTROPY</span><span class="w"> </span><span class="n">AdditionalEntropy</span><span class="p">,</span>
+<span class="w">    </span><span class="n">WORD</span><span class="w"> </span><span class="n">EntryFlags</span><span class="p">,</span>
+<span class="w">    </span><span class="n">FLOAT</span><span class="w"> </span><span class="n">TTLSec</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqRemoveSegmentedCacheEntry</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_SEGMENTEDCACHE</span><span class="w"> </span><span class="n">Cache</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCLMQ_CACHEKEY</span><span class="w"> </span><span class="n">Key</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqLookupSegmentedCacheEntry</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_SEGMENTEDCACHE</span><span class="w"> </span><span class="n">Cache</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCLMQ_CACHEKEY</span><span class="w"> </span><span class="n">Key</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PULONG</span><span class="w"> </span><span class="n">DataSize</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqRetrieveSegmentedCacheEntry</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_SEGMENTEDCACHE</span><span class="w"> </span><span class="n">Cache</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCLMQ_CACHEKEY</span><span class="w"> </span><span class="n">Key</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PULONG</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCLMQ_CACHEENTROPY</span><span class="w"> </span><span class="n">AdditionalEntropy</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">CacheMissContext</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqRetrieveSegmentedCacheEntryFromCallback</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_CACHE</span><span class="w"> </span><span class="n">Cache</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_CACHECOOKIE</span><span class="w"> </span><span class="n">Cookie</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ULONG</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCLMQ_CACHEENTROPY</span><span class="w"> </span><span class="n">AdditionalEntropy</span>
+<span class="w">    </span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="segmented-cache-memory-allocation-advanced">
+<h4>Segmented Cache Memory Allocation (Advanced)<a class="headerlink" href="#segmented-cache-memory-allocation-advanced" title="Link to this heading"></a></h4>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
+<span class="nf">LmqAdvSegmentedCacheMemAlloc</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_SEGMENTEDCACHE</span><span class="w"> </span><span class="n">Cache</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PVOID</span><span class="o">*</span><span class="w"> </span><span class="n">DataPointerAddress</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ULONG</span><span class="w"> </span><span class="n">DataSize</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqAdvSegmentedCacheMemFree</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_SEGMENTEDCACHE</span><span class="w"> </span><span class="n">Cache</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PVOID</span><span class="o">*</span><span class="w"> </span><span class="n">DataPointerAddress</span>
+<span class="w">    </span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="cache-extents-functions-advanced">
+<h4>Cache Extents Functions (Advanced)<a class="headerlink" href="#cache-extents-functions-advanced" title="Link to this heading"></a></h4>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
+<span class="nf">LmqAdvSegmentedCacheAddExtent</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_SEGMENTEDCACHE</span><span class="w"> </span><span class="n">Cache</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ULONG</span><span class="w"> </span><span class="n">NewExtentSizeEntries</span>
+<span class="w">    </span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="caching.html" class="btn btn-neutral float-left" title="LwMQ Caching API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hashing.html" class="btn btn-neutral float-right" title="LwMQ Hashing API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Axel Rietschin Software Development, LLC.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

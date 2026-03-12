@@ -1,0 +1,35 @@
+/* LwMQ-specific modifications */
+
+html.writer-html4 .rst-content dl:not(.docutils)>dt,html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.citation):not(.glossary):not(.simple)>dt
+{
+    margin: 14px 0;
+}
+
+.rst-content section ul li>p:only-child, .rst-content section ul li>p:only-child:last-child
+{
+    margin-bottom: 10px;
+}
+
+html.writer-html5 .rst-content dl.citation, html.writer-html5 .rst-content dl.field-list, html.writer-html5 .rst-content dl.footnote
+{
+    margin-bottom: 14px;
+}
+
+.rst-content .linenodiv pre, .rst-content div[class^=highlight] pre, .rst-content pre.literal-block
+{
+    font-size: 11.5pt; /* Code blocks font size */
+}
+
+.wy-side-nav-search>div.switch-menus
+{
+    display: none; /* Hide the version switcher top-left combobox */
+}
+
+.wy-breadcrumbs>li.wy-breadcrumbs-aside
+{
+    display: none; /* Hide the View Page Source link */
+}
+
+html.writer-html4 .rst-content dl:not(.docutils)>dt,html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.citation):not(.glossary):not(.simple)>dt {
+    font-size: 100%;
+}
