@@ -164,7 +164,7 @@ entropy.
 Supporting Features
 ^^^^^^^^^^^^^^^^^^^
 
-Supporting features such as ultrafast 32, 64, and 128-bit hashing, HMACs,
+Supporting features such as ultrafast 32/64/128-bit hashing, HMACs,
 and key generation, ultrafast LZ4 data compression and other utility
 features complete the offering and enable platform architects to
 build their solutions with the best possible performance and
@@ -174,7 +174,7 @@ compressing large messages to reduce the amount of data
 that needs to be transferred, all with the least possible impact on
 performance.
 
-Depending on the data link speed and congestions, it is often
+Depending on the data link speed and congestions, it is sometimes
 advantageous to use some CPU time to compress/decompress data and
 reduce the bandwith requirements for improved overall throughput.
 
@@ -304,6 +304,9 @@ and drivers.
 
 .. _Intel QAT: https://www.intel.com/content/www/us/en/architecture-and-technology/intel-quick-assist-technology-overview.html
 
+Ease of use, best in class components that can be composed to
+build your winning solution.
+
 That, in a nutshell, is the philosophy behind LwMQ.
 
 Application Programming Interface (API)
@@ -331,8 +334,8 @@ The naming format follows the PrefixVerbNoun structure in TitleCase,
 with the verb describing the action performed by the function and
 the noun describing the main entity the function operates on.
 
-For example, LmqCreateChannel() creates new channel, LmqPostMessage()
-posts a message to a queue, and so on. No surprises.
+For example, LmqCreateChannel() creates new communication channel,
+LmqPostMessage() posts a message to a queue, and so on. No surprises.
 
 Create verbs are complemented by Destroy verbs that free the
 resources allocated by the Create functions. Open -> Close,
@@ -379,7 +382,8 @@ Exemples of regular error return during parameter validation:
                     "some number of megabytes/gigabytes.");
 
 There are approximately 300 locations across the codebase where LwMQ
-performs parameter validation and returns errors to the caller.
+performs parameter validation and checks for error conditions and
+returns errors to the caller.
 
 Fail Fast
 """""""""
@@ -443,8 +447,9 @@ The ETW provider GUID for the messaging component is:
 Debug Symbols
 ^^^^^^^^^^^^^
 
-We publish debug symbols for all LwMQ binaries to our symbol server. Debugging
-tools can be configured to automatically retrieve our public symbols when debugging
+We publish debug symbols for all LwMQ binaries to our
+symbol server. Debugging tools can be configured to
+automatically retrieve our public symbols when debugging
 or profiling applications that use LwMQ.
 
 The symbol server URL is:
@@ -453,7 +458,12 @@ The symbol server URL is:
 
    https://www.lwmq.net/symbols
 
-There is no user-browsable content at that address but debugging tools know how to use it.
+There is no user-browsable content at that address but
+debugging tools know how to use it.
+
+Visual Studio can be configured to use our symbol server by
+adding it to the list of symbol servers in the debugging
+options: Tools->Options->Debugging->Symbols.
 
 Exceptions
 ^^^^^^^^^^
