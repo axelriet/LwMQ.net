@@ -23,7 +23,7 @@ Messaging
 
 Messaging is a core feature of LwMQ. It enables processes
 to exchange *messages*, which are structured entities composed
-of one or mode *data frame* and which are sent atomically.
+of one or more *data frame* and which are sent atomically.
 
 At one end of the spectrum of existing messaging systems one
 finds sophisticated message brokers reachable over a network
