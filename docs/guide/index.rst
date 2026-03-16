@@ -521,8 +521,8 @@ the hardware.
 
 Other transports, such as Hyper-V's HvSocket, rely on an existing
 pipe-like infrastructure, while yet other transports, like
-a possible TCP transport, rely on pinned memory windows that
-sit in-between user-mode and kernel-mode to minimize buffer
+a possible TCP transport, rely on pinned memory windows and queues
+that sit in-between user-mode and kernel-mode to minimize buffer
 copies and kernel transitions.
 
 Sender Block Diagram
@@ -567,10 +567,10 @@ The transport buffers are then "shipped" to their respective
 device for actual transport.
 
 The scheduler never waits for potential messages to be posted
-before shipping the buffers to the device. It will club messages
+before shipping the buffers to the devices. It will club messages
 together as they come, but it will ship the buffers as soon as
 the buffers are full or the input queues are empty. The application
-controls the buffer size and their count and can therefore tune
+controls the buffer sizes and their count and can therefore tune
 the system for the best possible performance for the scenario at hand.
 
 A channel can support any number of input queues. Using separate
@@ -583,25 +583,30 @@ threads producing messages, it is advisable to use a queue
 per sending thread to eliminate contentions.
 
 In situations where the application does not control its threads,
-for example when using a task or concurrency framework, LwMQ
-supplies multi-producer queues that implement internal synchronization.
+for example when using a task or concurrency framework, coroutines,
+and other contraptions, LwMQ supplies multi-producer queues that
+implement internal synchronization.
 
-A channel can support an arbitrary number of transport and even
+A channel can support an arbitrary number of transports and even
 multiple instances of the same transport, all of course subjected
-to system limits. When multiple transports are attached to a
-channel, the messages are laid down to each transport buffer
-separately. This is necessary as LwMQ often does not own the
-transport buffer: it often belongs to the device.
+to system limits and a bit of common sense.
+
+When multiple transports are attached to a channel, the messages
+are laid down to each transport buffer separately. This is necessary
+as LwMQ often does not own the transport buffers as they belong to
+the device. There is threfore a linear cost to encoding a message
+to each transport buffer. The application can choose to attach as
+many transports as it needs, but should be mindful of the cost of
+encoding messages to multiple buffers.
 
 Messages must fit in the transport buffers, so the application
 must size the buffers accordingly. If a message is larger than
-the transport buffer size, it is rejected by the message encoder
-and an error is returned to the application. This is the only
-way to ensure true atomic message delivery as any particular
-message is either send and delivered in its entirety or not
-at all.
+the transport buffer size, it is rejected by the message encoder.
+This is the only way to ensure true atomic message delivery
+as any particular message is either send and delivered in its
+entirety or not at all.
 
-LwMQ's channels don't not maintain state related to messages: the
+LwMQ's channels do not maintain state related to messages: the
 application creates messages independently of any channel or connection,
 and adds data frames and content to the message as it sees fit.
 
@@ -614,22 +619,23 @@ transport.
 Not maintaining state at the channel level also solves
 issues inherent to request-response patterns where an application
 can post any number of concurrent requests without waiting for
-any answer, while competing solutions often require the application
+an answer, while competing solutions often require the application
 to wait for the response to a request before posting the next one,
 which is a major bottleneck in concurrent scenarios and also causes
 the sender to be stuck indefinitely if the receiver fails to respond
 for any reason.
 
-LwMQ solves all those problems and more, while providing
-best-in-industry performance and a simple API that can be learned
-and put to work on day one.
+LwMQ solves those problems and more, while providing best-in-industry
+performance and a simple API that can be learned and put to work
+on day one.
 
 Receiver Block Diagram
 ^^^^^^^^^^^^^^^^^^^^^^
 
 On the receiving side, transports are serviced by threads that
 collects messages from incoming transport buffers. The decoded
-messages are then posted to the channel's output queue.
+messages are then posted to the channel's output queue where
+they wait for the application to retrieve them.
 
 .. mermaid::
 
@@ -660,9 +666,9 @@ Inquiries should be directed to info@lwmq.net
 Getting Started
 ---------------
 
-LwMQ is deployed in seconds using standard Windows Installer (MSI) packages,
-and can be used in any application by referencing the appropriate header
-files and linking against the provided libraries.
+LwMQ is deployed in seconds using Windows Installer packages, and can be
+used in any application by referencing the appropriate header files and
+linking against the provided libraries.
 
 Installation
 ^^^^^^^^^^^^
@@ -703,19 +709,19 @@ takes care of counting references and to make sure the latest version of
 the runtime components is present on the system.
 
 Similarly, applications *should* uninstall the runtime package when they
-are uninstalled: the Windows Installer subsystem will take care of removing
+are uninstalled: the Windows Installer subsystem takes care of removing
 the components when they are no longer needed after the last application
 that installed them gets uninstalled.
 
 Alternatively, system administrators can also install the runtime package
-in their base system image or application layer and manage it through their
+in their system image or application layer and manage it through their
 standard fleet update and maintenance process, for example through
 `Microsoft Configuration Manager`_ or other endpoint management system.
 
 .. _Microsoft Configuration Manager: https://learn.microsoft.com/en-us/intune/configmgr/
 
-The installer and all binary files it contains are digitally signed using our
-DigiCert Extended Validation (EV) code signing certificate.
+The installer and all binary files it contains are digitally signed
+using our DigiCert Extended Validation (EV) code signing certificate.
 
 Size: The total size of the installed files is approximately 4MB.
 
@@ -735,12 +741,13 @@ Registry entries, environment variables, and configuration files: None.
 This MSI installation database deploys the development files (headers,
 libraries, debug symbols, samples) needed to develop applications that use LwMQ.
 
-The SDK *also* contains the runtime components, so installing the SDK
-also installs the runtime components. However, the SDK is not meant to
-be deployed on production systems and should only be installed on
-development (and build) machines.
+The SDK *also* deploys the runtime components, so installing the SDK
+is a one-stop solution for development and CI/CD build machines. However,
+the SDK is not meant to be deployed on production systems.
 
-Finally, the SDK includes the redistributable **lwmq.setup.msi** package.
+Finally, the SDK includes the redistributable **lwmq.setup.msi** package
+so the application being built, and in particular its setup system, can
+reference the runtime from a well-known location.
 
 The default installation path for the SDK is **"C:\\Program Files\\LwMQ.SDK"** and contains the following subfolders:
 
