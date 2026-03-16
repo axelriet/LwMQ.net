@@ -15,22 +15,31 @@ inter-process communication systems.
 LwMQ provides messaging, caching, and key-value storage as
 well as supporting features such as hashing, HMAC and
 key generation, data compression, and more. Everything is
-ligweighted and optimized for the best possible performance on
+lightweight and optimized for the best possible performance on
 modern hardware.
 
 Messaging
 ^^^^^^^^^
 
-At one end of the spectrum one finds sophisticated message
-brokers reachable over a network and requiring
-complex deployment, configuration and maintenance, often
-with companies specializing in deploying and supporting
-such systems.
+Messaging is the core feature od LwMW. It enables processes
+to exchange *messages*, which are structured entities composed
+of one or mode *data frame* and which are sent atomically.
+
+At one end of the spectrum of existing messaging systems one
+finds sophisticated message brokers reachable over a network
+and requiring complex deployment, configuration and maintenance,
+often with companies specializing in deploying and supporting
+such systems. These systems often offer strong guarantees such
+as *exactly once* delivery, persistence, message replay, and more.
 
 At the other end of the spectrum one find libraries providing
 message-oriented communication often patterned after well-known
 abstractions such as BSD sockets, enabling local and remote
 communication between processes without an intermediate broker.
+
+These system are lightweight in the sense that they require
+less (or no) administration, but also offer less guarantees,
+often in exchange for more speed.
 
 LwMQ falls on the side of the second category, providing direct
 peer-to-peer inter-process communication without configuration
@@ -54,17 +63,17 @@ own data link and network layers on top if it.
 
 The result is much improved throughput, easily in the
 multi-million messages per second on common hardware for small
-payloads and reaching multi-GB per second with large payloads,
-as well as much reduced latency down to the low nanoseconds
-range for single one-way messages, while the nearest competing
-solutions claim low microseconds latency.
+payloads, and reaching multi-GB per second throughput with large
+payloads, as well as much reduced latency down to the low
+nanoseconds range for single one-way messages, while the
+nearest competing solutions claim low microseconds latency.
 
 Similarly, LwMQ leverages Remote Direct Memory Access (RDMA)
-for remote peer-to-peer communication. RDMA bypasses the
-network stack almost entirely (the technology is known as
-"kernel bypass") and achieves higher throughput and lower
-latency that what can be reached through typical network
-stacks on most operating systems.
+for remote peer-to-peer communication. RDMA is a datacenter
+technology that bypasses the network stack almost entirely (the
+technology is known as "kernel bypass") and achieves higher
+throughput and lower latency that what can be reached through
+typical network stacks on most operating systems.
 
 LwMQ supports three flavors of RDMA through NetworkDirect v2 providers:
 
@@ -74,8 +83,8 @@ LwMQ supports three flavors of RDMA through NetworkDirect v2 providers:
 
    * iWARP (Internet Wide Area RDMA Protocol): Allows RDMA over TCP/IP, which is more scalable over long distances.
 
-LwMQ brings unprecedented local IPC performance without any
-special hardware requirements as well as datacenter-level
+LwMQ brings unprecedented local IPC performance without special
+hardware or software requirements, as well as datacenter-level
 remote IPC performance to regular applications running on regular
 workstations with unprecedented ease of use, provided they are
 equipped with an RDMA-capable network adapter with suitable
@@ -103,20 +112,22 @@ workstations.
 
 LwMQ does is not concerned about the details of the underlying
 physical transport provided the vendor supplies the appropriate
-drivers.
+drivers. Furthermore, LwMQ users are entirely shielded from the
+underlying transport details and can leverage any of the supported
+transports with virtually no change to the code.
 
 Finally, LwMQ supports Hyper-V specific transports that
 enable communication between the Host OS, Guest VMs,
 and Containers without leveraging any network stack at
-all. Communication can be achieved at high speed between
-the host operating system and headless VMs and Containers
-having no virtual network hardware attached.
+all. Communication is achieved at high speed between
+the host operating system and potentially headless VMs
+and Containers having no virtual network hardware attached.
 
 Together, these features enable new scenarios for locally
 distributed and networked application communicating without
 borders at the highest throughput allowed by the hardware.
 
-Nothing prevents LwMQ to also support network protocols
+Nothing prevents LwMQ to also support classic network protocols
 such as regular TCP/IP or UDP, but LwMQ's design revolves
 around a DMA-first architecture that is optimized from
 the ground up for high-speed shared-memory IPC and RDMA,
@@ -133,7 +144,7 @@ and use concurrently.
 
 Ultrafast IPC enables many scenarios including real-time
 financial data dissemination, locally-distributed agents,
-faster AI training and reinforcement learning and inference
+faster AI training, reinforcement learning and inference
 scenarios, delegation of sensitive work to a separate process
 with minimal impact on performance, i.e. fast batching of
 commands to a numeric solver, or a graphic or HTML renderer
@@ -142,13 +153,14 @@ hosted in separate process, container, VM, or computer.
 In these scenarios, LwMQ performs *many time faster* than
 existing solutions, even more so when the current solution
 involves HTTP/2 over a local socket connection such as gRPC
-or a local REST API.
+or a local REST API, not mentioning elastic queues, queue
+priorities, and other features unique to LwMQ.
 
 LRU Caching and Key-Value Storage
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 LRU caching and key-value storage play supporting roles in LwMQ's
-design, as they are often needed to implement applications
+offerings, as they are often needed to implement applications
 that leverage LwMQ's messaging capabilities.
 
 Those features are designed to be used in conjunction with
@@ -161,12 +173,22 @@ millions of entries under *heavy* multithreaded concurrent access,
 and both caches support compression and encryption with per-entry
 entropy.
 
+Both the LRU cache and the segmented LRU cache support multi-million
+retrievals per second, only subject to CPU speed and memory bandwidth
+limitations, with the segmented cache taking the lead in heavily
+contended scenarios, delivering lookup and retrieval rates in the tens
+of millions per second on suitable hardware.
+
+The Key-Value storage enable persistency with optional compression
+at reasonably high speeds, the database being backed by virtual memory,
+and offers a decent tradeoff between speed and durability.
+
 Supporting Features
 ^^^^^^^^^^^^^^^^^^^
 
 Supporting features such as ultrafast 32/64/128-bit hashing, HMACs,
-and key generation, ultrafast LZ4 data compression and other utility
-features complete the offering and enable platform architects to
+and key generation, hyperfast LZ4 data compression and other utility
+features complete the offering and enables platform architects to
 build their solutions with the best possible performance and
 reliability, for example by adding checksums or HMACs to messages
 to detect and prevent data corruption or tampering, or by
@@ -176,7 +198,7 @@ performance.
 
 Depending on the data link speed and congestions, it is sometimes
 advantageous to use some CPU time to compress/decompress data and
-reduce the bandwith requirements for improved overall throughput.
+reduce the bandwidth requirements for improved overall throughput.
 
 Platform
 ^^^^^^^^
@@ -189,9 +211,9 @@ implementation is currently Windows-specific and leverages
 Windows features and APIs to achieve the best possible
 performance.
 
-The author is a firm believer in multiplatform *solutions* but
+The author is a firm believer in multi-platform *solutions* but
 cross-platform *code* often comes with a cost in terms of
-performance and maintainability: sooner or later some compromises
+performance and maintainability: sooner or later compromises
 are made to accommodate the lowest common denominator, and the
 codebase becomes more complex and harder to maintain.
 
@@ -203,8 +225,9 @@ Implementation
 ^^^^^^^^^^^^^^
 
 LwMQ is written in the C programming language following strict
-disciplines mostly found in kernel developement and mission-critical
-software.
+disciplines mostly found in kernel development and mission-critical,
+long-running software. It is suitable for *always on* appliance-type
+software with indefinite uptimes.
 
 The C code is compiled as C++ to benefit from stricter type checking
 of the latter language, a technique now used in the Windows kernel
@@ -215,8 +238,8 @@ The code is designed to be robust and bomb-proof, with a strong
 emphasis on correctness and reliability, while providing
 best-in-industry performance on every aspect.
 
-Some light touches of C++ are used here and there, for example the
-finite-state machine that governs the state of the transports
+Some light touches of proper C++ are used here and there, for example
+the finite-state machine that governs the state of the transports
 is best implemented in C++ [`GoF`_, p. 305ff]
 
 .. _GoF: https://a.co/d/02cPzhzs
@@ -224,8 +247,14 @@ is best implemented in C++ [`GoF`_, p. 305ff]
 Small portions are written in assembly language and the code
 often uses vector instructions (SIMD intrinsics) where appropriate.
 
-LwMQ requires AVX-2 instructions (Haswell, Ryzen, or later) and
+LwMQ *requires* AVX-2 instructions (Haswell, Ryzen, or later) and
 performs exceptionally well on contemporary hardware.
+
+Some features, including compression and encryption and some hashing
+functions, make use of specialized CPU instructions and can take advantage
+of recent advances, such as AES-NI and AVX-512, on suitable hardware
+(e.g. Skylake or later) thanks to runtime dispatching. LwMQ squeezes
+every bit of performance from your hardware!
 
 Philosophy
 ----------
@@ -236,23 +265,23 @@ single-producer unbounded queues, to multi-producer queues
 of various types. The multi-producer queues implement
 synchronization internally and therefore can be accessed
 concurrently from multiple threads without special precautions
-at some slight performance cost.
+at some performance cost.
 
 The single-producer queues are meant to be access strictly
-from one and only one thread (as they don't perform internally
+from one and only one thread (as they don't perform internal
 synchronization) but they offer unprecedented performances
 where queuing a new message only requires a few machine
-instructions without any lock.
+instructions without taking any lock.
 
 LwMQ is therefore flexible and offers more control than
 typical libraries and subsystems, and does not force unwarranted
 cost to applications that don't need a particular guarantee.
 
 Another example of the low-level philosophy that is
-pervasive through the entire design is the in-memory cache,
+pervasive through the entire design is the in-memory LRU cache,
 which does not assume any particular key type.
 
-Most existing caches accept keys in form of a text string, which
+Most existing LRU caches accept keys in form of a text string, which
 in turn makes assumptions about the character type and encoding,
 and the cache designers settled for a particular hash function
 that they think should be suitable for most uses.
@@ -275,12 +304,13 @@ full control over how to create those keys. Some applications
 may find it advantageous to compute or create the keys in
 advance and store them as part of their data. This avoids
 the runtime cost of hashing the data each time a key is
-needed.
+needed. The drawback is it is the application's responsibility
+to ensure the uniqueness of the keys and make them fit into 16 bytes.
 
-The general philosophy is therefore to give maximum control
-to the application and focus on the low-level aspects, with
-a strong emphasis on bomb-proof robustness while providing
-best-in-industry performances on every aspects.
+The general philosophy is to give maximum control to the application
+and focus on the low-level aspects, with a strong emphasis on
+bomb-proof robustness while providing best-in-industry
+performances on every aspects.
 
 Whatever your scenario, LwMQ aims to provide multiple ways
 to efficiently address your needs.
@@ -305,9 +335,8 @@ and drivers.
 .. _Intel QAT: https://www.intel.com/content/www/us/en/architecture-and-technology/intel-quick-assist-technology-overview.html
 
 Ease of use, best in class components that can be composed to
-build your winning solution.
-
-That, in a nutshell, is the philosophy behind LwMQ.
+build your winning solution. That, in a nutshell, is the philosophy
+behind LwMQ.
 
 Application Programming Interface (API)
 ---------------------------------------
@@ -315,16 +344,16 @@ Application Programming Interface (API)
 The API follows a C-style design, with a flat API and
 opaque types, and is designed to be easily callable from C,
 C++, Rust, Go, Python and more. Wrappers and bindings can
-also be created for other languages.
+also be created for almost any language.
 
 The ABI (Application Binary Interface) remains stable between
 releases, ensuring backward compatibility: new versions of
 LwMQ will generally be drop-in replacements for any previous
-versions, meaning the API surface is stable and extensions
+version, meaning the API surface is stable and extensions
 are made by adding new functions and types, rather than
 modifying existing ones. Existing functions will *never* be
 removed, ensuring as much as possible that older applications
-can use newer versions of LwMQ without breaking.
+can use newer versions of LwMQ unmodified and without breaking.
 
 The naming convention is to prefix all API functions with "Lmq"
 and all types with "\L\M\Q\_" (and "\P\L\M\Q\_" for pointers to types)
@@ -334,7 +363,7 @@ The naming format follows the PrefixVerbNoun structure in TitleCase,
 with the verb describing the action performed by the function and
 the noun describing the main entity the function operates on.
 
-For example, LmqCreateChannel() creates new communication channel,
+For example, LmqCreateChannel() creates a new communication channel,
 LmqPostMessage() posts a message to a queue, and so on. No surprises.
 
 Create verbs are complemented by Destroy verbs that free the
@@ -351,12 +380,14 @@ LwMQ embraces a *fail fast* philosophy: when a critical error is detected,
 the process will BugCheck (crash) immediately to prevent any potential
 data corruption or security breach. This occurs when a clear programmer
 error is detected, for example when passing an invalid object handle
-to an API function.
+to an API function. Another reason to fail fast is to capture the state
+of the process as close as possible from the detection of the problem,
+often making diagnosis far easier simply by having the right call stack.
 
 This topic is always controversial in programming circles and subject
 to heated debates, but the author firmly believes that in a low-level library
 such as LwMQ, which is designed to be used in performance-critical and
-mission-critical scenarios, it is better to fail fast and loud rather
+mission-critical scenarios, it is better to fail fast (and loud!) rather
 than silently continue in a potentially corrupted state.
 
 LwMQ components does not fail fast for common errors, but are very strict
@@ -368,7 +399,7 @@ cause more harm.
 Validation
 """"""""""
 
-Exemples of regular error return during parameter validation:
+Examples of regular error return during parameter validation:
 
 .. code:: cpp
 
@@ -388,7 +419,7 @@ returns errors to the caller.
 Fail Fast
 """""""""
 
-Exemple of a bugcheck for a critical programmer error:
+Example of a bugcheck for a critical programmer error:
 
 .. code:: cpp
 
@@ -398,9 +429,9 @@ Exemple of a bugcheck for a critical programmer error:
                        "Invalid compression workspace handle.");
    }
 
-Exemple of a bugcheck for a critical internal error (i.e. a condition
+Example of a bugcheck for a critical internal error (i.e. a condition
 that should never occur regardless of circumstances, and is therefore
-likely a bug that must be adressed):
+likely a bug that must be addressed):
 
 .. code:: cpp
 
@@ -412,16 +443,16 @@ likely a bug that must be adressed):
    }
 
 There are approximately 150 locations across the codebase where LwMQ
-performs critical validations and would bugcheck on errors.
+performs critical validations and would bugcheck on fatal errors.
 
 Tracing and Logging
 """""""""""""""""""
 
 Note that LwMQ uses the error tracing/logging and reporting
 macros provided by the `Window Internal (or Implementation) Libraries (WIL)`_ to
-provide detailed error messages and context when a failure occurs,
+provide detailed error messages and context to the developer when a failure occurs,
 which can be invaluable for debugging and troubleshooting. Most errors have
-an associated message that provides succint details about the specific error
+an associated message that provides succinct details about the specific error
 condition, as illustrated above.
 
 LwMQ also makes *modest* use of the Windows TraceLogging facilities to log
@@ -458,7 +489,7 @@ The symbol server URL is:
 
    https://www.lwmq.net/symbols
 
-There is no user-browsable content at that address but
+There is no user-browseable content at that address but
 debugging tools know how to use it.
 
 Visual Studio can be configured to use our symbol server by
@@ -644,7 +675,7 @@ libraries, and other files needed to develop applications that use LwMQ.
 LwMQ is Datacenter and Host OS-ready: all LwMQ binaries and setup packages
 are `digitally signed`_ with our DigiCert Extended Validation (EV) code
 signing certificate to ensure their authenticity and integrity with the
-higest level of trust.
+highest level of trust.
 
 .. _digitally signed: https://learn.microsoft.com/en-us/windows-hardware/drivers/install/authenticode
 
@@ -701,7 +732,7 @@ Registry entries, environment variables, and configuration files: None.
    lwmq.sdk.setup.msi  Development files for applications using LwMQ
    ==================  =============================================
 
-This MSI installation database deploys the developement files (headers,
+This MSI installation database deploys the development files (headers,
 libraries, debug symbols, samples) needed to develop applications that use LwMQ.
 
 The SDK *also* contains the runtime components, so installing the SDK
@@ -709,7 +740,7 @@ also installs the runtime components. However, the SDK is not meant to
 be deployed on production systems and should only be installed on
 development (and build) machines.
 
-Finally, the SDK includes the redistribuable **lwmq.setup.msi** package.
+Finally, the SDK includes the redistributable **lwmq.setup.msi** package.
 
 The default installation path for the SDK is **"C:\\Program Files\\LwMQ.SDK"** and contains the following subfolders:
 
