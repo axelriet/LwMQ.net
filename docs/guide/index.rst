@@ -21,7 +21,7 @@ modern hardware.
 Messaging
 ^^^^^^^^^
 
-Messaging is the core feature od LwMW. It enables processes
+Messaging is a core feature of LwMQ. It enables processes
 to exchange *messages*, which are structured entities composed
 of one or mode *data frame* and which are sent atomically.
 
