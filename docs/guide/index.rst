@@ -622,7 +622,7 @@ messages are then posted to the channel's output queue.
 Licensing
 ---------
 
-LwMQ's licensing terms are not decided at the time of this writing.
+LwMQ's licensing terms are not decided at this time.
 
 Inquiries should be directed to info@lwmq.net
 
@@ -648,18 +648,93 @@ higest level of trust.
 
 .. _digitally signed: https://learn.microsoft.com/en-us/windows-hardware/drivers/install/authenticode
 
-Runtime Package
-"""""""""""""""
+Deployment Packages
+"""""""""""""""""""
 
-   lwmq.setup.msi
+LwMQ is deployed through standard Windows Installer (MSI) packages, which
+can be easily installed and managed on any Windows system.
 
-SDK Package
-"""""""""""
+.. table::
+   :width: 95%
+   :widths: 33, 66
+   :align: left
 
-   lwmq.sdk.setup.msi
+   ==============  ==============================================
+   Package Name    Description
+   ==============  ==============================================
+   lwmq.setup.msi  Runtime components for applications using LwMQ
+   ==============  ==============================================
+
+This MSI installation database deploys the runtime components of LwMQ to
+the target computer. Every application *should* deploy the runtime package
+to ensure the correct version of the runtime components. The LwMQ installer
+takes care of counting references and to make sure the latest version of
+the runtime components is present on the system.
+
+Similarly, applications *should* uninstall the runtime package when they
+are uninstalled: the Windows Installer subsystem will take care of removing
+the components when they are no longer needed after the last application
+that installed them gets uninstalled.
+
+Alternatively, system administrators can also install the runtime package
+in their base system image or application layer and manage it through their
+standard fleet update and maintenance process, for example through
+`Microsoft Configuration Manager`_ or other endpoint management system.
+
+.. _Microsoft Configuration Manager: https://learn.microsoft.com/en-us/intune/configmgr/
+
+The installer and all binary files it contains are digitally signed using our
+DigiCert Extended Validation (EV) code signing certificate.
+
+Size: The total size of the installed files is approximately 4MB.
+
+Registry entries, environment variables, and configuration files: None.
+
+.. table::
+   :width: 95%
+   :widths: 33, 66
+   :align: left
+
+   ==================  =============================================
+   Package Name        Description
+   ==================  =============================================
+   lwmq.sdk.setup.msi  Development files for applications using LwMQ
+   ==================  =============================================
+
+This MSI installation database deploys the developement files (headers,
+libraries, debug symbols, samples) needed to develop applications that use LwMQ.
+
+The SDK *also* contains the runtime components, so installing the SDK
+also installs the runtime components. However, the SDK is not meant to
+be deployed on production systems and should only be installed on
+development (and build) machines.
+
+Finally, the SDK includes the redistribuable **lwmq.setup.msi** package.
+
+The default installation path for the SDK is **"C:\\Program Files\\LwMQ.SDK"** and contains the following subfolders:
+
+.. table::
+   :width: 95%
+   :widths: 33, 66
+   :align: left
+
+   =============  ========================================================================
+   Subfolder      Description
+   =============  ========================================================================
+   inc            Header files needed to develop applications
+   -------------  ------------------------------------------------------------------------
+   lib            Import libraries needed to link applications
+   -------------  ------------------------------------------------------------------------
+   pdb            Debug symbols
+   -------------  ------------------------------------------------------------------------
+   tools          Command-line tools for testing LwMQ
+   -------------  ------------------------------------------------------------------------
+   redist         Redistributable files
+   -------------  ------------------------------------------------------------------------
+   samples        Sample applications
+   =============  ========================================================================
 
 Samples
 -------
 
    TBD
-
