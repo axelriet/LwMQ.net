@@ -51,65 +51,67 @@ Optionally, the segmented cache supports data compression (LZ4,
 and hardware deflate through Intel QAT for very large payloads)
 and AES-GCM encryption.
 
-It is up to the application to supply the cache keys, which are
-in the form of an opaque 16-bytes array. The keys can be derived
-from hashing a string or byte array, or can be Globally unique
-Identifiers (GUIDs).
+.. note::
 
-LwMQ supplies functions to hash any string or byte array into
-a 128-bit key suitable for use with the cache, see
-LmqCacheKeyFromString() and LmqCacheKeyFromByteArray(), however
-it should be observed that hash functions are not immune to
-collisions.
+    It is up to the application to supply the cache keys, which are
+    in the form of an opaque 16-bytes array. The keys can be derived
+    from hashing a string or byte array, or can be Globally unique
+    Identifiers (GUIDs).
 
-The cache only stores unique keys. If the same key is added twice,
-the previous copy of the data associated with the key is discarded
-and replaced by the new data.
+    LwMQ supplies functions to hash any string or byte array into
+    a 128-bit key suitable for use with the cache, see
+    LmqCacheKeyFromString() and LmqCacheKeyFromByteArray(), however
+    it should be observed that hash functions are not immune to
+    collisions.
 
-This causes a theoretical risk in case of hash collision, where
-two different keys hash to the same value. The risk is that the
-second insertion overwrites the first, and querying using the
-first key will return the data from the second key.
+    The cache only stores unique keys. If the same key is added twice,
+    the previous copy of the data associated with the key is discarded
+    and replaced by the new data.
 
-This risk is to be considered depending on the application. It is,
-however extremely unlikely that two similar keys ends up hashing
-to the same 128-bit value.
+    This causes a theoretical risk in case of hash collision, where
+    two different keys hash to the same value. The risk is that the
+    second insertion overwrites the first, and querying using the
+    first key will return the data from the second key.
 
-To keep things in perspective, 2^128 is commensurate to the number
-of atoms in the known universe. That is a very large key space.
+    This risk is to be considered depending on the application. It is,
+    however extremely unlikely that two similar keys ends up hashing
+    to the same 128-bit value.
 
-Good hash functions have a property called the avalanche effect
-where most bits of the output change with a single bit change in
-the input.
+    To keep things in perspective, 2^128 is commensurate to the number
+    of atoms in the known universe. That is a very large key space.
 
-While hashing is by nature a `surjective`_ function and that there is,
-in theory, indefinitely many ways of producing the same hash when
-considering all possible inputs (all bytes ranges of any lengths that
-could possibly be conceived) it is *very* unlikely that a collision occurs
-when hashing common data types into a 128-bit hash.
+    Good hash functions have a property called the avalanche effect
+    where most bits of the output change with a single bit change in
+    the input.
 
-.. _surjective: https://en.wikipedia.org/wiki/Surjective_function
+    While hashing is by nature a `surjective`_ function and that there is,
+    in theory, indefinitely many ways of producing the same hash when
+    considering all possible inputs (all bytes ranges of any lengths that
+    could possibly be conceived) it is *very* unlikely that a collision occurs
+    when hashing common data types into a 128-bit hash.
 
-Also, most people associate hashing and collisions in the context
-of a hash table, forgetting that the hash is always truncated modulo
-the number of buckets in the table, which is always a small
-number commensurate to  the number of elements in the table, times
-some (small) factor. Most collisions in hash tables come from the
-(surjective) modulo operation, not from the hash function which
-has a much larger `codomain`_.
+    .. _surjective: https://en.wikipedia.org/wiki/Surjective_function
 
-.. _codomain: https://en.wikipedia.org/wiki/Codomain
+    Also, most people associate hashing and collisions in the context
+    of a hash table, forgetting that the hash is always truncated modulo
+    the number of buckets in the table, which is always a small
+    number commensurate to  the number of elements in the table, times
+    some (small) factor. Most collisions in hash tables come from the
+    (surjective) modulo operation, not from the hash function which
+    has a much larger `codomain`_.
 
-Bottom line, always be cautious when using hash functions. If you
-want to alleviate any collision risk, use a GUID as key, and store
-it with your data.
+    .. _codomain: https://en.wikipedia.org/wiki/Codomain
 
-For example, say you have a session ID of some kind in your system.
+    Bottom line, always be cautious when using hash functions. If you
+    want to alleviate any collision risk, use a GUID as key, and store
+    it with your data.
 
-Do not hash the session ID to make a key. Instead, create a unique
-key (for example using LmqMakeRfc4122CacheKey()) and use it as
-session key. This way, no computation is needed when retrieving
-the cached session entry as the session key *is* the cache key.
+    For example, say you have a session ID of some kind in your system.
+
+    Do not hash the session ID to make a key. Instead, create a unique
+    key (for example using LmqMakeRfc4122CacheKey()) and use it as
+    session key. This way, no computation is needed when retrieving
+    the cached session entry as the session key *is* the cache key.
 
 C and C++ Header File
 =====================
