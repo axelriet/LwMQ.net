@@ -97,16 +97,92 @@
              
   <section id="lwmq-caching-api">
 <h1>LwMQ Caching API<a class="headerlink" href="#lwmq-caching-api" title="Link to this heading"></a></h1>
-<p>LwMQ provides a caching API that allow applications to create and manage in-memory caches for various purposes such as storing frequently accessed data, results of expensive computations, and more, either in raw, encrypted, compressed, or compressed and encrypted form.</p>
-<p>The cache scavenging strategy implemented in the LwMQ in-memory cache is Last Recently Used (LRU) and supports features such as time-to-live (TTL) for cache entries, encryption with additional per-entry entropy.</p>
-<p>The cache is passive in the sense that it does not use a background thread for housekeeping. It is designed to be fast and efficient in situations with low to moderate contentions, making use of modern processor capabilities, with cache operation in the millions of operations per second on a single thread.</p>
-<p>The in-memory cache supports terabytes of RAM and can be extended at runtime. It implements a custom memory management scheme that requests huge blocks directly from the system’s virtual memory manager for internal data structures.</p>
-<p>It is suitable for low-contentions scenarios where only one or a few threads concurrently add and retrieve data from the cache. For highly concurrent scenarios, LwMQ provides a segmented cache that is designed for high performance with many threads concurrently accessing the cache.</p>
-<p>The cache also supports an elaborate “read through” mechanism that allow applications to provide a callback for cache misses, which is invoked by the cache when a cache miss occurs.</p>
-<p>The callback can then compute the value for the missing key and add it to the cache, allowing the original cache lookup to succeed without the caller having to implement its own retry logic.</p>
-<p>This callback mechanism is designed to be efficient and to minimize latency for cache misses, making it suitable for scenarios where cache misses are expected but should be handled gracefully without significant performance degradation.</p>
-<p>The cache also ensures correctness in concurrent scenarios where exactly one thread reads through while any other thread concurrently waiting for the same key blocks until it becomes available.</p>
-<p>Optionally, the segmented cache supports data compression (LZ4, and hardware deflate through Intel QAT for very large payloads) and AES-GCM encryption.</p>
+<p>LwMQ provides a caching API that allow applications to create
+and manage in-memory caches for various purposes such as storing
+frequently accessed data, results of expensive computations, and
+more, either in raw, encrypted, compressed, or compressed and
+encrypted form.</p>
+<p>The cache scavenging strategy implemented in the LwMQ in-memory
+cache is Last Recently Used (LRU) and supports features such as
+time-to-live (TTL) for cache entries, encryption with additional
+per-entry entropy.</p>
+<p>The cache is passive in the sense that it does not use a background
+thread for housekeeping. It is designed to be fast and efficient in
+situations with low to moderate contentions, making use of modern
+processor capabilities, with cache operation in the millions of
+operations per second on a single thread for small payloads.</p>
+<p>The in-memory cache supports terabytes of RAM and can be extended
+at runtime. It implements a custom memory management scheme that
+requests huge blocks directly from the system’s virtual memory
+manager for internal data structures.</p>
+<p>It is suitable for low-contentions scenarios where only one or a
+few threads concurrently add and retrieve data from the cache. For
+highly concurrent scenarios, LwMQ provides a segmented cache that is
+designed for high performance with many threads concurrently
+accessing the cache.</p>
+<p>The cache also supports an elaborate “read through” mechanism that
+allow applications to provide a callback for cache misses, which
+is invoked by the cache when a cache miss occurs.</p>
+<p>The callback can then compute the value for the missing key and add
+it to the cache, allowing the original cache lookup to succeed
+without the caller having to implement its own retry logic.</p>
+<p>This callback mechanism is designed to be efficient and to minimize
+latency for cache misses, making it suitable for scenarios where
+cache misses are expected but should be handled gracefully without
+significant performance degradation.</p>
+<p>The cache also ensures correctness in concurrent scenarios where
+exactly one thread reads through while any other thread concurrently
+waiting for the same key blocks until it becomes available.</p>
+<p>Optionally, the segmented cache supports data compression (LZ4,
+and hardware deflate through Intel QAT for very large payloads)
+and AES-GCM encryption.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is up to the application to supply the cache keys, which are
+in the form of an opaque 16-bytes array. The keys can be derived
+from hashing a string or byte array, or can be Globally unique
+Identifiers (GUIDs).</p>
+<p>LwMQ supplies functions to hash any string or byte array into
+a 128-bit key suitable for use with the cache, see
+LmqCacheKeyFromString() and LmqCacheKeyFromByteArray(), however
+it should be observed that hash functions are not immune to
+collisions.</p>
+<p>The cache only stores unique keys. If the same key is added twice,
+the previous copy of the data associated with the key is discarded
+and replaced by the new data.</p>
+<p>This causes a theoretical risk in case of hash collision, where
+two different keys hash to the same value. The risk is that the
+second insertion overwrites the first, and querying using the
+first key will return the data from the second key.</p>
+<p>This risk is to be considered depending on the application. It is,
+however extremely unlikely that two similar keys ends up hashing
+to the same 128-bit value.</p>
+<p>To keep things in perspective, 2^128 is commensurate to the number
+of atoms in the known universe. That is a very large key space.</p>
+<p>Good hash functions have a property called the avalanche effect
+where most bits of the output change with a single bit change in
+the input.</p>
+<p>While hashing is by nature a <a class="reference external" href="https://en.wikipedia.org/wiki/Surjective_function">surjective</a> function and that there is,
+in theory, indefinitely many ways of producing the same hash when
+considering all possible inputs (all bytes ranges of any lengths that
+could possibly be conceived) it is <em>very</em> unlikely that a collision occurs
+when hashing common data types into a 128-bit hash.</p>
+<p>Also, most people associate hashing and collisions in the context
+of a hash table, forgetting that the hash is always truncated modulo
+the number of buckets in the table, which is always a small
+number commensurate to  the number of elements in the table, times
+some (small) factor. Most collisions in hash tables come from the
+(surjective) modulo operation, not from the hash function which
+has a much larger <a class="reference external" href="https://en.wikipedia.org/wiki/Codomain">codomain</a>.</p>
+<p>Bottom line, always be cautious when using hash functions. If you
+want to alleviate any collision risk, use a GUID as key, and store
+it with your data.</p>
+<p>For example, say you have a session ID of some kind in your system.</p>
+<p>Do not hash the session ID to make a key. Instead, create a unique
+key (for example using LmqMakeRfc4122CacheKey()) and use it as
+session key. This way, no computation is needed when retrieving
+the cached session entry as the session key <em>is</em> the cache key.</p>
+</div>
 <section id="c-and-c-header-file">
 <h2>C and C++ Header File<a class="headerlink" href="#c-and-c-header-file" title="Link to this heading"></a></h2>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;api-lwmq-cache.h&gt;</span>
