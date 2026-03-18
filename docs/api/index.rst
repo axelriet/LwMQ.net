@@ -1,16 +1,13 @@
-******************
+##################
 LwMQ API Reference
-******************
+##################
 
 .. note::
 
-   Under construction. Most of the reference sections are in various stage of completion.
-
-Contents
-========
+   Under construction.
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    
    messaging
    caching

@@ -60,7 +60,7 @@ and AES-GCM encryption.
 
     LwMQ supplies functions to hash any string or byte array into
     a 128-bit key suitable for use with the cache, see
-    LmqCacheKeyFromString() and LmqCacheKeyFromByteArray(), however
+    ``LmqCacheKeyFromString()`` and ``LmqCacheKeyFromByteArray()``, however
     it should be observed that hash functions are not immune to
     collisions.
 
@@ -109,7 +109,7 @@ and AES-GCM encryption.
     For example, say you have a session ID of some kind in your system.
 
     Do not hash the session ID to make a key. Instead, create a unique
-    key (for example using LmqMakeRfc4122CacheKey()) and use it as
+    key (for example using ``LmqMakeRfc4122CacheKey()``) and use it as
     session key. This way, no computation is needed when retrieving
     the cached session entry as the session key *is* the cache key.
 

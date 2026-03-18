@@ -49,15 +49,12 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../guide/index.html">LwMQ User Guide</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">LwMQ API Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#contents">Contents</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="messaging.html">LwMQ Messaging API</a></li>
-<li class="toctree-l3"><a class="reference internal" href="caching.html">LwMQ Caching API</a></li>
-<li class="toctree-l3"><a class="reference internal" href="segmented-cache.html">LwMQ Segmented Cache API</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hashing.html">LwMQ Hashing API</a></li>
-<li class="toctree-l3"><a class="reference internal" href="storage.html">LwMQ Storage API</a></li>
-<li class="toctree-l3"><a class="reference internal" href="compression.html">LwMQ Compression API</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="messaging.html">LwMQ Messaging API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="caching.html">LwMQ Caching API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="segmented-cache.html">LwMQ Segmented Cache API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hashing.html">LwMQ Hashing API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="storage.html">LwMQ Storage API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compression.html">LwMQ Compression API</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../transports/index.html">LwMQ Transports</a></li>
@@ -92,21 +89,59 @@
 <h1>LwMQ API Reference<a class="headerlink" href="#lwmq-api-reference" title="Link to this heading"></a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Under construction. Most of the reference sections are in various stage of completion.</p>
+<p>Under construction.</p>
 </div>
-<section id="contents">
-<h2>Contents<a class="headerlink" href="#contents" title="Link to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="messaging.html">LwMQ Messaging API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="caching.html">LwMQ Caching API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="segmented-cache.html">LwMQ Segmented Cache API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hashing.html">LwMQ Hashing API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="storage.html">LwMQ Storage API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="compression.html">LwMQ Compression API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="messaging.html">LwMQ Messaging API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="messaging.html#c-and-c-header-file">C and C++ Header File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="messaging.html#binaries">Binaries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="messaging.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="messaging.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="messaging.html#id1">Initialization and Termination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="messaging.html#messages">Messages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="messaging.html#id4">Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="messaging.html#id9">Transports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="messaging.html#posting-and-receiving">Posting and Receiving</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="caching.html">LwMQ Caching API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="caching.html#c-and-c-header-file">C and C++ Header File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="caching.html#binaries">Binaries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="caching.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="caching.html#overview">Overview</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="segmented-cache.html">LwMQ Segmented Cache API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="segmented-cache.html#c-and-c-header-file">C and C++ Header File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="segmented-cache.html#binaries">Binaries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="segmented-cache.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="segmented-cache.html#overview">Overview</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="hashing.html">LwMQ Hashing API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hashing.html#c-and-c-header-file">C and C++ Header File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hashing.html#binaries">Binaries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hashing.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hashing.html#overview">Overview</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="storage.html">LwMQ Storage API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="storage.html#c-and-c-header-file">C and C++ Header File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="storage.html#binaries">Binaries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="storage.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="storage.html#overview">Overview</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="compression.html">LwMQ Compression API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="compression.html#c-and-c-header-file">C and C++ Header File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compression.html#binaries">Binaries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compression.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compression.html#overview">Overview</a></li>
+</ul>
+</li>
 </ul>
 </div>
-</section>
 </section>
 
 

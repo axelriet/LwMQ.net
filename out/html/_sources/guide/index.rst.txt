@@ -1,5 +1,6 @@
+###############
 LwMQ User Guide
-===============
+###############
 
 .. note::
 
@@ -338,8 +339,8 @@ Ease of use, best in class components that can be composed to
 build your winning solution. That, in a nutshell, is the philosophy
 behind LwMQ.
 
-Application Programming Interface (API)
----------------------------------------
+API
+---
 
 The API follows a C-style design, with a flat API and
 opaque types, and is designed to be easily callable from C,

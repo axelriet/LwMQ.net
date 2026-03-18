@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LwMQ Transports &mdash; LwMQ 1.0 documentation</title>
+  <title>LwMQ RDMA Transport &mdash; LwMQ 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=4b23a867" />
@@ -23,8 +23,8 @@
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="LwMQ IPC Transport" href="ipc.html" />
-    <link rel="prev" title="LwMQ Compression API" href="../api/compression.html" /> 
+    <link rel="next" title="LwMQ Transport Layer Interface" href="tli.html" />
+    <link rel="prev" title="LwMQ IPC Transport" href="ipc.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -49,9 +49,9 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../guide/index.html">LwMQ User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/index.html">LwMQ API Reference</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">LwMQ Transports</a><ul>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">LwMQ Transports</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="ipc.html">LwMQ IPC Transport</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rdma.html">LwMQ RDMA Transport</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">LwMQ RDMA Transport</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tli.html">LwMQ Transport Layer Interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="wire-format.html">LwMQ Wire Format</a></li>
 </ul>
@@ -73,9 +73,10 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">LwMQ Transports</li>
+          <li class="breadcrumb-item"><a href="index.html">LwMQ Transports</a></li>
+      <li class="breadcrumb-item active">LwMQ RDMA Transport</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/transports/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/transports/rdma.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -83,25 +84,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="lwmq-transports">
-<h1>LwMQ Transports<a class="headerlink" href="#lwmq-transports" title="Link to this heading"></a></h1>
-<p>LwMQ supports multiple transports, which are the underlying communication mechanisms used to send messages between processes. The transport layer is designed to be modular and extensible, allowing for different transport implementations to be used based on the needs of the application and the environment in which it is running.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="ipc.html">LwMQ IPC Transport</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rdma.html">LwMQ RDMA Transport</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tli.html">LwMQ Transport Layer Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="wire-format.html">LwMQ Wire Format</a></li>
-</ul>
-</div>
+  <section id="lwmq-rdma-transport">
+<h1>LwMQ RDMA Transport<a class="headerlink" href="#lwmq-rdma-transport" title="Link to this heading"></a></h1>
+<p>Under construction.</p>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../api/compression.html" class="btn btn-neutral float-left" title="LwMQ Compression API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="ipc.html" class="btn btn-neutral float-right" title="LwMQ IPC Transport" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="ipc.html" class="btn btn-neutral float-left" title="LwMQ IPC Transport" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tli.html" class="btn btn-neutral float-right" title="LwMQ Transport Layer Interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -49,21 +49,22 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../guide/index.html">LwMQ User Guide</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">LwMQ API Reference</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="index.html#contents">Contents</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="messaging.html">LwMQ Messaging API</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">LwMQ Caching API</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#c-and-c-header-file">C and C++ Header File</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#binaries">Binaries</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#dependencies">Dependencies</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="messaging.html">LwMQ Messaging API</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">LwMQ Caching API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#c-and-c-header-file">C and C++ Header File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#binaries">Binaries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#types">Types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#in-memory-cache-functions">In-Memory Cache Functions</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="segmented-cache.html">LwMQ Segmented Cache API</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hashing.html">LwMQ Hashing API</a></li>
-<li class="toctree-l3"><a class="reference internal" href="storage.html">LwMQ Storage API</a></li>
-<li class="toctree-l3"><a class="reference internal" href="compression.html">LwMQ Compression API</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="segmented-cache.html">LwMQ Segmented Cache API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hashing.html">LwMQ Hashing API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="storage.html">LwMQ Storage API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compression.html">LwMQ Compression API</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../transports/index.html">LwMQ Transports</a></li>
@@ -144,7 +145,7 @@ from hashing a string or byte array, or can be Globally unique
 Identifiers (GUIDs).</p>
 <p>LwMQ supplies functions to hash any string or byte array into
 a 128-bit key suitable for use with the cache, see
-LmqCacheKeyFromString() and LmqCacheKeyFromByteArray(), however
+<code class="docutils literal notranslate"><span class="pre">LmqCacheKeyFromString()</span></code> and <code class="docutils literal notranslate"><span class="pre">LmqCacheKeyFromByteArray()</span></code>, however
 it should be observed that hash functions are not immune to
 collisions.</p>
 <p>The cache only stores unique keys. If the same key is added twice,
@@ -179,7 +180,7 @@ want to alleviate any collision risk, use a GUID as key, and store
 it with your data.</p>
 <p>For example, say you have a session ID of some kind in your system.</p>
 <p>Do not hash the session ID to make a key. Instead, create a unique
-key (for example using LmqMakeRfc4122CacheKey()) and use it as
+key (for example using <code class="docutils literal notranslate"><span class="pre">LmqMakeRfc4122CacheKey()</span></code>) and use it as
 session key. This way, no computation is needed when retrieving
 the cached session entry as the session key <em>is</em> the cache key.</p>
 </div>

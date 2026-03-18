@@ -1,0 +1,252 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LwMQ IPC Transport &mdash; LwMQ 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=4b23a867" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="https://www.googletagmanager.com/gtag/js?id=G-VW7BZSSV48"></script>
+      <script src="../_static/ga.js?v=3f0458de"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="LwMQ RDMA Transport" href="rdma.html" />
+    <link rel="prev" title="LwMQ Transports" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            LwMQ
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../guide/index.html">LwMQ User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">LwMQ API Reference</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">LwMQ Transports</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">LwMQ IPC Transport</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#uri-format">Uri Format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adding-an-ipc-transport">Adding an IPC Transport</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#control-codes">Control Codes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rdma.html">LwMQ RDMA Transport</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tli.html">LwMQ Transport Layer Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wire-format.html">LwMQ Wire Format</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About LwMQ</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">LwMQ</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">LwMQ Transports</a></li>
+      <li class="breadcrumb-item active">LwMQ IPC Transport</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/transports/ipc.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="lwmq-ipc-transport">
+<h1>LwMQ IPC Transport<a class="headerlink" href="#lwmq-ipc-transport" title="Link to this heading"></a></h1>
+<p>LwMQ’s IPC transport is a high-performance inter-process
+communication transport based on shared memory. It is designed
+for low latency and high throughput communication between
+processes on the same machine, and can achieve millions
+of messages per second with nanosecond-level latency on
+modern hardware.</p>
+<section id="uri-format">
+<h2>Uri Format<a class="headerlink" href="#uri-format" title="Link to this heading"></a></h2>
+<p>The Uri format for the IPC transport is: <code class="docutils literal notranslate"><span class="pre">ipc://address[:port]</span></code></p>
+<p>Where:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">address</span></code> is the name of the shared memory segment to use for communication. It can be any string, but it is recommended to use a unique name to avoid conflicts with other applications. The recommended format is company/product/channel_name. Keep the length <em>less than</em> 120 characters.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">port</span></code> is an optional parameter that can be used to specify a port number for the transport. This parameter is optionnal, is not a real port number and can be anything that fits into an unsigned short, except zero: the range is therefore [1..65535]</p></li>
+</ul>
+</div></blockquote>
+<p>The format is deliberately chosen to look familiar to users of network transports,
+while being flexible enough to allow for future extensions and variations
+of the transport. The <code class="docutils literal notranslate"><span class="pre">port</span></code> parameter is not used by the IPC transport
+itself, but can be used by applications to differentiate between different
+channels or instances of the transport.</p>
+<p>The IPC transport does not use the file system for communication, and therefore does
+not require a file path, and no file gets created on the file system for the transport.</p>
+<p>There are no particular convention or special characters for the address except that
+it is passed as a null-terminated Unicode (UTF-16) string, and that the total length
+of the address part should be <em>less than 120 characters</em> to fit into LwMQ’s internal
+address representation. The only reserved character is the colon (“:”) which is
+used to separate the address from the optional port number, and therefore cannot
+be used in the address itself. The scheme (“ipc://”) and the optional port number
+do <em>not</em> count against the less than 120 characters limit for the address.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The IPC transport requires the processes using it to have the necessary
+permissions to create and access shared memory segments on the system.
+On Windows, this requires the processes to have the <code class="docutils literal notranslate"><span class="pre">SeCreateGlobalPrivilege</span></code>.</p>
+<p>By default, only Services and members of the Administrator group
+can create global objects but an adminstrator can grant this privilege
+to any user account or group, for example Authenticated Users,
+to allow any process or service running under that account or group to use
+the IPC transport.</p>
+<p>You can assign the required privilege to the account or the group the account
+belongs to using the Local Security Policy editor (type ‘local security policy’
+in the start menu)</p>
+<dl class="simple">
+<dt>Local Security Policy</dt><dd><dl class="simple">
+<dt>Security Settings</dt><dd><dl class="simple">
+<dt>Local Policies</dt><dd><dl class="simple">
+<dt>User Rights Assignment</dt><dd><dl class="simple">
+<dt>Create global objects</dt><dd><dl class="simple">
+<dt>Properties</dt><dd><p>Add User or Group…</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</div>
+</section>
+<section id="adding-an-ipc-transport">
+<h2>Adding an IPC Transport<a class="headerlink" href="#adding-an-ipc-transport" title="Link to this heading"></a></h2>
+<p>Instance of the IPC transports are added to channels uing the <code class="docutils literal notranslate"><span class="pre">LmqAddTransport()</span></code> function, with the transport descriptor being an Uri in the above format</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
+<span class="nf">LmqAddTransport</span><span class="w"> </span><span class="p">(</span>
+<span class="w">   </span><span class="n">LMQ_CHANNEL</span><span class="w"> </span><span class="n">Channel</span><span class="p">,</span>
+<span class="w">   </span><span class="n">PCWSTR</span><span class="w"> </span><span class="n">TransportDescriptor</span><span class="p">,</span>
+<span class="w">   </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">BufferSizeBytes</span><span class="p">,</span>
+<span class="w">   </span><span class="n">LONG</span><span class="w"> </span><span class="n">MaxPendingSendBuffers</span><span class="p">,</span>
+<span class="w">   </span><span class="n">LONG</span><span class="w"> </span><span class="n">MaxPendingReceiveBuffers</span><span class="p">,</span>
+<span class="w">   </span><span class="n">UINT32</span><span class="w"> </span><span class="n">CreationFlags</span><span class="p">,</span>
+<span class="w">   </span><span class="n">PLMQ_TRANSPORT</span><span class="w"> </span><span class="n">Transport</span>
+<span class="w">   </span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Where:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">TransportDescriptor</span></code> - For example “ipc://mycompany/myproduct/mychannel:1234”</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BufferSizeBytes</span></code> - Some large figure able to accomodate at lease one copy of the largest message expected to be sent over the transport, for example 16*1024 for 16KB messages + 1KB for encoding overhead. To allow message clubbing, consider a larger size, for example 1MB + 4KB. In server scenarios you can consider much larger sizes depending on expected usage.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MaxPendingSendBuffers</span></code> - The maximum number of send buffers that can be pending at any given time. This should be set to a value that is large enough to accommodate the expected message traffic, but not too large to cause excessive memory usage. Consider <em>at least</em> two send buffers, and expect peak performance with the IPC transport around 4 to 8 buffers.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MaxPendingReceiveBuffers</span></code> - The maximum number of receive buffers that can be pending at any given time. This should be set to a value that is large enough to accommodate the expected message traffic, but not too large to cause excessive memory usage. Consider <em>at least</em> two receive buffers, and expect peak performance with the IPC transport around 4 to 8 buffers.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CreationFlags</span></code> - TRANSPORT_CREATIONFLAGS_SEND, TRANSPORT_CREATIONFLAGS_RECEIVE, or TRANSPORT_CREATIONFLAGS_SENDRECEIVE. If a transport only <em>sends</em>, the number of <em>receive</em> buffers must be zero, and vice-versa.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Transport</span></code> - [Optional] Receives the created transport instance for use with <code class="docutils literal notranslate"><span class="pre">LmqTransportControl()</span></code>. In most instances, simply pass a null.</p></li>
+</ul>
+</div></blockquote>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>If adding multiple instances of <em>any</em> transport to the <em>same</em> channel, the <code class="docutils literal notranslate"><span class="pre">BufferSizeBytes</span></code> must be identical across all instances of all transports on that channel. The number of pending send/receive buffers can vary according to the transport type and traffic characteristics.</p>
+</div>
+</section>
+<section id="control-codes">
+<h2>Control Codes<a class="headerlink" href="#control-codes" title="Link to this heading"></a></h2>
+<p>The IPC transport supports the following control codes for use with <code class="docutils literal notranslate"><span class="pre">LmqTransportControl()</span></code>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">LMQ_TRANSPORTCONTROL_SETCLIENTCONNECTIONRETRYINTERVALMS</span></code> - (ULONG) Sets the retry interval in milliseconds for client connections. The default value is 100ms.</p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
+<span class="nf">LmqTransportControl</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_TRANSPORT</span><span class="w"> </span><span class="n">Transport</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ULONG</span><span class="w"> </span><span class="n">ControlCode</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">InputBuffer</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ULONG</span><span class="w"> </span><span class="n">InputBufferLengthBytes</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">OutputBuffer</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ULONG</span><span class="w"> </span><span class="n">OutputBufferLengthBytes</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PULONG</span><span class="w"> </span><span class="n">BytesReturned</span>
+<span class="w">    </span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Where:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Transport</span></code> - The transport instance to control, obtained from <code class="docutils literal notranslate"><span class="pre">LmqAddTransport()</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ControlCode</span></code> - One of the control codes shown above.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">InputBuffer</span></code> - A pointer to a buffer that contains the input data for the control code. For example, a pointer to an ULONG value that specifies the retry interval in milliseconds for client connections.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">InputBufferLengthBytes</span></code> - The length of the input buffer in bytes. For example, sizeof(ULONG) for an ULONG value.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">OutputBuffer</span></code> - A pointer to a buffer that receives the output data for the control code. This parameter is optional and must be null if the control code does not produce any output data.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">OutputBufferLengthBytes</span></code> - The length of the output buffer in bytes. This parameter is optional and must be zero if the control code does not produce any output data.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BytesReturned</span></code> - A pointer to a ULONG variable that receives the number of bytes returned in the output buffer. This parameter is optional and must be null if the control code does not produce any output data.</p></li>
+</ul>
+</div></blockquote>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="LwMQ Transports" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="rdma.html" class="btn btn-neutral float-right" title="LwMQ RDMA Transport" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Axel Rietschin Software Development, LLC.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
