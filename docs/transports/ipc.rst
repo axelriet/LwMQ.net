@@ -168,5 +168,14 @@ to be an unfortunate side effect of a process crashing. It goes the same
 for network connection where any data buffered or packet queued but not
 yet sent will be lost. However, we are working hard to ensure reasonable
 behavior in case of application crash, where the side that has crashed
-can reconnect seamlessly if restarted.
+can reconnect seamlessly if restarted to ensure resilience.
+
+As its stands we *just* (late March 2026) got accepted into the Microsoft
+Windows Hardware Compatibility Program (WHCP) which allows us to
+submit kernel drivers for certification. Stay tuned...
+
+.. image:: ../_static/img/Windows_HW_h_rgb_blk_5mm.png
+   :scale: 50%
+   :alt: Microsoft Windows Hardware Compatibility Program (WHCP) Logo
+   :target: https://learn.microsoft.com/en-us/windows-hardware/design/compatibility/
 

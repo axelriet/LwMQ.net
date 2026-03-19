@@ -49,26 +49,56 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../guide/index.html">LwMQ User Guide</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">LwMQ API Reference</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="index.html#contents">Contents</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">LwMQ Messaging API</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#c-and-c-header-file">C and C++ Header File</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#binaries">Binaries</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#dependencies">Dependencies</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#overview">Overview</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id1">Initialization and Termination</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#messages">Messages</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id4">Channels</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id9">Transports</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#posting-and-receiving">Posting and Receiving</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">LwMQ Messaging API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#c-and-c-header-file">C and C++ Header File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#binaries">Binaries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#types">Types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#initialization-and-termination">Initialization and Termination</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#channels">Channels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#queues">Queues</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#transports">Transports</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#messages-frames">Messages &amp; Frames</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#send-and-receive">Send and Receive</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="caching.html">LwMQ Caching API</a></li>
-<li class="toctree-l3"><a class="reference internal" href="segmented-cache.html">LwMQ Segmented Cache API</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hashing.html">LwMQ Hashing API</a></li>
-<li class="toctree-l3"><a class="reference internal" href="storage.html">LwMQ Storage API</a></li>
-<li class="toctree-l3"><a class="reference internal" href="compression.html">LwMQ Compression API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Initialization and Termination</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#macros">Macros</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#functions">Functions</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#messages">Messages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">Types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Channels</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id5">Types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id6">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id7">Types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id8">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">Transports</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id10">Types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id11">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#posting-and-receiving">Posting and Receiving</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#c.LmqPostMessage"><code class="docutils literal notranslate"><span class="pre">LmqPostMessage()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#c.LmqPostMessageWithTag"><code class="docutils literal notranslate"><span class="pre">LmqPostMessageWithTag()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#c.LmqReceiveMessage"><code class="docutils literal notranslate"><span class="pre">LmqReceiveMessage()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#c.LmqDisposeReceivedMessage"><code class="docutils literal notranslate"><span class="pre">LmqDisposeReceivedMessage()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="caching.html">LwMQ Caching API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="segmented-cache.html">LwMQ Segmented Cache API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hashing.html">LwMQ Hashing API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="storage.html">LwMQ Storage API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compression.html">LwMQ Compression API</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../transports/index.html">LwMQ Transports</a></li>
