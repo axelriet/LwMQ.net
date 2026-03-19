@@ -17,7 +17,7 @@ The Uri format for the IPC transport is: ``ipc://address[:port]``
 Where:
 
    - ``address`` is the name of the shared memory section to use for communication. It can be any string, but it is recommended to use a unique name to avoid conflicts with other applications. The recommended format is company/product/channel_name. Keep the length *less than 120 characters*.
-   - ``port`` is an optional parameter that can be used to specify a port number for the transport. This parameter is optional, is not a real port number and can be anything that fits into an unsigned short, except zero: the range is therefore [1..65535] 
+   - ``port`` is an optional parameter that can be used to specify a port number for the transport. This parameter is entirely optional and is not a real port number and can be anything that fits into an unsigned short, except zero: the range is therefore [1..65535] 
 
 The format is deliberately chosen to look familiar to users of network transports,
 while being flexible enough to allow for future extensions and variations
@@ -28,13 +28,18 @@ port number in the sense that different "ports" represent unrelated channels.
 LwMQ's IPC transport does not use the file system for communication, and therefore does
 not require a file path, and no file gets created on the file system for the transport.
 
-There are no particular convention or special characters for the address, except that
+There are no particular conventions or special characters for the address, except that
 it is passed as a null-terminated Unicode (UTF-16) string, and that the total length
 of the address part should be *less than 120 characters* to fit into LwMQ's internal
-address representation. The only reserved character is the colon (":") which is
-used to separate the address from the optional port number, and therefore cannot
-be used in the address itself. The scheme ("ipc://") and the optional port number
-do *not* count against the less than 120 characters limit for the address part.
+address representation.
+
+The only reserved character is the colon (":") which is used to separate the address
+from the optional port number, and therefore cannot be used in the address itself.
+
+If used, the colon *must* be followed by a number in the allowed range.
+
+The scheme (``ipc://``) and the optional port number do *not* count against the
+less than 120 characters limit for the address part.
 
 .. important::
 
@@ -58,7 +63,7 @@ do *not* count against the less than 120 characters limit for the address part.
             User Rights Assignment
                Create global objects
                   Properties
-                     Add User or Group...
+                     **Add User or Group...**
 
 Adding an IPC Transport
 =======================
@@ -82,18 +87,18 @@ function, with the transport descriptor being an Uri in the above format.
 Where:
 
    - ``TransportDescriptor`` - For example "ipc://mycompany/myproduct/mychannel:1234"
-   - ``BufferSizeBytes`` - Some large figure able to accommodate at least one copy of the largest message expected to be sent over the transport, for example 16*1024 for 16KB messages + 1KB for encoding overhead. To allow for message clubbing, consider a larger size, for example 1MB + 4KB. In server scenarios you can consider much larger sizes depending on expected usage.
-   - ``MaxPendingSendBuffers`` - The maximum number of send buffers that can be pending at any given time. This should be set to a value that is large enough to accommodate the expected message traffic, but not too large to cause excessive memory usage. Consider *at least* two send buffers, and expect peak performance with the IPC transport at around 4 to 8 large buffers.
-   - ``MaxPendingReceiveBuffers`` - The maximum number of receive buffers that can be pending at any given time. This should be set to a value that is large enough to accommodate the expected message traffic, but not too large to cause excessive memory usage. Consider *at least* two receive buffers, and expect peak performance with the IPC transport at around 4 to 8 large buffers.
-   - ``CreationFlags`` - TRANSPORT_CREATIONFLAGS_SEND, TRANSPORT_CREATIONFLAGS_RECEIVE, or TRANSPORT_CREATIONFLAGS_SENDRECEIVE. If a transport only *sends*, the number of *receive* buffers must be zero, and vice-versa.
-   - ``Transport`` - [Optional] Receives the created transport instance for use with ``LmqTransportControl()``. In most instances, simply pass a null.
+   - ``BufferSizeBytes`` - Some large figure able to accommodate at least one copy of the largest message expected to be sent over the transport, for example 16*1024 for 16KB messages + 1KB for encoding overhead. To allow for message clubbing, consider a larger size, for example 1MB + 4KB. In server scenarios you can consider much larger sizes, depending on expected usage.
+   - ``MaxPendingSendBuffers`` - The maximum number of send buffers that can be pending at any given time. This should be set to a value that is large enough to accommodate the expected message traffic, but not too large to cause excessive memory usage. Consider *at least* two send buffers, and expect peak performance with the IPC transport at around 4 to 8 relatively large buffers.
+   - ``MaxPendingReceiveBuffers`` - The maximum number of receive buffers that can be pending at any given time. This should be set to a value that is large enough to accommodate the expected message traffic, but not too large to cause excessive memory usage. Consider *at least* two receive buffers, and expect peak performance with the IPC transport at around 4 to 8 relatively large buffers.
+   - ``CreationFlags`` - LMQ_TRANSPORT_CREATIONFLAGS_SEND, LMQ_TRANSPORT_CREATIONFLAGS_RECEIVE, or LMQ_TRANSPORT_CREATIONFLAGS_SENDRECEIVE. If a transport only *sends*, the number of *receive* buffers must be zero, and vice-versa.
+   - ``Transport`` - [Optional] Receives the created transport instance handle for use with ``LmqTransportControl()``. In most cases, simply pass a null.
 
 .. important:: If adding multiple instances of *any* transport to the *same* channel, the ``BufferSizeBytes`` must be identical across all instances of all transports on that channel. The number of pending send/receive buffers can vary according to the transport type and traffic characteristics.
 
 Control Codes
 =============
 
-The IPC transport supports the following control codes for use with ``LmqTransportControl()``:
+The IPC transport supports the following control codes:
 
    - ``LMQ_TRANSPORTCONTROL_SETCLIENTCONNECTIONRETRYINTERVALMS`` - (ULONG) Sets the retry interval, in milliseconds, for client connections. The default value is 100ms, which should be adequate for most scenarios.
 
@@ -173,10 +178,9 @@ seamlessly, if restarted, to ensure resilience.
 
 As its stands we *just* (late March 2026) got accepted into the Microsoft
 Windows Hardware Compatibility Program (WHCP) which allows us to
-submit kernel drivers for certification. Stay tuned...
+submit kernel drivers for certification and co-signing. Stay tuned...
 
 .. image:: ../_static/img/Windows_HW_h_rgb_blk_5mm.png
    :scale: 50%
    :alt: Microsoft Windows Hardware Compatibility Program (WHCP) Logo
    :target: https://learn.microsoft.com/en-us/windows-hardware/design/compatibility/
-
