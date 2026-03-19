@@ -1,16 +1,25 @@
 {
     "cSpell.words": [
         "bugcheck",
+        "CREATIONFLAGS",
         "HMAC",
         "hyperfast",
+        "LMQAPI",
         "Lmqi",
         "Mellanox",
+        "mycompany",
+        "myproduct",
         "nullptr",
+        "PCWSTR",
+        "PLMQ",
+        "PULONG",
+        "PVOID",
         "RDMA",
         "Rietschin",
         "Skylake",
         "subfolders",
         "surjective",
+        "TRANSPORTCONTROL",
         "Ultrafast"
     ]
 }
