@@ -2,7 +2,7 @@
 LwMQ Documentation
 ##################
 
-Welcome to LwMQ's documnetation pages. Here you can find guides, API reference, and more information about LwMQ.
+Welcome to LwMQ's technical documentation pages. Here you can find guides, API reference, and more information about LwMQ.
 
 .. toctree::
    :maxdepth: 2
