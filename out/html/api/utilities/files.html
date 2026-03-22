@@ -1,0 +1,284 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LwMQ File Functions &mdash; LwMQ 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=4b23a867" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="https://www.googletagmanager.com/gtag/js?id=G-VW7BZSSV48"></script>
+      <script src="../../_static/ga.js?v=3f0458de"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="LwMQ Transports" href="../../transports/index.html" />
+    <link rel="prev" title="LwMQ Time Functions" href="time.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            LwMQ
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../guide/index.html">LwMQ User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">LwMQ API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../messaging.html">LwMQ Messaging API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../caching.html">LwMQ Caching API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../segmented-cache.html">LwMQ Segmented Cache API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hashing.html">LwMQ Hashing API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../storage.html">LwMQ Storage API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../compression.html">LwMQ Compression API</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">LwMQ Utility APIs</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="time.html">LwMQ Time Functions</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">LwMQ File Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#c-and-c-header-file">C and C++ Header File</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#binaries">Binaries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#details">Details</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../transports/index.html">LwMQ Transports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About LwMQ</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">LwMQ</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">LwMQ API Reference</a></li>
+          <li class="breadcrumb-item"><a href="index.html">LwMQ Utility APIs</a></li>
+      <li class="breadcrumb-item active">LwMQ File Functions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/utilities/files.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="lwmq-file-functions">
+<h1>LwMQ File Functions<a class="headerlink" href="#lwmq-file-functions" title="Link to this heading"></a></h1>
+<p>The file API consists of only one function at this time, <code class="docutils literal notranslate"><span class="pre">LmqCleanupFiles()</span></code>,
+which is a utility function that can be used to delete files matching given
+file specifications within a given path, with various options for controlling
+the behavior of the cleanup operation.</p>
+<p>It is designed for server and cloud scenarios where large amounts of files
+(millions) need to be scanned and some removed based on name matching or age,
+and it is optimized for reliable performance, with a best effort approach
+to deleting files and folders as it scans them, without the need to first
+build an in-memory representation of the entire folder structure or the
+list of files to be removed.</p>
+<p>As such, it performs well where other approaches fail in presence of
+very large numbers of files and folders, deep folder structures, and extended
+length paths.</p>
+<p>The function can delete files matching a list of file specifications in one
+pass, for example <code class="docutils literal notranslate"><span class="pre">&quot;*.tmp;*.dmp;*.log&quot;</span></code> older than 30 days, and it can be
+configured to ignore errors when trying to delete files and folders.</p>
+<p>Additionally, a <em>maximum run time</em> can be specified to cap the time spent
+cleaning up, which is useful in scenarios where the cleanup operation is
+performed periodically and it is desirable to avoid long cleanup runs that
+could negatively impact the system’s performance.</p>
+<p>Finally, the function optionally provides detailed statistics about the cleanup
+operation, such as the number of files considered and removed, the number of
+folders visited and removed, the total size of the files removed, and the
+elapsed time, useful for monitoring and tuning the cleanup process and/or
+logging to telemetry.</p>
+<section id="c-and-c-header-file">
+<h2>C and C++ Header File<a class="headerlink" href="#c-and-c-header-file" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;api-lwmq-files.h&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="binaries">
+<h2>Binaries<a class="headerlink" href="#binaries" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">api</span><span class="o">-</span><span class="n">lwmq</span><span class="o">-</span><span class="n">files</span><span class="mi">-1</span><span class="mf">-0.</span><span class="n">dll</span>
+</pre></div>
+</div>
+</section>
+<section id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">api</span><span class="o">-</span><span class="n">lwmq</span><span class="o">-</span><span class="n">time</span><span class="mi">-1</span><span class="mf">-0.</span><span class="n">dll</span>
+</pre></div>
+</div>
+</section>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<section id="types">
+<h3>Types<a class="headerlink" href="#types" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">_LMQ_CLEANUPFILES_STATS</span>
+<span class="p">{</span>
+<span class="w">   </span><span class="n">UINT64</span><span class="w"> </span><span class="n">FilesRemovedSizeBytes</span><span class="p">;</span>
+<span class="w">   </span><span class="n">UINT32</span><span class="w"> </span><span class="n">FilesConsidered</span><span class="p">;</span>
+<span class="w">   </span><span class="n">UINT32</span><span class="w"> </span><span class="n">FilesRemoved</span><span class="p">;</span>
+<span class="w">   </span><span class="n">UINT32</span><span class="w"> </span><span class="n">FoldersVisited</span><span class="p">;</span>
+<span class="w">   </span><span class="n">UINT32</span><span class="w"> </span><span class="n">FoldersRemoved</span><span class="p">;</span>
+<span class="w">   </span><span class="n">UINT32</span><span class="w"> </span><span class="n">ElapsedTimeMs</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">LMQ_CLEANUPFILES_STATS</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">PLMQ_CLEANUPFILES_STATS</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="constants">
+<h3>Constants<a class="headerlink" href="#constants" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#define LMQ_CLEANUPFILES_RECURSE_SUBFOLDERS           0x00000001</span>
+<span class="cp">#define LMQ_CLEANUPFILES_DELETE_READONLY_FILES        0x00000002</span>
+<span class="cp">#define LMQ_CLEANUPFILES_DELETE_EMPTY_SUBFOLDERS      0x00000004</span>
+<span class="cp">#define LMQ_CLEANUPFILES_DELETE_SUBFOLDERS_LEFT_EMPTY 0x00000008</span>
+<span class="cp">#define LMQ_CLEANUPFILES_DELETE_ROOT_FOLDER_IF_EMPTY  0x00000010</span>
+<span class="cp">#define LMQ_CLEANUPFILES_ALSO_AGE_FOLDERS             0x00000020</span>
+
+<span class="cp">#define LMQ_CLEANUPFILES_IGNORE_FILE_DELETION_ERRORS  0x00000100</span>
+<span class="cp">#define LMQ_CLEANUPFILES_IGNORE_FOLDER_ACCESS_ERRORS  0x00000200</span>
+
+<span class="cp">#define LMQ_CLEANUPFILES_TRY_DELETE_EVERYTHING       (LMQ_CLEANUPFILES_RECURSE_SUBFOLDERS | \</span>
+<span class="cp">                                                      LMQ_CLEANUPFILES_DELETE_READONLY_FILES | \</span>
+<span class="cp">                                                      LMQ_CLEANUPFILES_DELETE_EMPTY_SUBFOLDERS | \</span>
+<span class="cp">                                                      LMQ_CLEANUPFILES_DELETE_ROOT_FOLDER_IF_EMPTY | \</span>
+<span class="cp">                                                      LMQ_CLEANUPFILES_IGNORE_FILE_DELETION_ERRORS | \</span>
+<span class="cp">                                                      LMQ_CLEANUPFILES_IGNORE_FOLDER_ACCESS_ERRORS)</span>
+
+<span class="cp">#define LMQ_CLEANUPFILES_DEFAULT                     (LMQ_CLEANUPFILES_RECURSE_SUBFOLDERS | \</span>
+<span class="cp">                                                      LMQ_CLEANUPFILES_DELETE_READONLY_FILES | \</span>
+<span class="cp">                                                      LMQ_CLEANUPFILES_DELETE_SUBFOLDERS_LEFT_EMPTY | \</span>
+<span class="cp">                                                      LMQ_CLEANUPFILES_IGNORE_FILE_DELETION_ERRORS | \</span>
+<span class="cp">                                                      LMQ_CLEANUPFILES_IGNORE_FOLDER_ACCESS_ERRORS)</span>
+</pre></div>
+</div>
+</section>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
+<span class="nf">LmqCleanupFiles</span><span class="w"> </span><span class="p">(</span>
+<span class="w">   </span><span class="n">PCWSTR</span><span class="w"> </span><span class="n">Path</span><span class="p">,</span>
+<span class="w">   </span><span class="n">PCWSTR</span><span class="w"> </span><span class="n">FileSpecList</span><span class="p">,</span>
+<span class="w">   </span><span class="n">UINT64</span><span class="w"> </span><span class="n">MinimumAge</span><span class="p">,</span>
+<span class="w">   </span><span class="n">DWORD</span><span class="w"> </span><span class="n">Flags</span><span class="p">,</span>
+<span class="w">   </span><span class="k">const</span><span class="w"> </span><span class="n">UINT32</span><span class="w"> </span><span class="n">TimeoutMs</span><span class="p">,</span>
+<span class="w">   </span><span class="n">PLMQ_CLEANUPFILES_STATS</span><span class="w"> </span><span class="n">Stats</span>
+<span class="w">   </span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="details">
+<h2>Details<a class="headerlink" href="#details" title="Link to this heading"></a></h2>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.LmqCleanupFiles">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqCleanupFiles</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">PCWSTR</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span>, <span class="n"><span class="pre">PCWSTR</span></span><span class="w"> </span><span class="n"><span class="pre">FileSpecList</span></span>, <span class="n"><span class="pre">UINT64</span></span><span class="w"> </span><span class="n"><span class="pre">MinimumAge</span></span>, <span class="n"><span class="pre">DWORD</span></span><span class="w"> </span><span class="n"><span class="pre">Flags</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">UINT32</span></span><span class="w"> </span><span class="n"><span class="pre">TimeoutMs</span></span>, <span class="n"><span class="pre">PLMQ_CLEANUPFILES_STATS</span></span><span class="w"> </span><span class="n"><span class="pre">Stats</span></span><span class="sig-paren">)</span><span class="p"><span class="pre">;</span></span><a class="headerlink" href="#c.LmqCleanupFiles" title="Link to this definition"></a><br /></dt>
+<dd><blockquote>
+<div><p>This function deletes files that match a given file specification
+within a given path. Optionally, it can recurse into subfolders and
+when doing so it will remove any subfolder(s) left empty. The function
+supports extended length paths (up to 32K) and recurse into very deep
+folder structures. It is designed for server scenarios where large amounts
+of files (millions) need to be scanned and some removed.</p>
+<p>The function uses a (low) fixed amount of memory independent of the number
+of files and folders, and it is optimized for performance, with a best effort
+approach to deleting files and folders as it scans them, without the need
+to first build an in-memory representation of the entire folder structure
+or the list of files to be removed.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Path</strong> – Provides the path to the folder where the cleanup operation is to be performed. The path must exist and cannot contain wildcards.</p></li>
+<li><p><strong>FileSpecList</strong> – Provides an optional DOS file specification to match files against. If nullptr, all files are considered. The function accepts either a single filespec like L”<em>.tmp” or multiple filespecs in a semi-colon separated list, e.g. L”</em>.tmp;*.mdmp;abc_????.log” For best performance, do not terminate the list with a semi-colon.</p></li>
+<li><p><strong>MinimumAge</strong> – Provides the minimum age in 100ns units (“clunks” or NT Time) that a file must have since last written in order to be considered for deletion. If zero, all files are considered.</p></li>
+<li><p><strong>Flags</strong> – <p>Control the function behavior. The following self-explanatory flags are supported:</p>
+<blockquote>
+<div><p>LMQ_CLEANUPFILES_RECURSE_SUBFOLDERS
+LMQ_CLEANUPFILES_DELETE_READONLY_FILES
+LMQ_CLEANUPFILES_DELETE_EMPTY_SUBFOLDERS
+LMQ_CLEANUPFILES_DELETE_SUBFOLDERS_LEFT_EMPTY
+LMQ_CLEANUPFILES_DELETE_ROOT_FOLDER_IF_EMPTY
+LMQ_CLEANUPFILES_IGNORE_FILE_DELETION_ERRORS
+LMQ_CLEANUPFILES_IGNORE_FOLDER_ACCESS_ERRORS</p>
+</div></blockquote>
+<p>Aggregate flags:</p>
+<blockquote>
+<div><p>LMQ_CLEANUPFILES_DEFAULT
+LMQ_CLEANUPFILES_TRY_DELETING_EVERYTHING</p>
+</div></blockquote>
+</p></li>
+<li><p><strong>TimeoutMs</strong> – Provides a maximum run time for the function, enabling to cap the time spent cleaning up, in milliseconds. Pass INFINITE to disable the timeout feature.</p></li>
+<li><p><strong>Stats</strong> – Optional pointer to an LMQ_CLEANUPFILES_STATS structure.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="time.html" class="btn btn-neutral float-left" title="LwMQ Time Functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../transports/index.html" class="btn btn-neutral float-right" title="LwMQ Transports" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Axel Rietschin Software Development, LLC.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
