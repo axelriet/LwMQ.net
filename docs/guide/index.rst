@@ -2,10 +2,6 @@
 LwMQ User Guide
 ###############
 
-.. note::
-
-   Under construction. Check back often for updates.
-
 Introduction
 ------------
 
@@ -769,11 +765,20 @@ The default installation path for the SDK is **"C:\\Program Files\\LwMQ.SDK"** a
    tools          Command-line tools for testing LwMQ
    -------------  ------------------------------------------------------------------------
    redist         Redistributable files
-   -------------  ------------------------------------------------------------------------
-   samples        Sample applications
    =============  ========================================================================
 
-Samples
--------
+Samples & Tools
+---------------
 
-   TBD
+TBD (Sample programs will be available on the `GitHub page`_)
+
+.. _GitHub page: https://github.com/axelriet/LwMQ.net
+
+.. important::
+   
+   The test tools supploed with the SDK, ``client_thr.exe`` and ``server_thr.exe`` require
+   the ``SeCreateGlobalPrivilege`` when using the IPC protocol, as described on
+   the :doc:`../transports/ipc` page.
+
+   The IPC protocol is the ONLY protocol available in the March 22, 2026 ALPHA (and DEMO)
+   release of the SDK.
