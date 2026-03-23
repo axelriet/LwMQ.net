@@ -1,0 +1,160 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Implementation &mdash; LwMQ 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=4b23a867" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="https://www.googletagmanager.com/gtag/js?id=G-VW7BZSSV48"></script>
+      <script src="../_static/ga.js?v=3f0458de"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Philosophy" href="philosophy.html" />
+    <link rel="prev" title="Supporting Features" href="supporting-features.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            LwMQ
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">LwMQ User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#introduction">Introduction</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#user-guide-sections">User Guide Sections</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="messaging.html">Messaging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="caching.html">LRU Caching and Key-Value Storage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="supporting-features.html">Supporting Features</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Implementation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="philosophy.html">Philosophy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bugcheck.html">BugChecks (Fail Fast)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tracelogging.html">Tracing and Logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debugging.html">Debug Symbols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exceptions.html">Exceptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="telemetry.html">Telemetry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html">Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting-started.html">Getting Started</a></li>
+<li class="toctree-l3"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="licensing.html">Licensing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="platform.html">Platform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="requirements.html">Runtime Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#software-development-kit">Software Development Kit</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">LwMQ API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../transports/index.html">LwMQ Transports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About LwMQ</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">LwMQ</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">LwMQ User Guide</a></li>
+      <li class="breadcrumb-item active">Implementation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guide/implementation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="implementation">
+<h1>Implementation<a class="headerlink" href="#implementation" title="Link to this heading"></a></h1>
+<p>LwMQ is written in the C programming language following strict
+disciplines mostly found in kernel development and mission-critical,
+long-running software. It is suitable for <em>always on</em> appliance-type
+software with indefinite uptimes.</p>
+<p>The C code is compiled as C++ to benefit from stricter type checking
+of the latter language, a technique now used in the Windows kernel
+and other critical software projects, and the project takes maximum
+advantage of static analysis for compile-time defect detection.</p>
+<p>The code is designed to be robust and bomb-proof, with a strong
+emphasis on correctness and reliability, while providing
+best-in-industry performance on every aspect.</p>
+<p>Some light touches of proper C++ are used here and there, for example
+the finite-state machine that governs the state of the transports
+is best implemented in C++ [<a class="reference external" href="https://a.co/d/02cPzhzs">GoF</a>, p. 305ff]</p>
+<p>Small portions are written in assembly language and the code
+often uses vector instructions (SIMD intrinsics) where appropriate.</p>
+<p>LwMQ <em>requires</em> AVX-2 instructions (Haswell, Ryzen, or later) and
+performs exceptionally well on contemporary hardware.</p>
+<p>Some features, including compression and encryption and some hashing
+functions, make use of specialized CPU instructions and can take advantage
+of recent advances, such as AES-NI and AVX-512, on suitable hardware
+(e.g. Skylake or later) thanks to runtime dispatching. LwMQ squeezes
+every bit of performance from your hardware!</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="supporting-features.html" class="btn btn-neutral float-left" title="Supporting Features" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="philosophy.html" class="btn btn-neutral float-right" title="Philosophy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Axel Rietschin Software Development, LLC.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

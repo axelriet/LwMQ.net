@@ -1,0 +1,199 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BugChecks (Fail Fast) &mdash; LwMQ 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=4b23a867" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="https://www.googletagmanager.com/gtag/js?id=G-VW7BZSSV48"></script>
+      <script src="../_static/ga.js?v=3f0458de"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tracing and Logging" href="tracelogging.html" />
+    <link rel="prev" title="API" href="api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            LwMQ
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">LwMQ User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#introduction">Introduction</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#user-guide-sections">User Guide Sections</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="messaging.html">Messaging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="caching.html">LRU Caching and Key-Value Storage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="supporting-features.html">Supporting Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="implementation.html">Implementation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="philosophy.html">Philosophy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">BugChecks (Fail Fast)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#validation">Validation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fail-fast">Fail Fast</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tracelogging.html">Tracing and Logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debugging.html">Debug Symbols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exceptions.html">Exceptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="telemetry.html">Telemetry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html">Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting-started.html">Getting Started</a></li>
+<li class="toctree-l3"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="licensing.html">Licensing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="platform.html">Platform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="requirements.html">Runtime Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#software-development-kit">Software Development Kit</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">LwMQ API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../transports/index.html">LwMQ Transports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About LwMQ</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">LwMQ</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">LwMQ User Guide</a></li>
+      <li class="breadcrumb-item active">BugChecks (Fail Fast)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guide/bugcheck.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="bugchecks-fail-fast">
+<h1>BugChecks (Fail Fast)<a class="headerlink" href="#bugchecks-fail-fast" title="Link to this heading"></a></h1>
+<p>LwMQ embraces a <em>fail fast</em> philosophy: when a critical error is detected,
+the process will BugCheck (crash) immediately to prevent any potential
+data corruption or security breach. This occurs when a clear programmer
+error is detected, for example when passing an invalid object handle
+to an API function. Another reason to fail fast is to capture the state
+of the process as close as possible from the detection of the problem,
+often making diagnosis far easier simply by having the right call stack.</p>
+<p>This topic is always controversial in programming circles and subject
+to heated debates, but the author firmly believes that in a low-level library
+such as LwMQ, which is designed to be used in performance-critical and
+mission-critical scenarios, it is better to fail fast (and loud!) rather
+than silently continue in a potentially corrupted state.</p>
+<p>LwMQ components does not fail fast for common errors, but are very strict
+about correct usage. By making misuses immediately apparent, LwMQ helps
+developers detect and fix bugs early in the development cycle, rather
+than allowing them to manifest later in production where they can
+cause more harm.</p>
+<section id="validation">
+<h2>Validation<a class="headerlink" href="#validation" title="Link to this heading"></a></h2>
+<p>Examples of regular error return during parameter validation:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">RETURN_HR_IF_MSG</span><span class="p">(</span><span class="n">E_INVALIDARG</span><span class="p">,</span>
+<span class="w">                 </span><span class="n">BufferSizeBytes</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">                 </span><span class="s">&quot;BufferSizeBytes must be at least 1.&quot;</span><span class="p">);</span>
+
+<span class="n">RETURN_HR_IF_MSG</span><span class="p">(</span><span class="n">E_INVALIDARG</span><span class="p">,</span>
+<span class="w">                 </span><span class="n">MaximumSizeBytes</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">                 </span><span class="s">&quot;MaximumSizeBytes must of &gt; 0, realistically &quot;</span>
+<span class="w">                 </span><span class="s">&quot;some number of megabytes/gigabytes.&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>There are approximately 300 locations across the codebase where LwMQ
+performs parameter validation and checks for error conditions and
+returns errors to the caller.</p>
+</section>
+<section id="fail-fast">
+<h2>Fail Fast<a class="headerlink" href="#fail-fast" title="Link to this heading"></a></h2>
+<p>Example of a bugcheck for a critical programmer error:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">LmqiIsValidWorkspace</span><span class="p">(</span><span class="n">WorkspaceInternal</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">FALSE</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">   </span><span class="n">FAIL_FAST_HR_MSG</span><span class="p">(</span><span class="n">E_INVALIDARG</span><span class="p">,</span>
+<span class="w">                    </span><span class="s">&quot;Invalid compression workspace handle.&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Example of a bugcheck for a critical internal error (i.e. a condition
+that should never occur regardless of circumstances, and is therefore
+likely a bug that must be addressed):</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">LastEntry</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="k">nullptr</span><span class="p">)</span>
+<span class="w">      </span><span class="p">[[</span><span class="n">unlikely</span><span class="p">]]</span>
+<span class="p">{</span>
+<span class="w">      </span><span class="n">FAIL_FAST_HR_MSG</span><span class="p">(</span><span class="n">E_UNEXPECTED</span><span class="p">,</span>
+<span class="w">                       </span><span class="s">&quot;LastEntry should not be null.&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>There are approximately 150 locations across the codebase where LwMQ
+performs critical validations and would bugcheck on fatal errors.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="api.html" class="btn btn-neutral float-left" title="API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tracelogging.html" class="btn btn-neutral float-right" title="Tracing and Logging" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Axel Rietschin Software Development, LLC.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
