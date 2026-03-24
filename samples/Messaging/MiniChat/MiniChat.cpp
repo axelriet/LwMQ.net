@@ -49,7 +49,6 @@ HRESULT
 ReceiveOneMessage (
     _In_ LMQ_CHANNEL Channel,
     _In_ int ExpectedMessageSize,
-    _In_ BOOL PrintLatency,
     _In_ BOOL PrintData
     ) noexcept;
 
@@ -121,7 +120,6 @@ int main()
 
     CHECK(ReceiveOneMessage(Channel,
                             5,
-                            TRUE,
                             FALSE));
 
     //
@@ -140,7 +138,6 @@ int main()
     {
         CHECK(ReceiveOneMessage(Channel,
                                 0,
-                                FALSE,
                                 TRUE));
     }
 
@@ -194,7 +191,6 @@ HRESULT
 ReceiveOneMessage (
     _In_ LMQ_CHANNEL Channel,
     _In_ int ExpectedMessageSize,
-    _In_ BOOL PrintLatency,
     _In_ BOOL PrintData
     ) noexcept
 {
@@ -208,48 +204,23 @@ ReceiveOneMessage (
                                    &PayloadSizeBytes,
                                    &Message));
 
-    if (PrintLatency || PrintData)
+    if (PrintData)
     {
-        union
-        {
-            //
-            // Not UB if you know what you are doing...
-            //
-
-            FILETIME ft;
-            ULONGLONG Now;
-        };
-
-        ULONGLONG Sent;
         SIZE_T DataSize;
         const BYTE* Data;
-
-        GetSystemTimePreciseAsFileTime(&ft);
 
         CHECK_RETURN(LmqGetFrameData(Message,
                                      0,
                                      &Data,
                                      &DataSize,
-                                     &Sent,
+                                     nullptr,
                                      nullptr));
 
-        if (PrintLatency && (Sent != 0))
-        {
-            const auto Elapsed{ LmqTimeElapsedNs(Sent, Now) };
+        const int Cch{ __pragma(warning(suppress:26472)) static_cast<int>(DataSize / sizeof(WCHAR)) };
 
-            printf("One-way latency, single message: %llu [ns] (%.3f [us], %.6f [ms])\n",
-                   Elapsed, Elapsed / 1'000.0,
-                   Elapsed / 1'000'000.0);
-        }
-
-        if (PrintData)
-        {
-            const int Cch{ __pragma(warning(suppress:26472)) static_cast<int>(DataSize / sizeof(WCHAR)) };
-
-            printf("%*ls",
-                   Cch,
-                   reinterpret_cast<PCWSTR>(Data));
-        }
+        printf("%*ls",
+                Cch,
+                reinterpret_cast<PCWSTR>(Data));
     }
     else
     {
