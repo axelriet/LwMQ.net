@@ -236,11 +236,11 @@ ReceiveOneMessage(
                                      &Sent,
                                      nullptr));
 
-        const auto Elapsed{ Sent ? LmqTimeElapsedNs(Sent, Now) : 0 };
+        const auto ElapsedNs{ Sent ? ((Now - Sent) * 100) : 0 }; // Convert to ns
         const int Cch{ __pragma(warning(suppress:26472)) static_cast<int>(DataSize / sizeof(WCHAR)) };
 
-        wprintf(L"%5lluns - %.*ls",
-                Elapsed,
+        wprintf(L"%8.1fus - %.*ls",
+                ElapsedNs / 1000.0,
                 Cch,
                 reinterpret_cast<PCWSTR>(Data));
     }
