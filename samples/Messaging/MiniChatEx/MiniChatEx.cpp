@@ -28,11 +28,12 @@ Environment:
 
 --*/
 
+#define USE_PRECISE_BUT_SLOWER_TIMESTAMPS
+
 #include <Windows.h>
 
 #include <io.h>
 #include <fcntl.h>
-#include <string.h>
 #include <process.h>
 
 #include <api-lwmq-time.h>
@@ -44,6 +45,10 @@ Environment:
 #define CHECK(__hr__)        do { const HRESULT __hrRet__{ __hr__ }; if (FAILED(__hrRet__)) [[unlikely]] { PRINT_HR(__hrRet__); exit(-1); }} while(0,0)
 #define CHECK_RETURN(__hr__) do { const HRESULT __hrRet__{ __pragma(warning(suppress: 6001)) __hr__ }; if (FAILED(__hrRet__)) [[unlikely]] { PRINT_HR(__hrRet__); return (__hrRet__); }} while(0,0)
 
+#ifdef USE_PRECISE_BUT_SLOWER_TIMESTAMPS 
+
+#pragma comment(lib, "ntdll.lib")
+
 extern "C"
 NTSYSAPI
 ULONGLONG
@@ -52,7 +57,18 @@ RtlGetSystemTimePrecise (
     VOID
     );
 
-#pragma comment(lib, "ntdll.lib")
+#else
+
+FORCEINLINE
+ULONGLONG
+LmqGetSystemTime (
+    VOID
+    ) noexcept
+{
+    return ReadNoFence64(reinterpret_cast<PLONG64>(0x7FFE0014));
+}
+
+#endif
 
 HRESULT
 SendOneMessage (
@@ -78,6 +94,9 @@ SenderThread (
 int main()
 {
     printf("MiniChatEx 1.0 - Account must have SeCreateGlobalPrivilege!\n"
+#ifdef USE_PRECISE_BUT_SLOWER_TIMESTAMPS
+           "Using precise timestamps.\n"
+#endif
            "Start two instances of MiniChatEx and start typing or pasting text.\n");
 
     //
@@ -188,8 +207,8 @@ SendOneMessage (
                                 Timestamp));
 
     if (FAILED(hr = LmqPostMessage(SendQueue,
-        &Message,
-        0)))
+                                   &Message,
+                                   0)))
     {
         //
         // Messages that were never sent must be
@@ -221,7 +240,11 @@ ReceiveOneMessage(
                                    &PayloadSizeBytes,
                                    &Message));
 
+#ifdef USE_PRECISE_BUT_SLOWER_TIMESTAMPS 
     const ULONGLONG Now{ RtlGetSystemTimePrecise() };
+#else
+    const ULONGLONG Now{ LmqGetSystemTime() };
+#endif
 
     if (PrintData)
     {
@@ -237,6 +260,7 @@ ReceiveOneMessage(
                                      nullptr));
 
         const auto ElapsedNs{ Sent ? ((Now - Sent) * 100) : 0 }; // Convert to ns
+
         const int Cch{ __pragma(warning(suppress:26472)) static_cast<int>(DataSize / sizeof(WCHAR)) };
 
         wprintf(L"%8.1fus - %.*ls",
@@ -292,10 +316,17 @@ SenderThread (
                    _countof(Buffer),
                    stdin) != nullptr)
         {
+#ifdef USE_PRECISE_BUT_SLOWER_TIMESTAMPS 
             CHECK(SendOneMessage(SendQueue,
                                  &Buffer[0],
                                  sizeof(WCHAR) * wcslen(&Buffer[0]),
                                  LMQ_TIMESTAMP_USE_SYSTEMTIME_PRECISE));
+#else
+            CHECK(SendOneMessage(SendQueue,
+                                 &Buffer[0],
+                                 sizeof(WCHAR) * wcslen(&Buffer[0]),
+                                 LMQ_TIMESTAMP_USE_SYSTEMTIME));
+#endif
         }
         else
         {
