@@ -188,21 +188,21 @@ SendOneMessage (
 }
 
 HRESULT
-ReceiveOneMessage (
+ReceiveOneMessage(
     _In_ LMQ_CHANNEL Channel,
     _In_ int ExpectedMessageSize,
     _In_ BOOL PrintData
-    ) noexcept
+) noexcept
 {
     USHORT FrameCount;
     LMQ_MESSAGE Message;
     UINT64 PayloadSizeBytes;
 
     CHECK_RETURN(LmqReceiveMessage(Channel,
-                                   INFINITE,
-                                   &FrameCount,
-                                   &PayloadSizeBytes,
-                                   &Message));
+        INFINITE,
+        &FrameCount,
+        &PayloadSizeBytes,
+        &Message));
 
     if (PrintData)
     {
@@ -210,17 +210,18 @@ ReceiveOneMessage (
         const BYTE* Data;
 
         CHECK_RETURN(LmqGetFrameData(Message,
-                                     0,
-                                     &Data,
-                                     &DataSize,
-                                     nullptr,
-                                     nullptr));
+            0,
+            &Data,
+            &DataSize,
+            nullptr,
+            nullptr));
 
         const int Cch{ __pragma(warning(suppress:26472)) static_cast<int>(DataSize / sizeof(WCHAR)) };
 
-        printf("%*ls",
-                Cch,
-                reinterpret_cast<PCWSTR>(Data));
+        wprintf(L"%*.*ls",
+            Cch,
+            Cch,
+            reinterpret_cast<PCWSTR>(Data));
     }
     else
     {
@@ -244,6 +245,8 @@ ReceiveOneMessage (
     return S_OK;
 }
 
+#pragma warning(disable:6262) // Function uses '131092' bytes of stack.
+
 VOID
 CDECL
 SenderThread (
@@ -262,7 +265,7 @@ SenderThread (
 
     while (TRUE)
     {
-        WCHAR Buffer[4 * 1024];
+        WCHAR Buffer[64 * 1024];
 
         if (fgetws(&Buffer[0],
                    _countof(Buffer),
@@ -270,7 +273,7 @@ SenderThread (
         {
             CHECK(SendOneMessage(SendQueue,
                                  &Buffer[0],
-                                 sizeof(WCHAR) * (wcslen(&Buffer[0])),
+                                 sizeof(WCHAR) * wcslen(&Buffer[0]),
                                  LMQ_TIMESTAMP_NONE));
         }
         else
