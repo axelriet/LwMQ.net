@@ -4,12 +4,12 @@ Copyright (c) Axel Rietschin Software Development, LLC
 
 Module Name:
 
-    MiniChat.cpp
+    MiniChatEx.cpp
 
 Abstract:
 
     Simplistic peer-to-peer chat to test LwMQ's
-    basic functionality.
+    basic functionality with latency printing.
 
 Prerequisites:
 
@@ -20,7 +20,7 @@ Prerequisites:
 
 Author:
 
-    Axel Rietschin (22-Mar-2026)
+    Axel Rietschin (23-Mar-2026)
 
 Environment:
 
@@ -43,6 +43,16 @@ Environment:
 #define PRINT_HR(__hr__)     do { printf("Something went wrong: 0x%08lx\n", __hr__); } while(0,0)
 #define CHECK(__hr__)        do { const HRESULT __hrRet__{ __hr__ }; if (FAILED(__hrRet__)) [[unlikely]] { PRINT_HR(__hrRet__); exit(-1); }} while(0,0)
 #define CHECK_RETURN(__hr__) do { const HRESULT __hrRet__{ __pragma(warning(suppress: 6001)) __hr__ }; if (FAILED(__hrRet__)) [[unlikely]] { PRINT_HR(__hrRet__); return (__hrRet__); }} while(0,0)
+
+extern "C"
+NTSYSAPI
+ULONGLONG
+NTAPI
+RtlGetSystemTimePrecise (
+    VOID
+    );
+
+#pragma comment(lib, "ntdll.lib")
 
 HRESULT
 SendOneMessage (
@@ -67,8 +77,8 @@ SenderThread (
 
 int main()
 {
-    printf("MiniChat 1.0 - Account must have SeCreateGlobalPrivilege!\n"
-           "Start two instances of MiniChat and start typing or pasting text.\n");
+    printf("MiniChatEx 1.0 - Account must have SeCreateGlobalPrivilege!\n"
+           "Start two instances of MiniChatEx and start typing or pasting text.\n");
 
     //
     // Set up a bidirectional channel
@@ -81,7 +91,7 @@ int main()
                            &Channel));
 
     CHECK(LmqAddTransport(Channel,
-                          L"ipc://MiniChat-v1",
+                          L"ipc://MiniChatEx-v1",
                           16 * 1024,
                           2,
                           2,
@@ -211,8 +221,11 @@ ReceiveOneMessage(
                                    &PayloadSizeBytes,
                                    &Message));
 
+    const ULONGLONG Now{ RtlGetSystemTimePrecise() };
+
     if (PrintData)
     {
+        ULONGLONG Sent;
         SIZE_T DataSize;
         const BYTE* Data;
 
@@ -220,12 +233,15 @@ ReceiveOneMessage(
                                      0,
                                      &Data,
                                      &DataSize,
-                                     nullptr,
+                                     &Sent,
                                      nullptr));
 
+        const auto Elapsed{ Sent ? LmqTimeElapsedNs(Sent, Now) : 0 };
         const int Cch{ __pragma(warning(suppress:26472)) static_cast<int>(DataSize / sizeof(WCHAR)) };
 
-        wprintf(L"%.*ls",
+
+        wprintf(L"%5lluns - %.*ls",
+                Elapsed,
                 Cch,
                 reinterpret_cast<PCWSTR>(Data));
     }
@@ -280,7 +296,7 @@ SenderThread (
             CHECK(SendOneMessage(SendQueue,
                                  &Buffer[0],
                                  sizeof(WCHAR) * wcslen(&Buffer[0]),
-                                 LMQ_TIMESTAMP_NONE));
+                                 LMQ_TIMESTAMP_USE_SYSTEMTIME_PRECISE));
         }
         else
         {
