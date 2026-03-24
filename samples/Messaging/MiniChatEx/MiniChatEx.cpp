@@ -239,7 +239,6 @@ ReceiveOneMessage(
         const auto Elapsed{ Sent ? LmqTimeElapsedNs(Sent, Now) : 0 };
         const int Cch{ __pragma(warning(suppress:26472)) static_cast<int>(DataSize / sizeof(WCHAR)) };
 
-
         wprintf(L"%5lluns - %.*ls",
                 Elapsed,
                 Cch,

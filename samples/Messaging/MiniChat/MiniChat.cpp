@@ -178,8 +178,8 @@ SendOneMessage (
                                 Timestamp));
 
     if (FAILED(hr = LmqPostMessage(SendQueue,
-        &Message,
-        0)))
+                                   &Message,
+                                   0)))
     {
         //
         // Messages that were never sent must be
