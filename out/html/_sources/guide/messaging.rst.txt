@@ -46,8 +46,7 @@ The result is much improved throughput, easily in the
 multi-million messages per second on common hardware for small
 payloads, and reaching multi-GB per second throughput with large
 payloads, as well as much reduced latency down to the low
-nanoseconds range for single one-way messages, while the
-nearest competing solutions claim low microseconds latency.
+microseconds range or better for single one-way messages.
 
 Similarly, LwMQ leverages Remote Direct Memory Access (RDMA)
 for remote peer-to-peer communication. RDMA is a datacenter

@@ -6,8 +6,8 @@ LwMQ's IPC transport is a high-performance inter-process
 communication transport based on shared memory. It is designed
 for low latency and high throughput communication between
 processes on the same machine, and can achieve multi-millions
-messages per second with nanosecond-level latency on modern
-hardware.
+messages per second with low microsecond latency or better
+on modern hardware.
 
 Uri Format
 ==========

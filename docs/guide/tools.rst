@@ -21,5 +21,5 @@ LwMQ SDK Tools
    the ``SeCreateGlobalPrivilege`` when using the IPC protocol, as described on
    the :doc:`../transports/ipc` page.
 
-   The IPC protocol is the ONLY transport available in the March 23, 2026 1.0.0.5 ALPHA (and DEMO)
+   The IPC protocol is the ONLY transport available in the March 23, 2026 1.0.0.6 ALPHA (and DEMO)
    release of the SDK.
