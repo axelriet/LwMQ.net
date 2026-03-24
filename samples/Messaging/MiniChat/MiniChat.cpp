@@ -22,13 +22,47 @@ Environment:
 --*/
 
 #include <Windows.h>
+
+#include <io.h>
+#include <fcntl.h>
+#include <string.h>
+#include <process.h>
+
+#include <api-lwmq-time.h>
 #include <api-lwmq-messaging.h>
 
-#define CHECK(__hr__) if (FAILED(__hr__)) { printf("Something went wrong: 0x%08lx\r", __hr__); exit(-1); }
+#pragma warning(disable: 26490) // Don't use reinterpret_cast
+
+#define PRINT_HR(__hr__)     do { printf("Something went wrong: 0x%08lx\n", __hr__); } while(0,0)
+#define CHECK(__hr__)        do { const HRESULT __hrRet__{ __hr__ }; if (FAILED(__hrRet__)) [[unlikely]] { PRINT_HR(__hrRet__); exit(-1); }} while(0,0)
+#define CHECK_RETURN(__hr__) do { const HRESULT __hrRet__{ __pragma(warning(suppress: 6001)) __hr__ }; if (FAILED(__hrRet__)) [[unlikely]] { PRINT_HR(__hrRet__); return (__hrRet__); }} while(0,0)
+
+HRESULT
+SendOneMessage (
+    _In_ LMQ_SENDQUEUE SendQueue,
+    _In_ PCWSTR MessageContent,
+    _In_ SIZE_T MessageSize,
+    _In_ ULONG64 Timestamp
+    ) noexcept;
+
+HRESULT
+ReceiveOneMessage (
+    _In_ LMQ_CHANNEL Channel,
+    _In_ int ExpectedMessageSize,
+    _In_ BOOL PrintLatency,
+    _In_ BOOL PrintData
+    ) noexcept;
+
+VOID
+CDECL
+SenderThread (
+    PVOID Param
+    ) noexcept;
 
 int main()
 {
-    printf("MiniChat 1.0\n");
+    printf("MiniChat 1.0 - Account must have SeCreateGlobalPrivilege!\n"
+           "Start two instances of this little program and start typing.\n");
 
     //
     // Set up a bidirectional channel
@@ -59,7 +93,8 @@ int main()
     //
     // Since we don't want any config or hint try opening
     // the IPC channel as a server. If that fails, open as
-    // a client.
+    // a client. This is not a good general strategy as the
+    // server open can fail for many reasons.
     //
 
     if (FAILED(LmqOpenChannel(Channel,
@@ -70,6 +105,206 @@ int main()
         CHECK(LmqOpenChannel(Channel,
                              LMQ_CHANNELROLE_CLIENT,
                              LMQ_RECEIVEQUEUETYPE_MONOCONSUMER_UNBOUNDED,
-                             LMQ_QUEUECAPACITY_UNBOUNDED))
+                             LMQ_QUEUECAPACITY_UNBOUNDED));
+    }
+
+    //
+    // So far, so good. Technically we can send and
+    // receive now, so let's send something and wait
+    // for an answer as a first step.
+    //
+
+    CHECK(SendOneMessage(SendQueue,
+                         L"Hello",
+                         5,
+                         LMQ_TIMESTAMP_NONE));
+
+    CHECK(ReceiveOneMessage(Channel,
+                            5,
+                            TRUE,
+                            FALSE));
+
+    //
+    // The channel looks like it's open for
+    // business! We can pass our send queue to
+    // a separate thread that handles input, and
+    // we simply loop here and print anything we
+    // receive.
+    //
+
+    CloseHandle(reinterpret_cast<HANDLE>(_beginthread(SenderThread,
+                                                      0,
+                                                      SendQueue)));
+
+    while (TRUE)
+    {
+        CHECK(ReceiveOneMessage(Channel,
+                                0,
+                                FALSE,
+                                TRUE));
+    }
+
+    //
+    // In a real program we'd invent a special
+    // message, say "EXIT" that would govern the
+    // process to exit the loop, signal the sender
+    // thread to exit, and close the channel.
+    //
+
+    return 0;
+}
+
+HRESULT
+SendOneMessage (
+    _In_ LMQ_SENDQUEUE SendQueue,
+    _In_ PCWSTR MessageContent,
+    _In_ SIZE_T MessageSize,
+    _In_ ULONG64 Timestamp
+    ) noexcept
+{
+    HRESULT hr{};
+    LMQ_MESSAGE Message;
+
+    CHECK_RETURN(LmqCreateMessage(LMQ_MESSAGEFRAMECOUNT_DEFAULT,
+                                  &Message));
+
+    CHECK_RETURN(LmqAppendFrame(Message,
+                                reinterpret_cast<const BYTE*>(MessageContent),
+                                MessageSize,
+                                Timestamp));
+
+    if (FAILED(hr = LmqPostMessage(SendQueue,
+        &Message,
+        0)))
+    {
+        //
+        // Messages that were never sent must be
+        // destroyed.
+        //
+
+        CHECK_RETURN(LmqDestroyUnpostedMessage(&Message));
+
+        CHECK_RETURN(hr);
+    }
+
+    return S_OK;
+}
+
+HRESULT
+ReceiveOneMessage (
+    _In_ LMQ_CHANNEL Channel,
+    _In_ int ExpectedMessageSize,
+    _In_ BOOL PrintLatency,
+    _In_ BOOL PrintData
+    ) noexcept
+{
+    USHORT FrameCount;
+    LMQ_MESSAGE Message;
+    UINT64 PayloadSizeBytes;
+
+    CHECK_RETURN(LmqReceiveMessage(Channel,
+                                   INFINITE,
+                                   &FrameCount,
+                                   &PayloadSizeBytes,
+                                   &Message));
+
+    if (PrintLatency || PrintData)
+    {
+        union
+        {
+            //
+            // Not UB if you know what you are doing...
+            //
+
+            FILETIME ft;
+            ULONGLONG Now;
+        };
+
+        ULONGLONG Sent;
+        SIZE_T DataSize;
+        const BYTE* Data;
+
+        GetSystemTimePreciseAsFileTime(&ft);
+
+        CHECK_RETURN(LmqGetFrameData(Message,
+                                     0,
+                                     &Data,
+                                     &DataSize,
+                                     &Sent,
+                                     nullptr));
+
+        if (PrintLatency && (Sent != 0))
+        {
+            const auto Elapsed{ LmqTimeElapsedNs(Sent, Now) };
+
+            printf("One-way latency, single message: %llu [ns] (%.3f [us], %.6f [ms])\n",
+                   Elapsed, Elapsed / 1'000.0,
+                   Elapsed / 1'000'000.0);
+        }
+
+        if (PrintData)
+        {
+            const int Cch{ __pragma(warning(suppress:26472)) static_cast<int>(DataSize / sizeof(WCHAR)) };
+
+            printf("%*ls",
+                   Cch,
+                   reinterpret_cast<PCWSTR>(Data));
+        }
+    }
+    else
+    {
+        if (FrameCount != 1)
+        {
+            printf("The message has an unexpected number of frames: %d, should be 1 for this app.\n", FrameCount);
+
+            return E_FAIL;
+        }
+
+        if (ExpectedMessageSize && (PayloadSizeBytes != ExpectedMessageSize))
+        {
+            printf("The message has an unexpected size: %zu, expected %d\n", PayloadSizeBytes, ExpectedMessageSize);
+
+            return E_FAIL;
+        }
+    }
+
+    CHECK_RETURN(LmqDisposeReceivedMessage(&Message));
+
+    return S_OK;
+}
+
+VOID
+CDECL
+SenderThread (
+    PVOID Param
+    ) noexcept
+{
+    LMQ_SENDQUEUE SendQueue{ static_cast<LMQ_SENDQUEUE>(Param) };
+
+    static_cast<void>(_setmode(_fileno(stdin), _O_U16TEXT));
+
+    //
+    // Subtle cue saying we are connected.
+    //
+
+    printf("\n");
+
+    while (TRUE)
+    {
+        WCHAR Buffer[4 * 1024];
+
+        if (fgetws(&Buffer[0],
+                   _countof(Buffer),
+                   stdin) != nullptr)
+        {
+            CHECK(SendOneMessage(SendQueue,
+                                 &Buffer[0],
+                                 sizeof(WCHAR) * (wcslen(&Buffer[0])),
+                                 LMQ_TIMESTAMP_NONE));
+        }
+        else
+        {
+            printf("Error reading input.\n");
+        }
     }
 }
