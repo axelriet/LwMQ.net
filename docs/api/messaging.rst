@@ -617,7 +617,7 @@ Types
 
     typedef enum _LMQ_CHANNELTYPE
     {
-        LMQ_CHANNELTYPE_ONE_TO_ONE
+        LMQ_CHANNELTYPE_ONE_TO_ONE = 1
     }
     LMQ_CHANNELTYPE;
 
@@ -629,7 +629,7 @@ Types
 
     typedef enum _LMQ_CHANNELROLE
     {
-        LMQ_CHANNELROLE_CLIENT,
+        LMQ_CHANNELROLE_CLIENT = 1,
         LMQ_CHANNELROLE_SERVER
     }
     LMQ_CHANNELROLE;
@@ -802,21 +802,53 @@ Functions
 
     HRESULT hr = LmqDestroyChannel(&Channel);
 
+Send Queues
+===========
+
 Types
----------
+-----
 
 .. c:type:: LMQ_SENDQUEUE
 
-    An opaque send queue instance.
+    An opaque send queue instance handle.
 
 .. c:type:: LMQ_SENDQUEUETYPE
 
     An enumerated type representing the type of a send queue.
 
+.. code:: cpp
+
+    typedef enum _LMQ_SENDQUEUETYPE
+    {
+        LMQ_SENDQUEUETYPE_NA,
+        LMQ_SENDQUEUETYPE_MONOPRODUCER_UNBOUNDED,
+        LMQ_SENDQUEUETYPE_MULTIPRODUCER_UNBOUNDED,
+        LMQ_SENDQUEUETYPE_MULTIPRODUCER_UNBOUNDED_TAGGED,
+        LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_DISCARD_OLDEST,
+        LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_DISCARD_NEWEST,
+        LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_TAGGED_DISCARD_OLDEST,
+        LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_TAGGED_DISCARD_NEWEST
+    }
+    LMQ_SENDQUEUETYPE;
+
 .. c:type:: LMQ_SENDQUEUEPRIORITY
 
     An enumerated type representing the priority of a send queue relative to other send queues on the same channel.
    
+.. code:: cpp
+
+    typedef enum _LMQ_SENDQUEUEPRIORITY
+    {
+        LMQ_SENDQUEUEPRIORITY_TIME_CRITICAL,
+        LMQ_SENDQUEUEPRIORITY_HIGHEST,
+        LMQ_SENDQUEUEPRIORITY_ABOVE_NORMAL,
+        LMQ_SENDQUEUEPRIORITY_NORMAL,
+        LMQ_SENDQUEUEPRIORITY_BELOW_NORMAL,
+        LMQ_SENDQUEUEPRIORITY_LOWEST,
+        LMQ_SENDQUEUEPRIORITY_IDLE
+    }
+    LMQ_SENDQUEUEPRIORITY;
+
 Functions
 ---------
 
@@ -839,35 +871,6 @@ Functions
 .. code:: cpp
 
     //
-    // From <api-lwmq-messaging.h>
-    //
-
-    typedef enum _LMQ_SENDQUEUETYPE
-    {
-        LMQ_SENDQUEUETYPE_NA,
-        LMQ_SENDQUEUETYPE_MONOPRODUCER_UNBOUNDED,
-        LMQ_SENDQUEUETYPE_MULTIPRODUCER_UNBOUNDED,
-        LMQ_SENDQUEUETYPE_MULTIPRODUCER_UNBOUNDED_TAGGED,
-        LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_DISCARD_OLDEST,
-        LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_DISCARD_NEWEST,
-        LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_TAGGED_DISCARD_OLDEST,
-        LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_TAGGED_DISCARD_NEWEST
-    }
-    LMQ_SENDQUEUETYPE;
-
-    typedef enum _LMQ_SENDQUEUEPRIORITY
-    {
-        LMQ_SENDQUEUEPRIORITY_TIME_CRITICAL,
-        LMQ_SENDQUEUEPRIORITY_HIGHEST,
-        LMQ_SENDQUEUEPRIORITY_ABOVE_NORMAL,
-        LMQ_SENDQUEUEPRIORITY_NORMAL,
-        LMQ_SENDQUEUEPRIORITY_BELOW_NORMAL,
-        LMQ_SENDQUEUEPRIORITY_LOWEST,
-        LMQ_SENDQUEUEPRIORITY_IDLE
-    }
-    LMQ_SENDQUEUEPRIORITY;
-
-    //
     // Example of adding an unbounded monoproducer send queue to a channel.
     //
 
@@ -887,11 +890,22 @@ Types
 
 .. c:type:: LMQ_TRANSPORT
 
-    An opaque transport instance.
+    An opaque transport instance handle.
 
 .. c:struct:: LMQ_TRANSPORTBUFFERLIMITS
 
     A structure representing the buffer limits of a transport.
+
+.. code:: cpp
+
+    typedef struct _LMQ_TRANSPORTBUFFERLIMITS
+    {
+        SIZE_T MaxBufferSizeBytes;
+        LONG MaxPendingSendBuffers;
+        LONG MaxPendingReceiveBuffers;
+        ULONG MaxInlineDataSize;
+    }
+    LMQ_TRANSPORTBUFFERLIMITS, *PLMQ_TRANSPORTBUFFERLIMITS;
 
 Functions
 ---------

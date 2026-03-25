@@ -76,6 +76,9 @@
 <li class="toctree-l3"><a class="reference internal" href="#id4">Channels</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#id5">Types</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#id6">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#send-queues">Send Queues</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#id7">Types</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#id8">Functions</a></li>
 </ul>
@@ -797,7 +800,7 @@ the risk of memory leaks or dangling pointers in the application.</p>
 <dl class="c type">
 <dt class="sig sig-object c" id="c.PLMQ_CHANNEL">
 <span class="k"><span class="pre">type</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PLMQ_CHANNEL</span></span></span><a class="headerlink" href="#c.PLMQ_CHANNEL" title="Link to this definition"></a><br /></dt>
-<dd><p>An opaque channel instance.</p>
+<dd><p>An opaque channel instance handle.</p>
 </dd></dl>
 
 <dl class="cpp type">
@@ -806,24 +809,58 @@ the risk of memory leaks or dangling pointers in the application.</p>
 <dd><p>An enumerated type representing the type of a communication channel.</p>
 </dd></dl>
 
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="nc">_LMQ_CHANNELTYPE</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">LMQ_CHANNELTYPE_ONE_TO_ONE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="p">}</span>
+<span class="n">LMQ_CHANNELTYPE</span><span class="p">;</span>
+</pre></div>
+</div>
 <dl class="cpp type">
 <dt class="sig sig-object cpp" id="_CPPv415LMQ_CHANNELROLE">
 <span id="_CPPv315LMQ_CHANNELROLE"></span><span id="_CPPv215LMQ_CHANNELROLE"></span><span id="LMQ_CHANNELROLE"></span><span class="k"><span class="pre">type</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LMQ_CHANNELROLE</span></span></span><a class="headerlink" href="#_CPPv415LMQ_CHANNELROLE" title="Link to this definition"></a><br /></dt>
 <dd><p>An enumerated type representing the role of a communication channel once opened.</p>
 </dd></dl>
 
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="nc">_LMQ_CHANNELROLE</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">LMQ_CHANNELROLE_CLIENT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_CHANNELROLE_SERVER</span>
+<span class="p">}</span>
+<span class="n">LMQ_CHANNELROLE</span><span class="p">;</span>
+</pre></div>
+</div>
 <dl class="cpp type">
 <dt class="sig sig-object cpp" id="_CPPv420LMQ_RECEIVEQUEUETYPE">
 <span id="_CPPv320LMQ_RECEIVEQUEUETYPE"></span><span id="_CPPv220LMQ_RECEIVEQUEUETYPE"></span><span id="LMQ_RECEIVEQUEUETYPE"></span><span class="k"><span class="pre">type</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LMQ_RECEIVEQUEUETYPE</span></span></span><a class="headerlink" href="#_CPPv420LMQ_RECEIVEQUEUETYPE" title="Link to this definition"></a><br /></dt>
 <dd><p>An enumerated type representing the type of receive queue to use for incoming messages when adding one or more transports as receivers.</p>
 </dd></dl>
 
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="nc">_LMQ_RECEIVEQUEUETYPE</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">LMQ_RECEIVEQUEUETYPE_NA</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_RECEIVEQUEUETYPE_MONOCONSUMER_UNBOUNDED</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_RECEIVEQUEUETYPE_MULTICONSUMER_UNBOUNDED</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_RECEIVEQUEUETYPE_MULTICONSUMER_BOUNDED_DISCARD_OLDEST</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_RECEIVEQUEUETYPE_MULTICONSUMER_BOUNDED_DISCARD_NEWEST</span>
+<span class="p">}</span>
+<span class="n">LMQ_RECEIVEQUEUETYPE</span><span class="p">;</span>
+</pre></div>
+</div>
 <dl class="cpp type">
 <dt class="sig sig-object cpp" id="_CPPv422LMQ_CHANNELCONTROLCODE">
 <span id="_CPPv322LMQ_CHANNELCONTROLCODE"></span><span id="_CPPv222LMQ_CHANNELCONTROLCODE"></span><span id="LMQ_CHANNELCONTROLCODE"></span><span class="k"><span class="pre">type</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LMQ_CHANNELCONTROLCODE</span></span></span><a class="headerlink" href="#_CPPv422LMQ_CHANNELCONTROLCODE" title="Link to this definition"></a><br /></dt>
 <dd><p>An enumerated type representing the control codes for performing a control operation on a communication channel.</p>
 </dd></dl>
 
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="nc">_LMQ_CHANNELCONTROLCODE</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">LMQ_CHANNELCONTROLCODE_SERVICETHREADIDEALPROCESSOR</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_CHANNELCONTROLCODE_SERVICETHREADGROUPAFFINITY</span>
+<span class="p">}</span>
+<span class="n">LMQ_CHANNELCONTROLCODE</span><span class="p">;</span>
+</pre></div>
+</div>
 </section>
 <section id="id6">
 <h3>Functions<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
@@ -895,6 +932,25 @@ the risk of memory leaks or dangling pointers in the application.</p>
 </ul>
 </dd>
 </dl>
+<p>The following channel control codes are supported:</p>
+<blockquote>
+<div><ul>
+<li><p>LMQ_CHANNELCONTROLCODE_SERVICETHREADIDEALPROCESSOR</p>
+<blockquote>
+<div><p>Set the channel service thread’s ideal processor.</p>
+<p>Input: Pointer to an initialized <a class="reference external" href="https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-processor_number">PROCESSOR_NUMBER</a> structure.</p>
+<p>Output: [Optional] Pointer a PROCESSOR_NUMBER structure receiving the previous processor number.</p>
+</div></blockquote>
+</li>
+<li><p>LMQ_CHANNELCONTROLCODE_SERVICETHREADGROUPAFFINITY</p>
+<blockquote>
+<div><p>Set the channel service thread’s group affinity.</p>
+<p>Input: pointer to an initialized <a class="reference external" href="https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-group_affinity">GROUP_AFFINITY</a> structure.</p>
+<p>Output: [Optional] Pointer a GROUP_AFFINITY structure receiving the previous group information.</p>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
 </dd></dl>
 
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">HRESULT</span><span class="w"> </span><span class="n">hr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LmqChannelControl</span><span class="p">(</span><span class="n">Channel</span><span class="p">,</span>
@@ -976,12 +1032,15 @@ the risk of memory leaks or dangling pointers in the application.</p>
 </pre></div>
 </div>
 </section>
+</section>
+<section id="send-queues">
+<h2>Send Queues<a class="headerlink" href="#send-queues" title="Link to this heading"></a></h2>
 <section id="id7">
 <h3>Types<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
 <dl class="c type">
 <dt class="sig sig-object c" id="c.LMQ_SENDQUEUE">
 <span class="k"><span class="pre">type</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LMQ_SENDQUEUE</span></span></span><a class="headerlink" href="#c.LMQ_SENDQUEUE" title="Link to this definition"></a><br /></dt>
-<dd><p>An opaque send queue instance.</p>
+<dd><p>An opaque send queue instance handle.</p>
 </dd></dl>
 
 <dl class="c type">
@@ -990,12 +1049,39 @@ the risk of memory leaks or dangling pointers in the application.</p>
 <dd><p>An enumerated type representing the type of a send queue.</p>
 </dd></dl>
 
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="nc">_LMQ_SENDQUEUETYPE</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUETYPE_NA</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUETYPE_MONOPRODUCER_UNBOUNDED</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUETYPE_MULTIPRODUCER_UNBOUNDED</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUETYPE_MULTIPRODUCER_UNBOUNDED_TAGGED</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_DISCARD_OLDEST</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_DISCARD_NEWEST</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_TAGGED_DISCARD_OLDEST</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_TAGGED_DISCARD_NEWEST</span>
+<span class="p">}</span>
+<span class="n">LMQ_SENDQUEUETYPE</span><span class="p">;</span>
+</pre></div>
+</div>
 <dl class="c type">
 <dt class="sig sig-object c" id="c.LMQ_SENDQUEUEPRIORITY">
 <span class="k"><span class="pre">type</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LMQ_SENDQUEUEPRIORITY</span></span></span><a class="headerlink" href="#c.LMQ_SENDQUEUEPRIORITY" title="Link to this definition"></a><br /></dt>
 <dd><p>An enumerated type representing the priority of a send queue relative to other send queues on the same channel.</p>
 </dd></dl>
 
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="nc">_LMQ_SENDQUEUEPRIORITY</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUEPRIORITY_TIME_CRITICAL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUEPRIORITY_HIGHEST</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUEPRIORITY_ABOVE_NORMAL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUEPRIORITY_NORMAL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUEPRIORITY_BELOW_NORMAL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUEPRIORITY_LOWEST</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUEPRIORITY_IDLE</span>
+<span class="p">}</span>
+<span class="n">LMQ_SENDQUEUEPRIORITY</span><span class="p">;</span>
+</pre></div>
+</div>
 </section>
 <section id="id8">
 <h3>Functions<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
@@ -1021,35 +1107,6 @@ the risk of memory leaks or dangling pointers in the application.</p>
 </dd></dl>
 
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span>
-<span class="c1">// From &lt;api-lwmq-messaging.h&gt;</span>
-<span class="c1">//</span>
-
-<span class="k">typedef</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="nc">_LMQ_SENDQUEUETYPE</span>
-<span class="p">{</span>
-<span class="w">    </span><span class="n">LMQ_SENDQUEUETYPE_NA</span><span class="p">,</span>
-<span class="w">    </span><span class="n">LMQ_SENDQUEUETYPE_MONOPRODUCER_UNBOUNDED</span><span class="p">,</span>
-<span class="w">    </span><span class="n">LMQ_SENDQUEUETYPE_MULTIPRODUCER_UNBOUNDED</span><span class="p">,</span>
-<span class="w">    </span><span class="n">LMQ_SENDQUEUETYPE_MULTIPRODUCER_UNBOUNDED_TAGGED</span><span class="p">,</span>
-<span class="w">    </span><span class="n">LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_DISCARD_OLDEST</span><span class="p">,</span>
-<span class="w">    </span><span class="n">LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_DISCARD_NEWEST</span><span class="p">,</span>
-<span class="w">    </span><span class="n">LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_TAGGED_DISCARD_OLDEST</span><span class="p">,</span>
-<span class="w">    </span><span class="n">LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_TAGGED_DISCARD_NEWEST</span>
-<span class="p">}</span>
-<span class="n">LMQ_SENDQUEUETYPE</span><span class="p">;</span>
-
-<span class="k">typedef</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="nc">_LMQ_SENDQUEUEPRIORITY</span>
-<span class="p">{</span>
-<span class="w">    </span><span class="n">LMQ_SENDQUEUEPRIORITY_TIME_CRITICAL</span><span class="p">,</span>
-<span class="w">    </span><span class="n">LMQ_SENDQUEUEPRIORITY_HIGHEST</span><span class="p">,</span>
-<span class="w">    </span><span class="n">LMQ_SENDQUEUEPRIORITY_ABOVE_NORMAL</span><span class="p">,</span>
-<span class="w">    </span><span class="n">LMQ_SENDQUEUEPRIORITY_NORMAL</span><span class="p">,</span>
-<span class="w">    </span><span class="n">LMQ_SENDQUEUEPRIORITY_BELOW_NORMAL</span><span class="p">,</span>
-<span class="w">    </span><span class="n">LMQ_SENDQUEUEPRIORITY_LOWEST</span><span class="p">,</span>
-<span class="w">    </span><span class="n">LMQ_SENDQUEUEPRIORITY_IDLE</span>
-<span class="p">}</span>
-<span class="n">LMQ_SENDQUEUEPRIORITY</span><span class="p">;</span>
-
-<span class="c1">//</span>
 <span class="c1">// Example of adding an unbounded monoproducer send queue to a channel.</span>
 <span class="c1">//</span>
 
@@ -1071,7 +1128,7 @@ the risk of memory leaks or dangling pointers in the application.</p>
 <dl class="c type">
 <dt class="sig sig-object c" id="c.LMQ_TRANSPORT">
 <span class="k"><span class="pre">type</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LMQ_TRANSPORT</span></span></span><a class="headerlink" href="#c.LMQ_TRANSPORT" title="Link to this definition"></a><br /></dt>
-<dd><p>An opaque transport instance.</p>
+<dd><p>An opaque transport instance handle.</p>
 </dd></dl>
 
 <dl class="c struct">
@@ -1080,6 +1137,16 @@ the risk of memory leaks or dangling pointers in the application.</p>
 <dd><p>A structure representing the buffer limits of a transport.</p>
 </dd></dl>
 
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">_LMQ_TRANSPORTBUFFERLIMITS</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">MaxBufferSizeBytes</span><span class="p">;</span>
+<span class="w">    </span><span class="n">LONG</span><span class="w"> </span><span class="n">MaxPendingSendBuffers</span><span class="p">;</span>
+<span class="w">    </span><span class="n">LONG</span><span class="w"> </span><span class="n">MaxPendingReceiveBuffers</span><span class="p">;</span>
+<span class="w">    </span><span class="n">ULONG</span><span class="w"> </span><span class="n">MaxInlineDataSize</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">LMQ_TRANSPORTBUFFERLIMITS</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">PLMQ_TRANSPORTBUFFERLIMITS</span><span class="p">;</span>
+</pre></div>
+</div>
 </section>
 <section id="id11">
 <h3>Functions<a class="headerlink" href="#id11" title="Link to this heading"></a></h3>
