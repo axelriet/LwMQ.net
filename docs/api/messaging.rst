@@ -607,23 +607,61 @@ Types
 
 .. c:type:: PLMQ_CHANNEL
 
-    An opaque channel instance.
+    An opaque channel instance handle.
 
 .. cpp:type:: LMQ_CHANNELTYPE
 
     An enumerated type representing the type of a communication channel.    
 
+.. code:: cpp
+
+    typedef enum _LMQ_CHANNELTYPE
+    {
+        LMQ_CHANNELTYPE_ONE_TO_ONE
+    }
+    LMQ_CHANNELTYPE;
+
 .. cpp:type:: LMQ_CHANNELROLE
 
     An enumerated type representing the role of a communication channel once opened.
+
+.. code:: cpp
+
+    typedef enum _LMQ_CHANNELROLE
+    {
+        LMQ_CHANNELROLE_CLIENT,
+        LMQ_CHANNELROLE_SERVER
+    }
+    LMQ_CHANNELROLE;
 
 .. cpp:type:: LMQ_RECEIVEQUEUETYPE
 
     An enumerated type representing the type of receive queue to use for incoming messages when adding one or more transports as receivers.
 
+.. code:: cpp
+    
+    typedef enum _LMQ_RECEIVEQUEUETYPE
+    {
+        LMQ_RECEIVEQUEUETYPE_NA,
+        LMQ_RECEIVEQUEUETYPE_MONOCONSUMER_UNBOUNDED,
+        LMQ_RECEIVEQUEUETYPE_MULTICONSUMER_UNBOUNDED,
+        LMQ_RECEIVEQUEUETYPE_MULTICONSUMER_BOUNDED_DISCARD_OLDEST,
+        LMQ_RECEIVEQUEUETYPE_MULTICONSUMER_BOUNDED_DISCARD_NEWEST
+    }
+    LMQ_RECEIVEQUEUETYPE;
+
 .. cpp:type:: LMQ_CHANNELCONTROLCODE
 
     An enumerated type representing the control codes for performing a control operation on a communication channel.
+
+.. code:: cpp
+    
+    typedef enum _LMQ_CHANNELCONTROLCODE
+    {
+        LMQ_CHANNELCONTROLCODE_SERVICETHREADIDEALPROCESSOR,
+        LMQ_CHANNELCONTROLCODE_SERVICETHREADGROUPAFFINITY
+    }
+    LMQ_CHANNELCONTROLCODE;
 
 Functions
 ---------
@@ -686,6 +724,24 @@ Functions
     :param OutputBufferLengthBytes: The size of the output buffer in bytes.
 
     :param BytesReturned: An optional pointer to a variable that receives the size of the data returned in the output buffer in bytes.
+
+    The following channel control codes are supported:
+
+        * LMQ_CHANNELCONTROLCODE_SERVICETHREADIDEALPROCESSOR
+            
+            Set the channel service thread's ideal processor.
+
+            Input: Pointer to an initialized `PROCESSOR_NUMBER <https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-processor_number>`_ structure.
+            
+            Output: [Optional] Pointer a PROCESSOR_NUMBER structure receiving the previous processor number.  
+
+        * LMQ_CHANNELCONTROLCODE_SERVICETHREADGROUPAFFINITY
+            
+            Set the channel service thread's group affinity.
+            
+            Input: pointer to an initialized `GROUP_AFFINITY <https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-group_affinity>`_ structure.
+            
+            Output: [Optional] Pointer a GROUP_AFFINITY structure receiving the previous group information.  
 
 .. code:: cpp
 
