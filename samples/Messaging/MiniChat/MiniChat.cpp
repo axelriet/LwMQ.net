@@ -38,11 +38,7 @@ Environment:
 #include <api-lwmq-time.h>
 #include <api-lwmq-messaging.h>
 
-#pragma warning(disable: 26490) // Don't use reinterpret_cast
-
-#define PRINT_HR(__hr__)     do { printf("Something went wrong: 0x%08lx\n", __hr__); } while(0,0)
-#define CHECK(__hr__)        do { const HRESULT __hrRet__{ __hr__ }; if (FAILED(__hrRet__)) [[unlikely]] { PRINT_HR(__hrRet__); exit(-1); }} while(0,0)
-#define CHECK_RETURN(__hr__) do { const HRESULT __hrRet__{ __pragma(warning(suppress: 6001)) __hr__ }; if (FAILED(__hrRet__)) [[unlikely]] { PRINT_HR(__hrRet__); return (__hrRet__); }} while(0,0)
+#include <api-lwmq-samples-common.h>
 
 HRESULT
 SendOneMessage (
