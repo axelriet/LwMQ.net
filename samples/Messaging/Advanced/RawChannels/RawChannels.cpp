@@ -65,8 +65,6 @@ SenderThread (
     PVOID Param
     ) noexcept;
 
-double g_TimeAdjustmentNs{};
-
 int main()
 {
     printf("RawChannels IPC 1.0 - Account must have SeCreateGlobalPrivilege!\n"
@@ -74,43 +72,9 @@ int main()
 
 #ifdef USE_PRECISE_BUT_SLOWER_TIMESTAMPS
 
-    //
-    // Time the time function so we can subtract it
-    // from the observed latency.
-    //
+    g_TimingAdjustmentNs = ComputeTimingOverhead();
 
-    const ULONGLONG Start{ RtlGetSystemTimePrecise() };
-
-    for (int x = 0; x < 100'000; x++)
-    {
-        RtlGetSystemTimePrecise();
-        RtlGetSystemTimePrecise();
-        RtlGetSystemTimePrecise();
-        RtlGetSystemTimePrecise();
-        RtlGetSystemTimePrecise();
-        RtlGetSystemTimePrecise();
-        RtlGetSystemTimePrecise();
-        RtlGetSystemTimePrecise();
-        RtlGetSystemTimePrecise();
-        RtlGetSystemTimePrecise();
-    }
-
-    //
-    // The system time is in 100ns increments.
-    //
-
-    const ULONGLONG Elapsed100Ns{ (RtlGetSystemTimePrecise() - Start) };
-
-    //
-    // Compute the time it takes to call the time function
-    // once. We did 1M calls, and the result is in 100ns
-    // increments, so we multiply my 100 to get nanoseconds,
-    // then divide by 1 million (so we divide by 10,000)
-    //
-
-    g_TimeAdjustmentNs = Elapsed100Ns / 10'000.0;
-
-    printf("Using precise timestamps with a time adjustment of %fns.\n", g_TimeAdjustmentNs);
+    printf("Using precise timestamps with a time adjustment of %.0fns.\n", g_TimingAdjustmentNs);
 
 #endif
 
@@ -291,7 +255,7 @@ ReceiveOneBuffer (
         //
 
         wprintf(L"%8.1fus - %ls",
-                (ElapsedNs - g_TimeAdjustmentNs) / 1000.0,
+                (ElapsedNs - g_TimingAdjustmentNs) / 1000.0,
                 reinterpret_cast<PCWSTR>(&TransportBuffer->Buffer[8]));
     }
 

@@ -65,10 +65,15 @@ SenderThread (
 int main()
 {
     printf("MiniChatEx IPC 1.0 - Account must have SeCreateGlobalPrivilege!\n"
-#ifdef USE_PRECISE_BUT_SLOWER_TIMESTAMPS
-           "Using precise timestamps.\n"
-#endif
            "Start two instances of MiniChatEx and start typing or pasting text.\n");
+
+#ifdef USE_PRECISE_BUT_SLOWER_TIMESTAMPS
+
+    g_TimingAdjustmentNs = ComputeTimingOverhead();
+
+    printf("Using precise timestamps with a time adjustment of %.0fns.\n", g_TimingAdjustmentNs);
+
+#endif
 
     //
     // Set up a bidirectional channel
@@ -235,7 +240,7 @@ ReceiveOneMessage(
         const int Cch{ __pragma(warning(suppress:26472)) static_cast<int>(DataSize / sizeof(WCHAR)) };
 
         wprintf(L"%8.1fus - %.*ls",
-                ElapsedNs / 1000.0,
+                (ElapsedNs - g_TimingAdjustmentNs) / 1000.0,
                 Cch,
                 reinterpret_cast<PCWSTR>(Data));
     }
