@@ -50,6 +50,7 @@ Types
     LMQ_SENDQUEUETYPE
     LMQ_SENDQUEUEPRIORITY
     LMQ_TRANSPORT
+    LMQ_TRANSPORTBUFFER
     LMQ_TRANSPORTBUFFERLIMITS
     LMQ_MESSAGE
     LMQ_MESSAGECALLBACK
@@ -117,6 +118,39 @@ Channels
     LMQAPI
     LmqDestroyChannel (
         PLMQ_CHANNEL Channel
+        );
+
+Direct Buffer Access
+--------------------
+
+.. code:: cpp
+
+    LMQAPI
+    LmqRawChannelGetTransportBuffer (
+        LMQ_TRANSPORT Transport,
+        UINT32 TimeoutMs,
+        PLMQ_TRANSPORTBUFFER* Buffer
+        );
+
+    LMQAPI
+    LmqRawChannelSendTransportBuffer (
+        LMQ_TRANSPORT Transport,
+        PLMQ_TRANSPORTBUFFER* Buffer,
+        BOOL EraseBufferAfterSending
+        );
+
+    LMQAPI
+    LmqRawChannelReceiveTransportBuffer (
+        LMQ_TRANSPORT Transport,
+        UINT32 TimeoutMs,
+        PLMQ_TRANSPORTBUFFER* Buffer
+        );
+
+    LMQAPI
+    LmqRawChannelDisposeTransportBuffer (
+        LMQ_TRANSPORT Transport,
+        PLMQ_TRANSPORTBUFFER* Buffer,
+        BOOL EraseBufferBeforeDisposing
         );
 
 Queues
@@ -907,6 +941,31 @@ Types
     }
     LMQ_TRANSPORTBUFFERLIMITS, *PLMQ_TRANSPORTBUFFERLIMITS;
 
+.. c:struct:: LMQ_TRANSPORTBUFFER
+
+    A structure representing a raw transport buffer.
+
+.. code:: cpp
+
+    typedef struct _LMQ_TRANSPORTBUFFER
+    {
+        //
+        // When returned from LmqRawChannelGetTransportBuffer(), contains
+        // the length of the buffer = maximum bytes to write
+        // and must be set to effective bytes to send before
+        // calling LmqRawChannelSendTransportBuffer().
+        //
+        // When returned from LmqRawChannelReceiveTransportBuffer(), this
+        // contains the available data length, and therefore
+        // the maximum number of bytes to read from the buffer.
+        //
+
+        SIZE_T BufferSizeBytes;
+
+        const PBYTE Buffer;
+    }
+    LMQ_TRANSPORTBUFFER, *PLMQ_TRANSPORTBUFFER;
+
 Functions
 ---------
 
@@ -985,6 +1044,49 @@ Functions
                                      OutputBuffer,
                                      OutputBufferLengthBytes,
                                      &BytesReturned);    
+
+Direct Buffer Access
+^^^^^^^^^^^^^^^^^^^^
+
+.. c:function:: LMQAPI LmqRawChannelGetTransportBuffer(LMQ_TRANSPORT Transport, UINT32 TimeoutMs, PLMQ_TRANSPORTBUFFER* Buffer)
+
+    Obtains a pointer to a transport buffer for sending a raw data block.
+
+    :param Transport: The transport to obtain the buffer from.
+
+    :param TimeoutMs: The maximum time to wait for a buffer to be available, in milliseconds. A value of INFINITE can be used to wait indefinitely. If the function fails with a timeout error code, it means no buffer became available within the specified timeout, but any buffer that becomes available later can still be obtained by calling this function again.
+
+    :param Buffer: A pointer to a variable that receives a pointer to the obtained transport buffer.
+
+.. c:function:: LMQAPI LmqRawChannelSendTransportBuffer(LMQ_TRANSPORT Transport, PLMQ_TRANSPORTBUFFER* Buffer, BOOL EraseBufferAfterSending)
+
+    Sends a raw data block through a transport using a transport buffer obtained from LmqRawChannelGetTransportBuffer().
+
+    :param Transport: The transport to send the buffer through.
+    
+    :param Buffer: A pointer to the transport buffer to send.
+    
+    :param EraseBufferAfterSending: If TRUE, the buffer content is securely erased by overwriting it with zeros before the buffer is reused for sending another message or receiving data. This is useful when the buffer contains sensitive data that should not remain in memory after being sent. Note that enabling this option can have a performance impact, especially for large buffers, as it requires an additional memory operation to overwrite the buffer content.
+
+.. c:function:: LMQAPI LmqRawChannelReceiveTransportBuffer(LMQ_TRANSPORT Transport, UINT32 TimeoutMs, PLMQ_TRANSPORTBUFFER* Buffer)
+
+    Receives a raw data block through a transport using a transport buffer.
+
+    :param Transport: The transport to receive the buffer from.
+
+    :param TimeoutMs: The maximum time to wait for a buffer with received data to be available, in milliseconds. A value of INFINITE can be used to wait indefinitely. If the function fails with a timeout error code, it means no buffer with received data became available within the specified timeout, but any buffer that becomes available later can still be obtained by calling this function again.
+
+    :param Buffer: A pointer to a variable that receives a pointer to the transport buffer containing the received data.
+
+.. c:function:: LMQAPI LmqRawChannelDisposeTransportBuffer(LMQ_TRANSPORT Transport, PLMQ_TRANSPORTBUFFER* Buffer, BOOL EraseBufferBeforeDisposing)
+
+    Disposes a transport buffer obtained from LmqRawChannelGetTransportBuffer() or LmqRawChannelReceiveTransportBuffer() that is no longer needed and will never be sent.
+
+    :param Transport: The transport the buffer belongs to.
+
+    :param Buffer: A pointer to the transport buffer to dispose.
+
+    :param EraseBufferBeforeDisposing: If TRUE, the buffer content is securely erased by overwriting it with zeros before the buffer is disposed. This is useful when the buffer contains sensitive data that should not remain in memory. Note that enabling this option can have a performance impact, especially for large buffers, as it requires an additional memory operation to overwrite the buffer content.
 
 Posting and Receiving
 =====================
