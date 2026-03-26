@@ -93,7 +93,7 @@ SenderThread (
 
 int main()
 {
-    printf("MiniChatEx 1.0 - Account must have SeCreateGlobalPrivilege!\n"
+    printf("MiniChatEx IPC 1.0 - Account must have SeCreateGlobalPrivilege!\n"
 #ifdef USE_PRECISE_BUT_SLOWER_TIMESTAMPS
            "Using precise timestamps.\n"
 #endif
@@ -111,9 +111,9 @@ int main()
 
     CHECK(LmqAddTransport(Channel,
                           L"ipc://MiniChatEx-v1",
-                          16 * 1024,
-                          2,
-                          2,
+                          64 * 1024,
+                          4,
+                          4,
                           LMQ_TRANSPORT_CREATIONFLAGS_SENDRECEIVE,
                           nullptr));
 
@@ -151,11 +151,11 @@ int main()
 
     CHECK(SendOneMessage(SendQueue,
                          L"Hello",
-                         5,
+                         10,
                          LMQ_TIMESTAMP_NONE));
 
     CHECK(ReceiveOneMessage(Channel,
-                            5,
+                            10,
                             FALSE));
 
     //

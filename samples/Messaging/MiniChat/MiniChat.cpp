@@ -67,7 +67,7 @@ SenderThread (
 
 int main()
 {
-    printf("MiniChat 1.0 - Account must have SeCreateGlobalPrivilege!\n"
+    printf("MiniChat IPC 1.0 - Account must have SeCreateGlobalPrivilege!\n"
            "Start two instances of MiniChat and start typing or pasting text.\n");
 
     //
@@ -82,9 +82,9 @@ int main()
 
     CHECK(LmqAddTransport(Channel,
                           L"ipc://MiniChat-v1",
-                          16 * 1024,
-                          2,
-                          2,
+                          64 * 1024,
+                          4,
+                          4,
                           LMQ_TRANSPORT_CREATIONFLAGS_SENDRECEIVE,
                           nullptr));
 
@@ -122,11 +122,11 @@ int main()
 
     CHECK(SendOneMessage(SendQueue,
                          L"Hello",
-                         5,
+                         10,
                          LMQ_TIMESTAMP_NONE));
 
     CHECK(ReceiveOneMessage(Channel,
-                            5,
+                            10,
                             FALSE));
 
     //
