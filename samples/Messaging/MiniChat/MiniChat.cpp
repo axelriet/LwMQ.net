@@ -48,7 +48,7 @@ HRESULT
 SendOneMessage (
     _In_ LMQ_SENDQUEUE SendQueue,
     _In_ PCWSTR MessageContent,
-    _In_ SIZE_T MessageSize,
+    _In_ SIZE_T MessageSizeBytes,
     _In_ ULONG64 Timestamp
     ) noexcept;
 
@@ -162,7 +162,7 @@ HRESULT
 SendOneMessage (
     _In_ LMQ_SENDQUEUE SendQueue,
     _In_ PCWSTR MessageContent,
-    _In_ SIZE_T MessageSize,
+    _In_ SIZE_T MessageSizeBytes,
     _In_ ULONG64 Timestamp
     ) noexcept
 {
@@ -174,7 +174,7 @@ SendOneMessage (
 
     CHECK_RETURN(LmqAppendFrame(Message,
                                 reinterpret_cast<const BYTE*>(MessageContent),
-                                MessageSize,
+                                MessageSizeBytes,
                                 Timestamp));
 
     if (FAILED(hr = LmqPostMessage(SendQueue,
