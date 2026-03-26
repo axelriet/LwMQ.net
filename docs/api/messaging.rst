@@ -174,28 +174,28 @@ Direct Buffer Access
 .. code:: cpp
 
     LMQAPI
-    LmqRawChannelGetTransportBuffer (
+    LmqRawChannelGetBuffer (
         LMQ_TRANSPORT Transport,
         UINT32 TimeoutMs,
         PLMQ_TRANSPORTBUFFER* Buffer
         );
 
     LMQAPI
-    LmqRawChannelSendTransportBuffer (
+    LmqRawChannelSendBuffer (
         LMQ_TRANSPORT Transport,
         PLMQ_TRANSPORTBUFFER* Buffer,
         BOOL EraseBufferAfterSending
         );
 
     LMQAPI
-    LmqRawChannelReceiveTransportBuffer (
+    LmqRawChannelReceiveBuffer (
         LMQ_TRANSPORT Transport,
         UINT32 TimeoutMs,
         PLMQ_TRANSPORTBUFFER* Buffer
         );
 
     LMQAPI
-    LmqRawChannelDisposeTransportBuffer (
+    LmqRawChannelDisposeBuffer (
         LMQ_TRANSPORT Transport,
         PLMQ_TRANSPORTBUFFER* Buffer,
         BOOL EraseBufferBeforeDisposing
@@ -950,12 +950,12 @@ Types
     typedef struct _LMQ_TRANSPORTBUFFER
     {
         //
-        // When returned from LmqRawChannelGetTransportBuffer(), contains
+        // When returned from LmqRawChannelGetBuffer(), contains
         // the length of the buffer = maximum bytes to write
         // and must be set to effective bytes to send before
-        // calling LmqRawChannelSendTransportBuffer().
+        // calling LmqRawChannelSendBuffer().
         //
-        // When returned from LmqRawChannelReceiveTransportBuffer(), this
+        // When returned from LmqRawChannelReceiveBuffer(), this
         // contains the available data length, and therefore
         // the maximum number of bytes to read from the buffer.
         //
@@ -1048,7 +1048,7 @@ Functions
 Direct Buffer Access
 ^^^^^^^^^^^^^^^^^^^^
 
-.. c:function:: LMQAPI LmqRawChannelGetTransportBuffer(LMQ_TRANSPORT Transport, UINT32 TimeoutMs, PLMQ_TRANSPORTBUFFER* Buffer)
+.. c:function:: LMQAPI LmqRawChannelGetBuffer(LMQ_TRANSPORT Transport, UINT32 TimeoutMs, PLMQ_TRANSPORTBUFFER* Buffer)
 
     Obtains a pointer to a transport buffer for sending a raw data block.
 
@@ -1058,9 +1058,9 @@ Direct Buffer Access
 
     :param Buffer: A pointer to a variable that receives a pointer to the obtained transport buffer.
 
-.. c:function:: LMQAPI LmqRawChannelSendTransportBuffer(LMQ_TRANSPORT Transport, PLMQ_TRANSPORTBUFFER* Buffer, BOOL EraseBufferAfterSending)
+.. c:function:: LMQAPI LmqRawChannelSendBuffer(LMQ_TRANSPORT Transport, PLMQ_TRANSPORTBUFFER* Buffer, BOOL EraseBufferAfterSending)
 
-    Sends a raw data block through a transport using a transport buffer obtained from LmqRawChannelGetTransportBuffer().
+    Sends a raw data block through a transport using a transport buffer obtained from LmqRawChannelGetBuffer().
 
     :param Transport: The transport to send the buffer through.
     
@@ -1068,7 +1068,7 @@ Direct Buffer Access
     
     :param EraseBufferAfterSending: If TRUE, the buffer content is securely erased by overwriting it with zeros before the buffer is reused for sending another message or receiving data. This is useful when the buffer contains sensitive data that should not remain in memory after being sent. Note that enabling this option can have a performance impact, especially for large buffers, as it requires an additional memory operation to overwrite the buffer content.
 
-.. c:function:: LMQAPI LmqRawChannelReceiveTransportBuffer(LMQ_TRANSPORT Transport, UINT32 TimeoutMs, PLMQ_TRANSPORTBUFFER* Buffer)
+.. c:function:: LMQAPI LmqRawChannelReceiveBuffer(LMQ_TRANSPORT Transport, UINT32 TimeoutMs, PLMQ_TRANSPORTBUFFER* Buffer)
 
     Receives a raw data block through a transport using a transport buffer.
 
@@ -1078,9 +1078,9 @@ Direct Buffer Access
 
     :param Buffer: A pointer to a variable that receives a pointer to the transport buffer containing the received data.
 
-.. c:function:: LMQAPI LmqRawChannelDisposeTransportBuffer(LMQ_TRANSPORT Transport, PLMQ_TRANSPORTBUFFER* Buffer, BOOL EraseBufferBeforeDisposing)
+.. c:function:: LMQAPI LmqRawChannelDisposeBuffer(LMQ_TRANSPORT Transport, PLMQ_TRANSPORTBUFFER* Buffer, BOOL EraseBufferBeforeDisposing)
 
-    Disposes a transport buffer obtained from LmqRawChannelGetTransportBuffer() or LmqRawChannelReceiveTransportBuffer() that is no longer needed and will never be sent.
+    Disposes a transport buffer obtained from LmqRawChannelGetBuffer() or LmqRawChannelReceiveBuffer() that is no longer needed and will never be sent.
 
     :param Transport: The transport the buffer belongs to.
 
