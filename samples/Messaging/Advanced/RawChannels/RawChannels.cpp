@@ -65,13 +65,54 @@ SenderThread (
     PVOID Param
     ) noexcept;
 
+double g_TimeAdjustmentNs{};
+
 int main()
 {
     printf("RawChannels IPC 1.0 - Account must have SeCreateGlobalPrivilege!\n"
-#ifdef USE_PRECISE_BUT_SLOWER_TIMESTAMPS
-           "Using precise timestamps.\n"
-#endif
            "Start two instances of RawChannels and start typing or pasting text.\n");
+
+#ifdef USE_PRECISE_BUT_SLOWER_TIMESTAMPS
+
+    //
+    // Time the time function so we can subtract it
+    // from the observed latency.
+    //
+
+    const ULONGLONG Start{ RtlGetSystemTimePrecise() };
+
+    for (int x = 0; x < 100'000; x++)
+    {
+        RtlGetSystemTimePrecise();
+        RtlGetSystemTimePrecise();
+        RtlGetSystemTimePrecise();
+        RtlGetSystemTimePrecise();
+        RtlGetSystemTimePrecise();
+        RtlGetSystemTimePrecise();
+        RtlGetSystemTimePrecise();
+        RtlGetSystemTimePrecise();
+        RtlGetSystemTimePrecise();
+        RtlGetSystemTimePrecise();
+    }
+
+    //
+    // The system time is in 100ns increments.
+    //
+
+    const ULONGLONG Elapsed100Ns{ (RtlGetSystemTimePrecise() - Start) };
+
+    //
+    // Compute the time it takes to call the time function
+    // once. We did 1M calls, and the result is in 100ns
+    // increments, so we multiply my 100 to get nanoseconds,
+    // then divide by 1 million (so we divide by 10,000)
+    //
+
+    g_TimeAdjustmentNs = Elapsed100Ns / 10'000.0;
+
+    printf("Using precise timestamps with a time adjustment of %fns.\n", g_TimeAdjustmentNs);
+
+#endif
 
     //
     // Set up a bidirectional channel
@@ -81,7 +122,7 @@ int main()
     LMQ_CHANNEL Channel{};
     LMQ_TRANSPORT Transport{};
     
-    CHECK(LmqCreateChannel(LMQ_CHANNELTYPE_RAW_ONE_TO_ONE,
+    CHECK(LmqCreateChannel(LMQ_CHANNELTYPE_RAW_ONE_TO_ONE, // SDK 1.0.0.7 or later
                            &Channel));
 
     CHECK(LmqAddTransport(Channel,
@@ -199,7 +240,7 @@ SendOneBuffer (
     // Sent the buffer on its way to the other peer. Note
     // that we don't set the length of the data (which is
     // 8 + (wcslen(TransportBuffer->Buffer) + 1) * sizeof(WCHAR)
-    // becausr the string happpens to me zero-terminated and
+    // because the string happens to me zero-terminated and
     // we just print it as-is on the other side. In most
     // scenarios you want to pass the count of bytes you
     // actually used via TransportBuffer->BufferSizeBytes.
@@ -240,7 +281,7 @@ ReceiveOneBuffer (
         // a raw channel.
         //
 
-        const auto ElapsedNs{ ((Now - *reinterpret_cast<ULONGLONG*>(&TransportBuffer->Buffer[0])) * 100) }; // Convert to ns
+        const auto ElapsedNs{ ((Now - *reinterpret_cast<ULONGLONG*>(&TransportBuffer->Buffer[0])) * 100ULL) }; // Convert to ns
 
         //
         // We know also know, because again this is how this
@@ -250,7 +291,7 @@ ReceiveOneBuffer (
         //
 
         wprintf(L"%8.1fus - %ls",
-                ElapsedNs / 1000.0,
+                (ElapsedNs - g_TimeAdjustmentNs) / 1000.0,
                 reinterpret_cast<PCWSTR>(&TransportBuffer->Buffer[8]));
     }
 
@@ -314,7 +355,7 @@ SenderThread (
             // Sent the buffer on its way to the other peer. Note
             // that we don't set the length of the data (which is
             // 8 + (wcslen(TransportBuffer->Buffer) + 1) * sizeof(WCHAR)
-            // becausr the string happpens to me zero-terminated and
+            // because the string happens to me zero-terminated and
             // we just print it as-is on the other side. In most
             // scenarios you want to pass the count of bytes you
             // actually used via TransportBuffer->BufferSizeBytes.

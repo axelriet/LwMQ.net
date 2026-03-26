@@ -230,7 +230,7 @@ ReceiveOneMessage(
                                      &Sent,
                                      nullptr));
 
-        const auto ElapsedNs{ Sent ? ((Now - Sent) * 100) : 0 }; // Convert to ns
+        const auto ElapsedNs{ Sent ? ((Now - Sent) * 100ULL) : 0 }; // Convert to ns
 
         const int Cch{ __pragma(warning(suppress:26472)) static_cast<int>(DataSize / sizeof(WCHAR)) };
 
