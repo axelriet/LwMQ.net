@@ -121,6 +121,7 @@ int main()
 
     LMQ_CHANNEL Channel{};
     LMQ_TRANSPORT Transport{};
+
     CHECK(LmqCreateChannel(LMQ_CHANNELTYPE_RAW_ONE_TO_ONE, // SDK 1.0.0.7 or later
                            &Channel));
 
