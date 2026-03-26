@@ -120,39 +120,6 @@ Channels
         PLMQ_CHANNEL Channel
         );
 
-Direct Buffer Access
---------------------
-
-.. code:: cpp
-
-    LMQAPI
-    LmqRawChannelGetTransportBuffer (
-        LMQ_TRANSPORT Transport,
-        UINT32 TimeoutMs,
-        PLMQ_TRANSPORTBUFFER* Buffer
-        );
-
-    LMQAPI
-    LmqRawChannelSendTransportBuffer (
-        LMQ_TRANSPORT Transport,
-        PLMQ_TRANSPORTBUFFER* Buffer,
-        BOOL EraseBufferAfterSending
-        );
-
-    LMQAPI
-    LmqRawChannelReceiveTransportBuffer (
-        LMQ_TRANSPORT Transport,
-        UINT32 TimeoutMs,
-        PLMQ_TRANSPORTBUFFER* Buffer
-        );
-
-    LMQAPI
-    LmqRawChannelDisposeTransportBuffer (
-        LMQ_TRANSPORT Transport,
-        PLMQ_TRANSPORTBUFFER* Buffer,
-        BOOL EraseBufferBeforeDisposing
-        );
-
 Queues
 ------
 
@@ -199,6 +166,39 @@ Transports
         PVOID OutputBuffer,
         ULONG OutputBufferLengthBytes,
         PULONG BytesReturned
+        );
+
+Direct Buffer Access
+--------------------
+
+.. code:: cpp
+
+    LMQAPI
+    LmqRawChannelGetTransportBuffer (
+        LMQ_TRANSPORT Transport,
+        UINT32 TimeoutMs,
+        PLMQ_TRANSPORTBUFFER* Buffer
+        );
+
+    LMQAPI
+    LmqRawChannelSendTransportBuffer (
+        LMQ_TRANSPORT Transport,
+        PLMQ_TRANSPORTBUFFER* Buffer,
+        BOOL EraseBufferAfterSending
+        );
+
+    LMQAPI
+    LmqRawChannelReceiveTransportBuffer (
+        LMQ_TRANSPORT Transport,
+        UINT32 TimeoutMs,
+        PLMQ_TRANSPORTBUFFER* Buffer
+        );
+
+    LMQAPI
+    LmqRawChannelDisposeTransportBuffer (
+        LMQ_TRANSPORT Transport,
+        PLMQ_TRANSPORTBUFFER* Buffer,
+        BOOL EraseBufferBeforeDisposing
         );
 
 Messages & Frames
@@ -276,8 +276,8 @@ Messages & Frames
         PLMQ_MESSAGE Message
         );
 
-Send and Receive
-----------------
+Post and Receive Messages
+-------------------------
 
 .. code:: cpp
 
