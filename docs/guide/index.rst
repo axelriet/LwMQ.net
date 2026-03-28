@@ -20,6 +20,10 @@ locally distributed applications to networked applications, and
 from `IoT`_ / embedded SoCs to workstations to datacenters, and even
 in virtualized environments.
 
+Samples: https://github.com/axelriet/LwMQ.net/tree/main/samples
+
+SDK: https://www.lwmq.net
+
 .. _IoT: https://learn.microsoft.com/en-us/windows/iot/
 
 The entire binary distribution of LwMQ is less than 4MB and fits

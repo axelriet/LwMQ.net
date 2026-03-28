@@ -96,6 +96,19 @@ drivers. Furthermore, LwMQ users are entirely shielded from the
 underlying transport details and can leverage any of the supported
 transports with virtually no change to the code.
 
+For special case, LwMQ also provides "raw" channels with
+direct access to the underlying transport buffers, bypassing
+the messaging and queing layers as well as message encoding.
+
+This allows users to implement custom protocols on top of LwMQ's
+transport layer as well as cater to special use cases such as
+high-performance data replication, BLOB transfer, or even remote
+memory access (RMA) scenarios where the application is directly
+responsible for managing the remote memory and the synchronization
+of the data transfer, while still  benefiting from LwMQ's efficient
+transport mechanisms and APIs for connection management, buffer
+registration, and event handling.
+
 Finally, LwMQ supports Hyper-V specific transports that
 enable communication between the Host OS, Guest VMs,
 and Containers without leveraging any network stack at
