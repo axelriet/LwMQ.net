@@ -292,28 +292,28 @@
 <section id="direct-buffer-access">
 <h3>Direct Buffer Access<a class="headerlink" href="#direct-buffer-access" title="Link to this heading"></a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
-<span class="nf">LmqRawChannelGetTransportBuffer</span><span class="w"> </span><span class="p">(</span>
+<span class="nf">LmqRawChannelGetBuffer</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">LMQ_TRANSPORT</span><span class="w"> </span><span class="n">Transport</span><span class="p">,</span>
 <span class="w">    </span><span class="n">UINT32</span><span class="w"> </span><span class="n">TimeoutMs</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PLMQ_TRANSPORTBUFFER</span><span class="o">*</span><span class="w"> </span><span class="n">Buffer</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="n">LMQAPI</span>
-<span class="nf">LmqRawChannelSendTransportBuffer</span><span class="w"> </span><span class="p">(</span>
+<span class="nf">LmqRawChannelSendBuffer</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">LMQ_TRANSPORT</span><span class="w"> </span><span class="n">Transport</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PLMQ_TRANSPORTBUFFER</span><span class="o">*</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
 <span class="w">    </span><span class="n">BOOL</span><span class="w"> </span><span class="n">EraseBufferAfterSending</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="n">LMQAPI</span>
-<span class="nf">LmqRawChannelReceiveTransportBuffer</span><span class="w"> </span><span class="p">(</span>
+<span class="nf">LmqRawChannelReceiveBuffer</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">LMQ_TRANSPORT</span><span class="w"> </span><span class="n">Transport</span><span class="p">,</span>
 <span class="w">    </span><span class="n">UINT32</span><span class="w"> </span><span class="n">TimeoutMs</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PLMQ_TRANSPORTBUFFER</span><span class="o">*</span><span class="w"> </span><span class="n">Buffer</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="n">LMQAPI</span>
-<span class="nf">LmqRawChannelDisposeTransportBuffer</span><span class="w"> </span><span class="p">(</span>
+<span class="nf">LmqRawChannelDisposeBuffer</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">LMQ_TRANSPORT</span><span class="w"> </span><span class="n">Transport</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PLMQ_TRANSPORTBUFFER</span><span class="o">*</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
 <span class="w">    </span><span class="n">BOOL</span><span class="w"> </span><span class="n">EraseBufferBeforeDisposing</span>
@@ -1190,12 +1190,12 @@ the risk of memory leaks or dangling pointers in the application.</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">_LMQ_TRANSPORTBUFFER</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="c1">//</span>
-<span class="w">    </span><span class="c1">// When returned from LmqRawChannelGetTransportBuffer(), contains</span>
+<span class="w">    </span><span class="c1">// When returned from LmqRawChannelGetBuffer(), contains</span>
 <span class="w">    </span><span class="c1">// the length of the buffer = maximum bytes to write</span>
 <span class="w">    </span><span class="c1">// and must be set to effective bytes to send before</span>
-<span class="w">    </span><span class="c1">// calling LmqRawChannelSendTransportBuffer().</span>
+<span class="w">    </span><span class="c1">// calling LmqRawChannelSendBuffer().</span>
 <span class="w">    </span><span class="c1">//</span>
-<span class="w">    </span><span class="c1">// When returned from LmqRawChannelReceiveTransportBuffer(), this</span>
+<span class="w">    </span><span class="c1">// When returned from LmqRawChannelReceiveBuffer(), this</span>
 <span class="w">    </span><span class="c1">// contains the available data length, and therefore</span>
 <span class="w">    </span><span class="c1">// the maximum number of bytes to read from the buffer.</span>
 <span class="w">    </span><span class="c1">//</span>
@@ -1295,8 +1295,8 @@ the risk of memory leaks or dangling pointers in the application.</p>
 <section id="id12">
 <h4>Direct Buffer Access<a class="headerlink" href="#id12" title="Link to this heading"></a></h4>
 <dl class="c function">
-<dt class="sig sig-object c" id="c.LmqRawChannelGetTransportBuffer">
-<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqRawChannelGetTransportBuffer</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.LMQ_TRANSPORT" title="LMQ_TRANSPORT"><span class="n"><span class="pre">LMQ_TRANSPORT</span></span></a><span class="w"> </span><span class="n"><span class="pre">Transport</span></span>, <span class="n"><span class="pre">UINT32</span></span><span class="w"> </span><span class="n"><span class="pre">TimeoutMs</span></span>, <span class="n"><span class="pre">PLMQ_TRANSPORTBUFFER</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">Buffer</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqRawChannelGetTransportBuffer" title="Link to this definition"></a><br /></dt>
+<dt class="sig sig-object c" id="c.LmqRawChannelGetBuffer">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqRawChannelGetBuffer</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.LMQ_TRANSPORT" title="LMQ_TRANSPORT"><span class="n"><span class="pre">LMQ_TRANSPORT</span></span></a><span class="w"> </span><span class="n"><span class="pre">Transport</span></span>, <span class="n"><span class="pre">UINT32</span></span><span class="w"> </span><span class="n"><span class="pre">TimeoutMs</span></span>, <span class="n"><span class="pre">PLMQ_TRANSPORTBUFFER</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">Buffer</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqRawChannelGetBuffer" title="Link to this definition"></a><br /></dt>
 <dd><p>Obtains a pointer to a transport buffer for sending a raw data block.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1310,9 +1310,9 @@ the risk of memory leaks or dangling pointers in the application.</p>
 </dd></dl>
 
 <dl class="c function">
-<dt class="sig sig-object c" id="c.LmqRawChannelSendTransportBuffer">
-<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqRawChannelSendTransportBuffer</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.LMQ_TRANSPORT" title="LMQ_TRANSPORT"><span class="n"><span class="pre">LMQ_TRANSPORT</span></span></a><span class="w"> </span><span class="n"><span class="pre">Transport</span></span>, <span class="n"><span class="pre">PLMQ_TRANSPORTBUFFER</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">Buffer</span></span>, <span class="n"><span class="pre">BOOL</span></span><span class="w"> </span><span class="n"><span class="pre">EraseBufferAfterSending</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqRawChannelSendTransportBuffer" title="Link to this definition"></a><br /></dt>
-<dd><p>Sends a raw data block through a transport using a transport buffer obtained from LmqRawChannelGetTransportBuffer().</p>
+<dt class="sig sig-object c" id="c.LmqRawChannelSendBuffer">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqRawChannelSendBuffer</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.LMQ_TRANSPORT" title="LMQ_TRANSPORT"><span class="n"><span class="pre">LMQ_TRANSPORT</span></span></a><span class="w"> </span><span class="n"><span class="pre">Transport</span></span>, <span class="n"><span class="pre">PLMQ_TRANSPORTBUFFER</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">Buffer</span></span>, <span class="n"><span class="pre">BOOL</span></span><span class="w"> </span><span class="n"><span class="pre">EraseBufferAfterSending</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqRawChannelSendBuffer" title="Link to this definition"></a><br /></dt>
+<dd><p>Sends a raw data block through a transport using a transport buffer obtained from LmqRawChannelGetBuffer().</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1325,8 +1325,8 @@ the risk of memory leaks or dangling pointers in the application.</p>
 </dd></dl>
 
 <dl class="c function">
-<dt class="sig sig-object c" id="c.LmqRawChannelReceiveTransportBuffer">
-<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqRawChannelReceiveTransportBuffer</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.LMQ_TRANSPORT" title="LMQ_TRANSPORT"><span class="n"><span class="pre">LMQ_TRANSPORT</span></span></a><span class="w"> </span><span class="n"><span class="pre">Transport</span></span>, <span class="n"><span class="pre">UINT32</span></span><span class="w"> </span><span class="n"><span class="pre">TimeoutMs</span></span>, <span class="n"><span class="pre">PLMQ_TRANSPORTBUFFER</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">Buffer</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqRawChannelReceiveTransportBuffer" title="Link to this definition"></a><br /></dt>
+<dt class="sig sig-object c" id="c.LmqRawChannelReceiveBuffer">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqRawChannelReceiveBuffer</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.LMQ_TRANSPORT" title="LMQ_TRANSPORT"><span class="n"><span class="pre">LMQ_TRANSPORT</span></span></a><span class="w"> </span><span class="n"><span class="pre">Transport</span></span>, <span class="n"><span class="pre">UINT32</span></span><span class="w"> </span><span class="n"><span class="pre">TimeoutMs</span></span>, <span class="n"><span class="pre">PLMQ_TRANSPORTBUFFER</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">Buffer</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqRawChannelReceiveBuffer" title="Link to this definition"></a><br /></dt>
 <dd><p>Receives a raw data block through a transport using a transport buffer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1340,9 +1340,9 @@ the risk of memory leaks or dangling pointers in the application.</p>
 </dd></dl>
 
 <dl class="c function">
-<dt class="sig sig-object c" id="c.LmqRawChannelDisposeTransportBuffer">
-<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqRawChannelDisposeTransportBuffer</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.LMQ_TRANSPORT" title="LMQ_TRANSPORT"><span class="n"><span class="pre">LMQ_TRANSPORT</span></span></a><span class="w"> </span><span class="n"><span class="pre">Transport</span></span>, <span class="n"><span class="pre">PLMQ_TRANSPORTBUFFER</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">Buffer</span></span>, <span class="n"><span class="pre">BOOL</span></span><span class="w"> </span><span class="n"><span class="pre">EraseBufferBeforeDisposing</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqRawChannelDisposeTransportBuffer" title="Link to this definition"></a><br /></dt>
-<dd><p>Disposes a transport buffer obtained from LmqRawChannelGetTransportBuffer() or LmqRawChannelReceiveTransportBuffer() that is no longer needed and will never be sent.</p>
+<dt class="sig sig-object c" id="c.LmqRawChannelDisposeBuffer">
+<span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqRawChannelDisposeBuffer</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.LMQ_TRANSPORT" title="LMQ_TRANSPORT"><span class="n"><span class="pre">LMQ_TRANSPORT</span></span></a><span class="w"> </span><span class="n"><span class="pre">Transport</span></span>, <span class="n"><span class="pre">PLMQ_TRANSPORTBUFFER</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">Buffer</span></span>, <span class="n"><span class="pre">BOOL</span></span><span class="w"> </span><span class="n"><span class="pre">EraseBufferBeforeDisposing</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqRawChannelDisposeBuffer" title="Link to this definition"></a><br /></dt>
+<dd><p>Disposes a transport buffer obtained from LmqRawChannelGetBuffer() or LmqRawChannelReceiveBuffer() that is no longer needed and will never be sent.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
