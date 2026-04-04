@@ -5,6 +5,7 @@ release = '1.0'
 
 extensions = [
     'sphinx_rtd_theme',
+    'sphinx_copybutton',
     'sphinxcontrib.mermaid'
 ]
 

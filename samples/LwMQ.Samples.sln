@@ -18,6 +18,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "inc", "inc", "{CC913165-0B2
 		inc\api-lwmq-samples-common.h = inc\api-lwmq-samples-common.h
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "User-Contributions", "User-Contributions", "{5A1F1DEC-ED88-4E11-9AD2-1450900C7E7C}"
+	ProjectSection(SolutionItems) = preProject
+		User-Contributions\README.md = User-Contributions\README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64

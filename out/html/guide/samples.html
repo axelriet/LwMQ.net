@@ -9,6 +9,7 @@
   <title>LwMQ SDK Samples &mdash; LwMQ 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=4b23a867" />
 
   
@@ -17,6 +18,8 @@
       <script src="../_static/documentation_options.js?v=f2a433a1"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
       <script src="https://www.googletagmanager.com/gtag/js?id=G-VW7BZSSV48"></script>
       <script src="../_static/ga.js?v=3f0458de"></script>
     <script src="../_static/js/theme.js"></script>
@@ -52,7 +55,12 @@
 <li class="toctree-l2"><a class="reference internal" href="index.html#user-guide-sections">User Guide Sections</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html#software-development-kit">Software Development Kit</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="sdk.html">LwMQ SDK</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">LwMQ SDK Samples</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">LwMQ SDK Samples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#getting-the-samples">Getting the samples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#building-the-samples">Building the samples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#running-the-samples">Running the samples</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="tools.html">LwMQ SDK Tools</a></li>
 </ul>
 </li>
@@ -90,11 +98,18 @@
              
   <section id="lwmq-sdk-samples">
 <h1>LwMQ SDK Samples<a class="headerlink" href="#lwmq-sdk-samples" title="Link to this heading"></a></h1>
-<p>Sample programs are available on the <a class="reference external" href="https://github.com/axelriet/LwMQ.net">GitHub page</a>. Supposing you are in a <code class="docutils literal notranslate"><span class="pre">D:\GIT</span></code> folder, run:</p>
-<blockquote>
-<div><p><strong class="command">git clone https://github.com/axelriet/LwMQ.net.git</strong></p>
-</div></blockquote>
-<p>This commmand will clone the GitHub repository in a subfolder named <code class="docutils literal notranslate"><span class="pre">LwMQ.net</span></code></p>
+<section id="getting-the-samples">
+<h2>Getting the samples<a class="headerlink" href="#getting-the-samples" title="Link to this heading"></a></h2>
+<p>Sample programs demonstrating various aspects of
+LwMQ are available on the <a class="reference external" href="https://github.com/axelriet/LwMQ.net">GitHub page</a>.</p>
+<p>Supposing you are in a <code class="docutils literal notranslate"><span class="pre">D:\GIT</span></code> folder on your computer, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">axelriet</span><span class="o">/</span><span class="n">LwMQ</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+<p>This commmand clones the GitHub repository in a subfolder named <code class="docutils literal notranslate"><span class="pre">LwMQ.net</span></code></p>
+</section>
+<section id="building-the-samples">
+<h2>Building the samples<a class="headerlink" href="#building-the-samples" title="Link to this heading"></a></h2>
 <p>All samples use a Visual Studio 2022 or later solution file and are ready to be built and run.</p>
 <p>You can download Visual Studio Community Edition for free from:</p>
 <blockquote>
@@ -105,16 +120,15 @@
 <div><p><a class="reference external" href="https://www.lwmq.net">https://www.lwmq.net</a></p>
 </div></blockquote>
 <p>To install the SDK, double-click the <code class="docutils literal notranslate"><span class="pre">lwmq.sdk.setup.msi</span></code> installer and follow the prompts.</p>
-<p>You can build the samples from the IDE or from the command line:</p>
-<ol class="arabic">
-<li><p>Start a “<strong class="command">x64 Native Tools Command Prompt for VS 2022</strong>”</p></li>
+<p>You can build the samples from the VS IDE or from the command line:</p>
+<ol class="arabic simple">
+<li><p>Start a “<strong class="command">x64 Native Tools Command Prompt for VS 2022</strong>” (from your start menu)</p></li>
 <li><p>Go to the samples folder (e.g. <code class="docutils literal notranslate"><span class="pre">D:\GIT\LwMQ.net\samples</span></code>) where <code class="docutils literal notranslate"><span class="pre">LwMQ.Samples.sln</span></code> resides.</p></li>
-<li><p>Run:</p>
-<blockquote>
-<div><p><strong class="command">msbuild</strong></p>
-</div></blockquote>
-</li>
+<li><p>Run:</p></li>
 </ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">msbuild</span> <span class="o">/</span><span class="nb">property</span><span class="p">:</span><span class="n">Configuration</span><span class="o">=</span><span class="n">Release</span> <span class="n">LwMQ</span><span class="o">.</span><span class="n">Samples</span><span class="o">.</span><span class="n">sln</span>
+</pre></div>
+</div>
 <p>Output:</p>
 <table class="docutils align-left" style="width: 66%">
 <colgroup>
@@ -135,27 +149,35 @@
 </tr>
 </tbody>
 </table>
+</section>
+<section id="running-the-samples">
+<h2>Running the samples<a class="headerlink" href="#running-the-samples" title="Link to this heading"></a></h2>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>The ipc:// transport used in some of the samples has security requirements, see the <a class="reference internal" href="../transports/ipc.html"><span class="doc">LwMQ IPC Transport</span></a> section for details.</p>
 </div>
 <p>To run a sample, for example the MiniChat sample, do the following:</p>
-<ol class="arabic">
-<li><p>Go to the <code class="docutils literal notranslate"><span class="pre">.\bin\MiniChat\x64\Debug</span></code> subfolder.</p></li>
-<li><p>Run two copies of the sample executable:</p>
-<blockquote>
-<div><p><strong class="command">start MiniChat</strong></p>
-<p><strong class="command">start MiniChat</strong></p>
-</div></blockquote>
-</li>
+<ol class="arabic simple">
+<li><p>Go to the <code class="docutils literal notranslate"><span class="pre">.\bin\MiniChat\x64\Release</span></code> subfolder.</p></li>
+<li><p>Run two copies of the sample executable (if your command prompt runs elevated):</p></li>
 </ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">start</span> <span class="n">MiniChat</span>
+<span class="n">start</span> <span class="n">MiniChat</span>
+</pre></div>
+</div>
 <p>If the command prompt does not run under an account that has the necessary
-permissions to use the ipc:// transport yet, you can start the sample elevated
-using powershell:</p>
-<blockquote>
-<div><p><strong class="command">powershell -Command &quot;Start-Process MiniChat -Verb RunAs&quot;</strong></p>
-<p><strong class="command">powershell -Command &quot;Start-Process MiniChat -Verb RunAs&quot;</strong></p>
-</div></blockquote>
+permissions to use the <code class="docutils literal notranslate"><span class="pre">ipc://</span></code> transport yet, you can start the sample elevated
+using powershell (Windows may prompt you for permission):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">powershell</span> <span class="o">-</span><span class="n">Command</span> <span class="s2">&quot;Start-Process MiniChat -Verb RunAs&quot;</span>
+<span class="n">powershell</span> <span class="o">-</span><span class="n">Command</span> <span class="s2">&quot;Start-Process MiniChat -Verb RunAs&quot;</span>
+</pre></div>
+</div>
+<p>You are encouraged to modify the sample code and experiment with it
+to learn how to use LwMQ.</p>
+<p>If you made some experiment that you think is worth sharing, please consider
+contributing it back to the samples repository on GitHub.</p>
+<p>The samples are provided as-is and are not intended to be used as production code.</p>
+</section>
 </section>
 
 
