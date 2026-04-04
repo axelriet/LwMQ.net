@@ -90,8 +90,12 @@
              
   <section id="lwmq-sdk-samples">
 <h1>LwMQ SDK Samples<a class="headerlink" href="#lwmq-sdk-samples" title="Link to this heading"></a></h1>
-<p>Sample programs are available on the <a class="reference external" href="https://github.com/axelriet/LwMQ.net">GitHub page</a>.</p>
-<p>All samples use Visual Studio solution files and are ready to be built and run.</p>
+<p>Sample programs are available on the <a class="reference external" href="https://github.com/axelriet/LwMQ.net">GitHub page</a>. Supposing you are in a <code class="docutils literal notranslate"><span class="pre">D:\GIT</span></code> folder, run:</p>
+<blockquote>
+<div><p><strong class="command">git clone https://github.com/axelriet/LwMQ.net.git</strong></p>
+</div></blockquote>
+<p>This commmand will clone the GitHub repository in a subfolder named <code class="docutils literal notranslate"><span class="pre">LwMQ.net</span></code></p>
+<p>All samples use a Visual Studio 2022 or later solution file and are ready to be built and run.</p>
 <p>You can download Visual Studio Community Edition for free from:</p>
 <blockquote>
 <div><p><a class="reference external" href="https://visualstudio.microsoft.com/downloads/">https://visualstudio.microsoft.com/downloads/</a></p>
@@ -99,6 +103,58 @@
 <p>You also need the latest LwMQ SDK to build the samples, which you can download from:</p>
 <blockquote>
 <div><p><a class="reference external" href="https://www.lwmq.net">https://www.lwmq.net</a></p>
+</div></blockquote>
+<p>To install the SDK, double-click the <code class="docutils literal notranslate"><span class="pre">lwmq.sdk.setup.msi</span></code> installer and follow the prompts.</p>
+<p>You can build the samples from the IDE or from the command line:</p>
+<ol class="arabic">
+<li><p>Start a “<strong class="command">x64 Native Tools Command Prompt for VS 2022</strong>”</p></li>
+<li><p>Go to the samples folder (e.g. <code class="docutils literal notranslate"><span class="pre">D:\GIT\LwMQ.net\samples</span></code>) where <code class="docutils literal notranslate"><span class="pre">LwMQ.Samples.sln</span></code> resides.</p></li>
+<li><p>Run:</p>
+<blockquote>
+<div><p><strong class="command">msbuild</strong></p>
+</div></blockquote>
+</li>
+</ol>
+<p>Output:</p>
+<table class="docutils align-left" style="width: 66%">
+<colgroup>
+<col style="width: 44.0%" />
+<col style="width: 56.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>What</p></th>
+<th class="head"><p>Where</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Built samples</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">.\bin</span></code> subfolder</p></td>
+</tr>
+<tr class="row-odd"><td><p>Temporary build artifacts</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">.\obj</span></code> subfolder (can be deleted)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The ipc:// transport used in some of the samples has security requirements, see the <a class="reference internal" href="../transports/ipc.html"><span class="doc">LwMQ IPC Transport</span></a> section for details.</p>
+</div>
+<p>To run a sample, for example the MiniChat sample, do the following:</p>
+<ol class="arabic">
+<li><p>Go to the <code class="docutils literal notranslate"><span class="pre">.\bin\MiniChat\x64\Debug</span></code> subfolder.</p></li>
+<li><p>Run two copies of the sample executable:</p>
+<blockquote>
+<div><p><strong class="command">start MiniChat</strong></p>
+<p><strong class="command">start MiniChat</strong></p>
+</div></blockquote>
+</li>
+</ol>
+<p>If the command prompt does not run under an account that has the necessary
+permissions to use the ipc:// transport yet, you can start the sample elevated
+using powershell:</p>
+<blockquote>
+<div><p><strong class="command">powershell -Command &quot;Start-Process MiniChat -Verb RunAs&quot;</strong></p>
+<p><strong class="command">powershell -Command &quot;Start-Process MiniChat -Verb RunAs&quot;</strong></p>
 </div></blockquote>
 </section>
 

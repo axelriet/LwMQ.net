@@ -38,7 +38,7 @@ from the optional port number, and therefore cannot be used in the address itsel
 
 If used, the colon *must* be followed by a number in the allowed range.
 
-The scheme (``ipc://``) and the optional port number do *not* count against the
+The scheme (``ipc://``) and the optional port number (``:port``) do *not* count against the
 less than 120 characters limit for the address part.
 
 .. important::
