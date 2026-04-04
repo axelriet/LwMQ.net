@@ -8,7 +8,7 @@ Module Name:
 
 Abstract:
 
-    Simplistic peer-to-peer chat to test LwMQ's
+    Simplistic peer-to-peer chat to demonstrate LwMQ's
     basic functionality.
 
 Prerequisites:
@@ -41,7 +41,7 @@ Environment:
 #include <api-lwmq-samples-common.h>
 
 HRESULT
-SendOneMessage (
+PostOneMessage (
     _In_ LMQ_SENDQUEUE SendQueue,
     _In_ PCWSTR MessageContent,
     _In_ SIZE_T MessageSizeBytes,
@@ -116,7 +116,7 @@ int main()
     // for an answer as a first step.
     //
 
-    CHECK(SendOneMessage(SendQueue,
+    CHECK(PostOneMessage(SendQueue,
                          L"Hello",
                          10,
                          LMQ_TIMESTAMP_NONE));
@@ -155,7 +155,7 @@ int main()
 }
 
 HRESULT
-SendOneMessage (
+PostOneMessage (
     _In_ LMQ_SENDQUEUE SendQueue,
     _In_ PCWSTR MessageContent,
     _In_ SIZE_T MessageSizeBytes,
@@ -273,7 +273,7 @@ SenderThread (
                    _countof(Buffer),
                    stdin) != nullptr)
         {
-            CHECK(SendOneMessage(SendQueue,
+            CHECK(PostOneMessage(SendQueue,
                                  &Buffer[0],
                                  sizeof(WCHAR) * wcslen(&Buffer[0]),
                                  LMQ_TIMESTAMP_NONE));

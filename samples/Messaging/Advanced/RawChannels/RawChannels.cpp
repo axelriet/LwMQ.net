@@ -12,6 +12,9 @@ Abstract:
     basic functionality with with raw channel
     buffer. The latency is printed.
 
+    This sample demonstrate how to use LwMQ's
+    raw channels and raw transport buffers.
+
 Prerequisites:
 
     The LwMQ SDK must be installed prior to building
@@ -79,8 +82,7 @@ int main()
 #endif
 
     //
-    // Set up a bidirectional channel
-    // with a transport and a send queue.
+    // Set up a bidirectional raw channel.
     //
 
     LMQ_CHANNEL Channel{};
@@ -211,8 +213,8 @@ SendOneBuffer (
     //
 
     CHECK(LmqRawChannelSendBuffer(Transport,
-                                    &TransportBuffer,
-                                    FALSE));
+                                  &TransportBuffer,
+                                  FALSE));
 
     return S_OK;
 }
@@ -285,6 +287,18 @@ SenderThread (
     while (TRUE)
     {
         //
+        // There is a bit of code duplication in this sample to avoid
+        // calling SendOneBuffer() which would require allocating
+        // temporary space for the text string.
+        // 
+        // Here we get a buffer and use it directly to store the
+        // text so we don't need to worry about allocating 64KB.
+        // 
+        // The general pattern is get buffer -> fill it -> send it
+        // without intermediate copy. This is the way.
+        //
+
+        //
         // Get a buffer directly from the transport.
         //
 
@@ -315,14 +329,16 @@ SenderThread (
 #else
             *reinterpret_cast<ULONGLONG*>(&TransportBuffer->Buffer[0]) = RtlGetSystemTime();
 #endif
+
             //
             // Sent the buffer on its way to the other peer. Note
             // that we don't set the length of the data (which is
             // 8 + (wcslen(TransportBuffer->Buffer) + 1) * sizeof(WCHAR)
-            // because the string happens to me zero-terminated and
+            // because the string happens to be zero-terminated and
             // we just print it as-is on the other side. In most
-            // scenarios you want to pass the count of bytes you
-            // actually used via TransportBuffer->BufferSizeBytes.
+            // real scenarios you want to pass the count of bytes you
+            // actually used via TransportBuffer->BufferSizeBytes
+            // that the other side can use to interpret the data.
             //
 
             CHECK(LmqRawChannelSendBuffer(Transport,
