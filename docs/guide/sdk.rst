@@ -31,6 +31,12 @@ The SDK installer creates the following environment variables:
    LMQ_SDK_SYMBOLS   Points to the debug symbol files (PDB)
    ================  ========================================================================
 
+.. important::
+
+   The SDK installer modifies the environment. You must restart any command prompt or
+   Visual Studio instance to see the new environment variables. The enviroment variables
+   are referenced in the build files to find the include and lib subfolders.
+
 Subfolders
 ==========
 
