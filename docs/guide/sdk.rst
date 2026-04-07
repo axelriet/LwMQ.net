@@ -67,7 +67,7 @@ Running Tests
 =============
 
 The LwMQ SDK ships with the full unit-test suite and scenario tests. See the 'tools' subfolder
-for more details, in particular RunningTests.txt and Tools.txt
+for more details, in particular RunningTests.txt
 
 .. table::
    :width: 95%
@@ -77,13 +77,9 @@ for more details, in particular RunningTests.txt and Tools.txt
    ======================  ========================================================================
    File                    Description
    ======================  ========================================================================
-   client_thr.exe          LwMQ throughput test (client)
+   LwMQ.UnitTests.dll      Full unit-test suite for LwMQ (Visual Studio Test)
    ----------------------  ------------------------------------------------------------------------
-   server_thr.exe          LwMQ throughput test (server)
-   ----------------------  ------------------------------------------------------------------------
-   LwMQ.UnitTests.dll      Open-source licenses for third-party components
-   ----------------------  ------------------------------------------------------------------------
-   LwMQ.ScenarioTests.exe  Scenario tests for LwMQ (GoogleTest)
+   LwMQ.ScenarioTests.exe  Scenario test suite for LwMQ (GoogleTest)
    ======================  ========================================================================
 
 

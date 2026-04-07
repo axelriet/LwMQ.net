@@ -77,10 +77,9 @@ for more details, in particular RunningTests.txt
    ======================  ========================================================================
    File                    Description
    ======================  ========================================================================
+   LwMQ.UnitTests.dll      Full unit-test suite for LwMQ (Visual Studio Test)
    ----------------------  ------------------------------------------------------------------------
-   LwMQ.UnitTests.dll      Unit-test suite (VisualStudio Test)
-   ----------------------  ------------------------------------------------------------------------
-   LwMQ.ScenarioTests.exe  Scenario tests for LwMQ (GoogleTest)
+   LwMQ.ScenarioTests.exe  Scenario test suite for LwMQ (GoogleTest)
    ======================  ========================================================================
 
 

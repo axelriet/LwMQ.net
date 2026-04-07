@@ -2,7 +2,7 @@
 LwMQ SDK Tools
 ##############
 
-The LwMQ SDK ships with command-line test tools. See the 'tools' subfolder
+The LwMQ SDK ships with comand-line test tools. See the 'tools' subfolder
 for more details, in particular Tools.txt
 
 .. table::
@@ -20,8 +20,8 @@ for more details, in particular Tools.txt
 
 .. important::
    
-   The supplied test tools, ``client_thr.exe`` and ``server_thr.exe`` require
-   the ``SeCreateGlobalPrivilege`` when using the IPC protocol, as described on
+   The supplied test tools, **client_thr.exe** and **server_thr.exe** require
+   the **SeCreateGlobalPrivilege** when using the IPC protocol, as described on
    the :doc:`../transports/ipc` page.
 
    The IPC protocol is the ONLY transport available in the April 7, 2026 1.0.0.8 ALPHA DEMO release of the SDK.
