@@ -294,7 +294,28 @@
 </section>
 <section id="direct-buffer-access">
 <h3>Direct Buffer Access<a class="headerlink" href="#direct-buffer-access" title="Link to this heading"></a></h3>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span>
+<span class="c1">// Important: the Direct Buffer Access APIs are intended for</span>
+<span class="c1">// advanced scenarios where the application needs to manage</span>
+<span class="c1">// transport buffers directly for maximum performance.</span>
+<span class="c1">//</span>
+<span class="c1">// These four functions are not thread-safe. Specifically, on a</span>
+<span class="c1">// particular transport instance, only one thread can be calling</span>
+<span class="c1">// GetBuffer at any given time, and then only one thread can be</span>
+<span class="c1">// calling SendBuffer at any given time. Moreover, buffers must</span>
+<span class="c1">// be sent in the order they were obtained.</span>
+<span class="c1">//</span>
+<span class="c1">// The application is responsible for synchronizing access to</span>
+<span class="c1">// the raw transport buffers.</span>
+<span class="c1">//</span>
+<span class="c1">// The same reasoning applies to ReceiveBuffer/DisposeBuffer.</span>
+<span class="c1">//</span>
+<span class="c1">// For most applications, the normal message posting and</span>
+<span class="c1">// receiving APIs are sufficient and easier to use, as they</span>
+<span class="c1">// allow LwMQ to manage transport buffers automatically.</span>
+<span class="c1">//</span>
+
+<span class="n">LMQAPI</span>
 <span class="nf">LmqRawChannelGetBuffer</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">LMQ_TRANSPORT</span><span class="w"> </span><span class="n">Transport</span><span class="p">,</span>
 <span class="w">    </span><span class="n">UINT32</span><span class="w"> </span><span class="n">TimeoutMs</span><span class="p">,</span>
@@ -1132,19 +1153,69 @@ the risk of memory leaks or dangling pointers in the application.</p>
 <li><p><strong>Channel</strong> – The communication channel to add the send queue to.</p></li>
 <li><p><strong>QueueType</strong> – The type of the send queue to add.</p></li>
 <li><p><strong>QueuePriority</strong> – The priority of the send queue relative to other send queues on the same channel. This parameter is only relevant if the channel has multiple send queues. For most use cases, pass LMQ_SENDQUEUEPRIORITY_NORMAL.</p></li>
-<li><p><strong>Capacity</strong> – The maximum number of messages that can be queued for sending at any given time in the send queue, provided the queue type is one of the bounded types. This parameter must be zero if the queue type is unbounded.</p></li>
-<li><p><strong>SendQueue</strong> – A pointer to a variable that receives the created send queue instance.</p></li>
+<li><p><strong>Capacity</strong> – The maximum number of messages that can be queued for sending at any given time in the send queue, provided the queue type is one of the bounded types. This parameter must be set to LMQ_QUEUECAPACITY_UNBOUNDED if the queue type is unbounded.</p></li>
+<li><p><strong>SendQueue</strong> – A pointer to a variable that receives the newly created send queue instance.</p></li>
 </ul>
 </dd>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>A channel can have multiple send queues, but only one receive queue. Transports are added to the channel, and messages are sent through a specific send queue on the channel. Each message is sent though each sending transport in the channel. The send queue priority is used to determine the order in which messages are sent when there are multiple send queues on the same channel. Messages queued on higher priority send queues tend to be sent before messages queued on lower priority send queues, but LwMQ uses a weigthed round-robin scheduling algorithm to ensure some fairness among send queues. Two special priorities are not subjected to the prioritized scheduling: LMQ_SENDQUEUEPRIORITY_TIME_CRITICAL and LMQ_SENDQUEUEPRIORITY_IDLE. All pending messages queued on a LMQ_SENDQUEUEPRIORITY_TIME_CRITICAL send queue are always sent before messages on all other priority levels, possibly starving other queues, and messages queued on a LMQ_SENDQUEUEPRIORITY_IDLE send queue are always sent after all other messages, possibly getting starved. The two extreme priorities are useful for applications that need to send some messages with very low latency, for example to trigger some action on the receiving side, or to send some messages very low importance, for example some telemetry data that is nice to have on the receiving side but not worth delaying the delivery of other messages. Messages at the same priority are sent in order. Messages can capture the timestamp at which they were posted (queued for sending), which is useful for example for progress messages where the recipient can compute accurate rates based on the queuing time and not the reception time, which is subject to queuing latencies induced by traffic congestions or interruptions, and fluctuations in the actual transport time.</p>
+<p>A channel can have multiple send queues, but only one receive queue.</p>
+<p>Transports are added to the channel, and messages are sent through a specific send queue on the channel.</p>
+<p>Each message is sent though each sending transport in the channel.</p>
+<p>The send queue priority is used to determine the order in which messages are sent when there are multiple send queues on the same channel.</p>
+<p>Messages queued on higher priority send queues tend to be sent before messages queued on lower priority send queues, but LwMQ uses a weigthed round-robin scheduling algorithm to ensure some fairness among send queues.</p>
+<p>Two special priorities are not subjected to the prioritized scheduling:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>LMQ_SENDQUEUEPRIORITY_TIME_CRITICAL</p></li>
+<li><p>LMQ_SENDQUEUEPRIORITY_IDLE</p></li>
+</ul>
+</div></blockquote>
+<p>All pending messages queued on a LMQ_SENDQUEUEPRIORITY_TIME_CRITICAL send queue are always sent before messages on all other priority levels, possibly starving other queues, and messages queued on a LMQ_SENDQUEUEPRIORITY_IDLE send queue are always sent after all other messages, possibly getting starved.</p>
+<p>The two extreme priorities are useful for applications that need to send some messages with very low latency, for example some command to trigger an action on the receiving side, or to send some messages very low importance, for example some telemetry data that is nice to have on the receiving side but not worth delaying the delivery of other messages.</p>
+<p>Messages at the same priority are sent in order.</p>
+<p>Messages frames can capture the timestamp at which they were added to the message, which is useful for example for progress messages where the recipient can compute accurate rates based on the data frame creation time and not the message reception time, which is subject to queuing latencies induced by traffic congestions or interruptions, and fluctuations in the actual transport time.</p>
 </div>
 </dd></dl>
 
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span>
 <span class="c1">// Example of adding an unbounded monoproducer send queue to a channel.</span>
+<span class="c1">//</span>
+<span class="c1">// If multiple threads are sending messages, you can create a queue</span>
+<span class="c1">// for each of them (best performance) or use a multiproducer queue</span>
+<span class="c1">// shared among them, which is more convenient but with some performance</span>
+<span class="c1">// cost due to contention management and locking overhead.</span>
+<span class="c1">//</span>
+<span class="c1">// The performance cost it real, but only likely to matter in high-rate</span>
+<span class="c1">// scenarios with a lot of contention, for example millions of messages</span>
+<span class="c1">// per second, and/or many threads sending messages through the same</span>
+<span class="c1">// multiproducer queue.</span>
+<span class="c1">//</span>
+<span class="c1">// In such scenarios, using a monoproducer queue for each thread is</span>
+<span class="c1">// recommended to achieve the best performance, as long as the application</span>
+<span class="c1">// can ensure that each thread only uses its own queue.</span>
+<span class="c1">//</span>
+<span class="c1">// Multiproducer queues are the *only* choice if you are using a tasking</span>
+<span class="c1">// framework, coroutines, OpenOMP, PPL, concrt, any thread pool, etc, as</span>
+<span class="c1">// your application does not control the threads that will be sending</span>
+<span class="c1">// messages. This important remark is also valid when calling from a</span>
+<span class="c1">// different lenguage/tasking framework such as Rust/Tokio, C#/TPL, etc.</span>
+<span class="c1">//</span>
+<span class="c1">// To clarify, nothing in Rust or C# (etc) prevents you from using the</span>
+<span class="c1">// high-performance monoproducer queues, as long as you create a queue for</span>
+<span class="c1">// each thread that will be sending messages and ensure that each thread</span>
+<span class="c1">// only uses its own queue. The key point is that the application must have</span>
+<span class="c1">// control over the threads that are sending messages and be able to ensure</span>
+<span class="c1">// that each thread only uses its own queue if using monoproducer queues.</span>
+<span class="c1">//</span>
+<span class="c1">// If the application is using a tasking framework or any form of thread</span>
+<span class="c1">// pool where the application does not have control over the threads that</span>
+<span class="c1">// will be sending messages, then it MUST use multiproducer queues.</span>
+<span class="c1">//</span>
+<span class="c1">// If the channel has multiple send queues, you can assign different</span>
+<span class="c1">// priorities to them based on the importance of the messages that will</span>
+<span class="c1">// be sent through each queue.</span>
 <span class="c1">//</span>
 
 <span class="n">LMQ_SENDQUEUE</span><span class="w"> </span><span class="n">SendQueue</span><span class="p">;</span>
@@ -1202,8 +1273,27 @@ the risk of memory leaks or dangling pointers in the application.</p>
 <span class="w">    </span><span class="c1">// contains the available data length, and therefore</span>
 <span class="w">    </span><span class="c1">// the maximum number of bytes to read from the buffer.</span>
 <span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="c1">// A creative developer can use some unused high bits to</span>
+<span class="w">    </span><span class="c1">// pass flags or other tiny bits of information alongside</span>
+<span class="w">    </span><span class="c1">// the buffer size, since the maximum buffer size does not</span>
+<span class="w">    </span><span class="c1">// currently uses all the bits of a 64-bit SIZE_T value.</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="c1">// You must query the transport buffer limits to find out</span>
+<span class="w">    </span><span class="c1">// how many high bits are available, and observe that the</span>
+<span class="w">    </span><span class="c1">// buffer limit is transport-dependant and can (probably</span>
+<span class="w">    </span><span class="c1">// will) change in the future as LwMQ, transports, networking</span>
+<span class="w">    </span><span class="c1">// hardware, and computer architectures evolve.</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="c1">// Of course, if you do so, you must mask off any high</span>
+<span class="w">    </span><span class="c1">// bits you stash to recover the buffer size before using it.</span>
+<span class="w">    </span><span class="c1">//</span>
 
 <span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">BufferSizeBytes</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="c1">// The pointer is constant and must not be modified by</span>
+<span class="w">    </span><span class="c1">// the caller.</span>
+<span class="w">    </span><span class="c1">//</span>
 
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">PBYTE</span><span class="w"> </span><span class="n">Buffer</span><span class="p">;</span>
 <span class="p">}</span>
@@ -1232,7 +1322,15 @@ the risk of memory leaks or dangling pointers in the application.</p>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The bufer size parameter must be at least as large as the largest single message, plus the frame and message header wire encoding overhead, that will be sent or received through the transport. Ideally, the buffer size should be much larger than the typical message size, which enables message clubbing when messages are sent in rapid successions. For example, an application that sends, say, 80 bytes messages at very high rate (millions per second) will greatly benefit from using large buffers in the 1MB range. Moreover, all transports added to a particular channel must share the same buffer size. The actual maximum message size that cen be sent for a particular buffer size depends on various factors as the wire format use variable-length encoding for compacity. As a rule of thumb, consider ~1% overhead. For large payload, consider single-frame messages and add 4096 bytes to the expected payload size: if sending data in single-frame messages with 1MB of payload data (1,048,576 bytes) each - assuming the underlying transport supports that size - use a buffer size of 1,048,576 + 4,096 = 1,052,672 which allows for up to 4KB bytes of overhead, which is more than enough for the frame and message headers while aligning the buffer to a page boundary. Make sure you use at least 3-4 such buffers so your app can generate the next payload while the previous ones are transmitted. If sending messages with multiple frames or messages with very small payloads, the overhead can be higher in percentage, therefore you might want to use a larger buffer size to achieve optimal performance. There is no exact guidance regarding the optimal buffer size and count for each application. You need to experiment with different values to find the optimal configuration for your application, transport, and workload. The transport instance can be used to perform transport-specific control operations on the transport through LmqTransportControl(). This parameter is optional.</p>
+<p>The buffer size parameter must be at least as large as the largest single message, plus the frame and message header wire encoding overhead, that will be sent or received through the transport.</p>
+<p>Ideally, the buffer size should be much larger than the typical message size, which enables message clubbing when messages are sent in rapid successions.</p>
+<p>For example, an application that sends, say, 80 bytes messages at very high rate (millions per second) will greatly benefit from using large buffers in the 1MB range.</p>
+<p>Moreover, all transports added to a particular channel must share the same buffer size.</p>
+<p>The actual maximum message size that cen be sent for a particular buffer size depends on various factors as the wire format use variable-length encoding for compacity.</p>
+<p>As a rule of thumb, consider ~1% overhead. For large payload, consider single-frame messages and add 4096 bytes to the expected payload size: if sending data in single-frame messages with 1MB of payload data (1,048,576 bytes) each - assuming the underlying transport supports that size - use a buffer size of 1,048,576 + 4,096 = 1,052,672 bytes, which allows for up to 4KB bytes of overhead, which is more than enough for the frame and message headers while aligning the buffer to a page boundary.</p>
+<p>Make sure you use at least 3-4 such buffers so your app can generate the next payload while the previous ones are transmitted. If sending messages with multiple frames or messages with very small payloads, the overhead can be higher in percentage, therefore you might want to use a larger buffer size to achieve optimal performance.</p>
+<p>There is no exact guidance or magic number regarding the optimal buffer size and count for each application. You need to experiment with different values to find the optimal configuration for your application, transport, and workload.</p>
+<p>The transport instance can be used to perform transport-specific control operations on the transport through LmqTransportControl(). This parameter is optional.</p>
 </div>
 </dd></dl>
 
@@ -1297,6 +1395,23 @@ the risk of memory leaks or dangling pointers in the application.</p>
 </div>
 <section id="id12">
 <h4>Direct Buffer Access<a class="headerlink" href="#id12" title="Link to this heading"></a></h4>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The Direct Buffer Access APIs are intended for
+advanced scenarios where the application needs to manage
+transport buffers directly for maximum performance.</p>
+<p>These four functions are not thread-safe. Specifically, on a
+particular transport instance, only one thread can be calling
+GetBuffer at any given time, and then only one thread can be
+calling SendBuffer at any given time. Moreover, buffers must
+be sent in the order they were obtained.</p>
+<p><strong>The application is responsible for synchronizing access to
+the raw transport buffers</strong>.</p>
+<p>The same reasoning applies to ReceiveBuffer/DisposeBuffer.</p>
+<p>For most applications, the normal message posting and
+receiving APIs are sufficient and easier to use, as they
+allow LwMQ to manage transport buffers automatically.</p>
+</div>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.LmqRawChannelGetBuffer">
 <span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqRawChannelGetBuffer</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.LMQ_TRANSPORT" title="LMQ_TRANSPORT"><span class="n"><span class="pre">LMQ_TRANSPORT</span></span></a><span class="w"> </span><span class="n"><span class="pre">Transport</span></span>, <span class="n"><span class="pre">UINT32</span></span><span class="w"> </span><span class="n"><span class="pre">TimeoutMs</span></span>, <span class="n"><span class="pre">PLMQ_TRANSPORTBUFFER</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">Buffer</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqRawChannelGetBuffer" title="Link to this definition"></a><br /></dt>
