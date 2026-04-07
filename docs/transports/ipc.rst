@@ -65,6 +65,8 @@ less than 120 characters limit for the address part.
                   Properties
                      **Add User or Group...**
 
+   More info: https://learn.microsoft.com/en-us/troubleshoot/windows-server/windows-security/seimpersonateprivilege-secreateglobalprivilege
+
 Adding an IPC Transport
 =======================
 
