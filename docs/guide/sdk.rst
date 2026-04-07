@@ -12,7 +12,7 @@ By default, the SDK install itself at ``%ProgramFiles%\LwMQ.SDK``
 Environment Variables
 =====================
 
-The SDK installer creates the following environment variables:
+The LwMQ SDK installer creates the following environment variables:
 
 .. table::
    :width: 95%
@@ -40,7 +40,7 @@ The SDK installer creates the following environment variables:
 Subfolders
 ==========
 
-The SDK installer creates the following subfolders within the SDK root:
+The LwMQ SDK installer creates the following subfolders within the SDK root:
 
 .. table::
    :width: 95%
@@ -54,9 +54,36 @@ The SDK installer creates the following subfolders within the SDK root:
    -------------  ------------------------------------------------------------------------
    lib            Import libraries needed to link applications
    -------------  ------------------------------------------------------------------------
+   licenses       Open-source licenses for third-party components used in LwMQ
+   -------------  ------------------------------------------------------------------------
    pdb            Debug symbols
    -------------  ------------------------------------------------------------------------
    redist         Redistributable files (runtime installer)
    -------------  ------------------------------------------------------------------------
-   tools          Command-line tools for testing LwMQ
+   tools          Command-line test tools, and unit + scenario tests
    =============  ========================================================================
+
+Running Tests
+=============
+
+The LwMQ SDK ships with the full unit-test suite and scenario tests. See the 'tools' subfolder
+for more details, in particular RunningTests.txt and Tools.txt
+
+.. table::
+   :width: 95%
+   :widths: 33, 66
+   :align: left
+
+   ======================  ========================================================================
+   File                    Description
+   ======================  ========================================================================
+   client_thr.exe          LwMQ throughput test (client)
+   ----------------------  ------------------------------------------------------------------------
+   server_thr.exe          LwMQ throughput test (server)
+   ----------------------  ------------------------------------------------------------------------
+   LwMQ.UnitTests.dll      Open-source licenses for third-party components
+   ----------------------  ------------------------------------------------------------------------
+   LwMQ.ScenarioTests.exe  Scenario tests for LwMQ (GoogleTest)
+   ======================  ========================================================================
+
+

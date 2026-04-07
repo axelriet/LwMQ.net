@@ -26,10 +26,10 @@ SDK: https://www.lwmq.net
 
 .. _IoT: https://learn.microsoft.com/en-us/windows/iot/
 
-The entire binary distribution of LwMQ is less than 4MB and fits
+The entire binary distribution of LwMQ weights about 4MB and fits
 comfortably on any device capable of running any general-purpose SKU
-of Windows 10, Windows 11, Windows Server 2022, or later, while the redistributable
-installer weights less then 600KB.
+of Windows 10, Windows 11, Windows Server 2022, or later, while the
+redistributable installer weights less than 600KB.
 
 LwMQ's performance is best-in-industry on every aspect, and it
 is designed to be used in performance-critical and mission-critical
