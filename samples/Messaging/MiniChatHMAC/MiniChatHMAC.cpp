@@ -4,7 +4,7 @@ Copyright (c) Axel Rietschin Software Development, LLC
 
 Module Name:
 
-    MiniChat.cpp
+    MiniChatHMAC.cpp
 
 Abstract:
 
@@ -87,7 +87,7 @@ int main()
     static_assert(sizeof(g_SecretPassword) > 1);
 
     CHECK(LmqKeyFromStringA(&g_SecretPassword[0],
-                           sizeof(g_SecretPassword) - 1,
+                           sizeof(g_SecretPassword),
                            &g_SecretKey));
 
     //
@@ -252,6 +252,7 @@ ReceiveOneMessage(
     _In_ BOOL PrintData
 ) noexcept
 {
+    PCLMQ_HMAC Hmac{};
     const BYTE* Data{};
     USHORT FrameCount{};
     LMQ_MESSAGE Message{};
@@ -276,7 +277,7 @@ ReceiveOneMessage(
 
     CHECK_RETURN(LmqGetFrameData(Message,
                                  0,
-                                 &Data,
+                                 reinterpret_cast<const BYTE**>(&Hmac),
                                  &DataSizeBytes,
                                  nullptr,
                                  nullptr));
@@ -313,7 +314,7 @@ ReceiveOneMessage(
     CHECK_RETURN(LmqVerifyHMAC(Data,
                                DataSizeBytes,
                                &g_SecretKey,
-                               reinterpret_cast<PCLMQ_HMAC>(Data)));
+                               Hmac));
 
     //
     // The message is authentic, sir! I concur, sir!
