@@ -50,7 +50,7 @@ PostOneMessage (
 HRESULT
 ReceiveOneMessage (
     _In_ LMQ_CHANNEL Channel,
-    _In_ int ExpectedPayloadSizeBytes,
+    _In_ SIZE_T ExpectedPayloadSizeBytes,
     _In_ BOOL PrintData
     ) noexcept;
 
@@ -192,7 +192,7 @@ PostOneMessage (
 HRESULT
 ReceiveOneMessage(
     _In_ LMQ_CHANNEL Channel,
-    _In_ int ExpectedPayloadSizeBytes,
+    _In_ SIZE_T ExpectedPayloadSizeBytes,
     _In_ BOOL PrintData
 ) noexcept
 {

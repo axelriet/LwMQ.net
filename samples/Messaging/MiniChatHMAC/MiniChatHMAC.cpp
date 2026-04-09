@@ -54,7 +54,7 @@ PostOneMessage (
 HRESULT
 ReceiveOneMessage (
     _In_ LMQ_CHANNEL Channel,
-    _In_ int ExpectedPayloadSizeBytes,
+    _In_ SIZE_T ExpectedPayloadSizeBytes,
     _In_ BOOL PrintData
     ) noexcept;
 
@@ -248,7 +248,7 @@ PostOneMessage (
 HRESULT
 ReceiveOneMessage (
     _In_ LMQ_CHANNEL Channel,
-    _In_ int ExpectedPayloadSizeBytes,
+    _In_ SIZE_T ExpectedPayloadSizeBytes,
     _In_ BOOL PrintData
     ) noexcept
 {
@@ -302,7 +302,7 @@ ReceiveOneMessage (
 
     if (ExpectedPayloadSizeBytes && (DataSizeBytes != ExpectedPayloadSizeBytes))
     {
-        printf("The message has an unexpected payload size: %zu, expected %d\n", DataSizeBytes, ExpectedPayloadSizeBytes);
+        printf("The message has an unexpected payload size: %zu, expected %zu\n", DataSizeBytes, ExpectedPayloadSizeBytes);
 
         return E_FAIL;
     }
