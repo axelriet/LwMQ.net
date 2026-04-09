@@ -32,7 +32,6 @@ Environment:
 
 #include <io.h>
 #include <fcntl.h>
-#include <string.h>
 #include <process.h>
 
 #include <api-lwmq-time.h>
