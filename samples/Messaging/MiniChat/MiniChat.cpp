@@ -42,15 +42,15 @@ Environment:
 HRESULT
 PostOneMessage (
     _In_ LMQ_SENDQUEUE SendQueue,
-    _In_ PCWSTR MessageContent,
-    _In_ SIZE_T MessageSizeBytes,
+    _In_ PCWSTR MessagePayload,
+    _In_ SIZE_T MessagePayloadSizeBytes,
     _In_ ULONG64 Timestamp
     ) noexcept;
 
 HRESULT
 ReceiveOneMessage (
     _In_ LMQ_CHANNEL Channel,
-    _In_ int ExpectedPayloadSize,
+    _In_ int ExpectedPayloadSizeBytes,
     _In_ BOOL PrintData
     ) noexcept;
 
@@ -156,8 +156,8 @@ int main()
 HRESULT
 PostOneMessage (
     _In_ LMQ_SENDQUEUE SendQueue,
-    _In_ PCWSTR MessageContent,
-    _In_ SIZE_T MessageSizeBytes,
+    _In_ PCWSTR MessagePayload,
+    _In_ SIZE_T MessagePayloadSizeBytes,
     _In_ ULONG64 Timestamp
     ) noexcept
 {
@@ -168,8 +168,8 @@ PostOneMessage (
                                   &Message));
 
     CHECK_RETURN(LmqAppendFrame(Message,
-                                reinterpret_cast<const BYTE*>(MessageContent),
-                                MessageSizeBytes,
+                                reinterpret_cast<const BYTE*>(MessagePayload),
+                                MessagePayloadSizeBytes,
                                 Timestamp));
 
     if (FAILED(hr = LmqPostMessage(SendQueue,
@@ -192,7 +192,7 @@ PostOneMessage (
 HRESULT
 ReceiveOneMessage(
     _In_ LMQ_CHANNEL Channel,
-    _In_ int ExpectedPayloadSize,
+    _In_ int ExpectedPayloadSizeBytes,
     _In_ BOOL PrintData
 ) noexcept
 {
@@ -208,17 +208,17 @@ ReceiveOneMessage(
 
     if (PrintData)
     {
-        SIZE_T DataSize{};
         const BYTE* Data{};
+        SIZE_T DataSizeBytes{};
 
         CHECK_RETURN(LmqGetFrameData(Message,
                                      0,
                                      &Data,
-                                     &DataSize,
+                                     &DataSizeBytes,
                                      nullptr,
                                      nullptr));
 
-        const int Cch{ __pragma(warning(suppress:26472)) static_cast<int>(DataSize / sizeof(WCHAR)) };
+        const int Cch{ __pragma(warning(suppress:26472)) static_cast<int>(DataSizeBytes / sizeof(WCHAR)) };
 
         wprintf(L"%.*ls",
                 Cch,
@@ -233,9 +233,9 @@ ReceiveOneMessage(
             return E_FAIL;
         }
 
-        if (ExpectedPayloadSize && (PayloadSizeBytes != ExpectedPayloadSize))
+        if (ExpectedPayloadSizeBytes && (PayloadSizeBytes != ExpectedPayloadSizeBytes))
         {
-            printf("The message has an unexpected payload size: %zu, expected %d\n", PayloadSizeBytes, ExpectedPayloadSize);
+            printf("The message has an unexpected payload size: %zu, expected %d\n", PayloadSizeBytes, ExpectedPayloadSizeBytes);
 
             return E_FAIL;
         }

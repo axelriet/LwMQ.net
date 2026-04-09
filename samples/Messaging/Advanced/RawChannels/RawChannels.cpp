@@ -52,8 +52,8 @@ Environment:
 HRESULT
 SendOneBuffer (
     _In_ LMQ_TRANSPORT Transport,
-    _In_ PCWSTR MessageContent,
-    _In_ SIZE_T MessageSizeBytes
+    _In_ PCWSTR MessagePayload,
+    _In_ SIZE_T MessagePayloadSizeBytes
     );
 
 HRESULT
@@ -161,8 +161,8 @@ int main()
 HRESULT
 SendOneBuffer (
     _In_ LMQ_TRANSPORT Transport,
-    _In_ PCWSTR MessageContent,
-    _In_ SIZE_T MessageSizeBytes
+    _In_ PCWSTR MessagePayload,
+    _In_ SIZE_T MessagePayloadSizeBytes
     )
 {
     //
@@ -177,7 +177,7 @@ SendOneBuffer (
 
     _Analysis_assume_(TransportBuffer != nullptr);
 
-    if (MessageSizeBytes > TransportBuffer->BufferSizeBytes)
+    if (MessagePayloadSizeBytes > TransportBuffer->BufferSizeBytes)
     {
         CHECK(HRESULT_FROM_WIN32(ERROR_INSUFFICIENT_BUFFER));
     }
@@ -190,7 +190,7 @@ SendOneBuffer (
 
     CHECK(StringCchCopyW(reinterpret_cast<WCHAR*>(&TransportBuffer->Buffer[8]),
                          (TransportBuffer->BufferSizeBytes - 8) / sizeof(WCHAR),
-                         MessageContent));
+                         MessagePayload));
 
     //
     // Plant the 8-bytes timestamp at the start of the buffer.
