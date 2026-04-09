@@ -19,6 +19,8 @@ Prerequisites:
     sure to restart VS (if it was running) to catch
     the environment variables to LwMQ's inc and lib.
 
+    Min. SDK version: 1.0.0.9
+
 Author:
 
     Axel Rietschin (8-Apr-2026)
@@ -34,8 +36,6 @@ Environment:
 #include <io.h>
 #include <fcntl.h>
 #include <process.h>
-
-#include <emmintrin.h> // For __m128i (header bug in LwMQ SDK <= 1.0.0.8)
 
 #include <api-lwmq-time.h>
 #include <api-lwmq-hash.h>
@@ -73,7 +73,7 @@ SenderThread (
 //
 
 static LMQ_KEY g_SecretKey;
-static const WCHAR g_SecretPassword[] = { L"Password" };
+static const CHAR g_SecretPassword[] = { "Password" };
 
 int main()
 {
@@ -86,9 +86,9 @@ int main()
 
     static_assert(sizeof(g_SecretPassword) > 1);
 
-    CHECK(LmqHashByteArray128(reinterpret_cast<const BYTE*>(g_SecretPassword),
-                              sizeof(g_SecretPassword) - 1,
-                              reinterpret_cast<PLMQ_HASH>(&g_SecretKey)));
+    CHECK(LmqKeyFromStringA(&g_SecretPassword[0],
+                           sizeof(g_SecretPassword) - 1,
+                           &g_SecretKey));
 
     //
     // Set up a bidirectional channel
