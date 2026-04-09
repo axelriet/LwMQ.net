@@ -65,7 +65,7 @@ ReceiveOneBuffer (
 VOID
 CDECL
 SenderThread (
-    PVOID Param
+    _In_ PVOID Param
     ) noexcept;
 
 int main()
@@ -271,7 +271,7 @@ ReceiveOneBuffer (
 VOID
 CDECL
 SenderThread (
-    PVOID Param
+    _In_ PVOID Param
     ) noexcept
 {
     LMQ_TRANSPORT Transport{ static_cast<LMQ_TRANSPORT>(Param) };

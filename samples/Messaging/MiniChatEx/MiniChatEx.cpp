@@ -59,7 +59,7 @@ ReceiveOneMessage (
 VOID
 CDECL
 SenderThread (
-    PVOID Param
+    _In_ PVOID Param
     ) noexcept;
 
 int main()
@@ -271,7 +271,7 @@ ReceiveOneMessage(
 VOID
 CDECL
 SenderThread (
-    PVOID Param
+    _In_ PVOID Param
     ) noexcept
 {
     LMQ_SENDQUEUE SendQueue{ static_cast<LMQ_SENDQUEUE>(Param) };
