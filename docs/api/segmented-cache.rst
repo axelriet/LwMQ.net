@@ -97,10 +97,10 @@ Core Segmented Cache Functions
     LMQAPI
     LmqAddSegmentedCacheEntry (
         LMQ_SEGMENTEDCACHE Cache,
-        PCLMQ_CACHEKEY Key,
+        PCLMQ_KEY Key,
         PVOID Data,
         ULONG DataSize,
-        PCLMQ_CACHEENTROPY AdditionalEntropy,
+        PCLMQ_ENTROPY AdditionalEntropy,
         WORD EntryFlags,
         FLOAT TTLSec
         );
@@ -111,7 +111,7 @@ Core Segmented Cache Functions
         LMQ_CACHECOOKIE Cookie,
         PVOID Data,
         ULONG DataSize,
-        PCLMQ_CACHEENTROPY AdditionalEntropy,
+        PCLMQ_ENTROPY AdditionalEntropy,
         WORD EntryFlags,
         FLOAT TTLSec
         );
@@ -119,23 +119,23 @@ Core Segmented Cache Functions
     LMQAPI
     LmqRemoveSegmentedCacheEntry (
         LMQ_SEGMENTEDCACHE Cache,
-        PCLMQ_CACHEKEY Key
+        PCLMQ_KEY Key
         );
 
     LMQAPI
     LmqLookupSegmentedCacheEntry (
         LMQ_SEGMENTEDCACHE Cache,
-        PCLMQ_CACHEKEY Key,
+        PCLMQ_KEY Key,
         PULONG DataSize
         );
 
     LMQAPI
     LmqRetrieveSegmentedCacheEntry (
         LMQ_SEGMENTEDCACHE Cache,
-        PCLMQ_CACHEKEY Key,
+        PCLMQ_KEY Key,
         PVOID Data,
         PULONG DataSize,
-        PCLMQ_CACHEENTROPY AdditionalEntropy,
+        PCLMQ_ENTROPY AdditionalEntropy,
         PVOID CacheMissContext
         );
 
@@ -145,7 +145,7 @@ Core Segmented Cache Functions
         LMQ_CACHECOOKIE Cookie,
         PVOID Data,
         ULONG DataSize,
-        PCLMQ_CACHEENTROPY AdditionalEntropy
+        PCLMQ_ENTROPY AdditionalEntropy
         );
 
 Segmented Cache Memory Allocation (Advanced)
