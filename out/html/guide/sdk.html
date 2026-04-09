@@ -128,15 +128,18 @@
 <td><p>Points to the import libraries</p></td>
 </tr>
 <tr class="row-odd"><td><p>LMQ_SDK_SYMBOLS</p></td>
-<td><p>Points to the debug symbol files (PDB)</p></td>
+<td><p>Points to the debug symbols (PDB)</p></td>
 </tr>
 </tbody>
 </table>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>The SDK installer modifies the environment. You must restart any command prompt or
-Visual Studio instance to see the new environment variables. The enviroment variables
-are referenced in the build files to find the include and lib subfolders.</p>
+<p>The SDK installer modifies the environment variables.</p>
+<p>You must restart any command prompt or Visual Studio
+instance to see the new environment variables after the
+SDK installation.</p>
+<p>The enviroment variables are referenced from the build
+files to find the ‘include’ and ‘lib’ subfolders.</p>
 </div>
 </section>
 <section id="subfolders">
@@ -176,8 +179,15 @@ are referenced in the build files to find the include and lib subfolders.</p>
 </section>
 <section id="running-tests">
 <h2>Running Tests<a class="headerlink" href="#running-tests" title="Link to this heading"></a></h2>
-<p>The LwMQ SDK ships with the full unit-test suite and scenario tests. See the ‘tools’ subfolder
-for more details, in particular RunningTests.txt</p>
+<p>The LwMQ SDK ships with the comprehensive unit-test suite and scenario tests
+to validate the functionality of the SDK on developer’s and build machines.</p>
+<p>Our internal test suite comprises more tests, notably long-running stress tests
+and debug-only tests that calle API functions that arent part of the public API.</p>
+<p>Remember to point your debugger to the SDK’s PDB folder (<code class="docutils literal notranslate"><span class="pre">%LMQ_SDK_SYMBOLS%</span></code>)
+which contains PDBs matching the redistributable binaries.</p>
+<p>You can also use our symbol server at <code class="docutils literal notranslate"><span class="pre">https://www.lwmq.net/symbols</span></code> which also
+contains symbols for the SDK tools.</p>
+<p>See the ‘tools’ subfolder for more details, in particular RunningTests.txt</p>
 <table class="docutils align-left" style="width: 95%">
 <colgroup>
 <col style="width: 33.3%" />
@@ -190,7 +200,7 @@ for more details, in particular RunningTests.txt</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>LwMQ.UnitTests.dll</p></td>
-<td><p>Full unit-test suite for LwMQ (Visual Studio Test)</p></td>
+<td><p>Unit-test suite for LwMQ (Visual Studio Test)</p></td>
 </tr>
 <tr class="row-odd"><td><p>LwMQ.ScenarioTests.exe</p></td>
 <td><p>Scenario test suite for LwMQ (GoogleTest)</p></td>

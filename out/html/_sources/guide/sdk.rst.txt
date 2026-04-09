@@ -28,14 +28,19 @@ The LwMQ SDK installer creates the following environment variables:
    ----------------  ------------------------------------------------------------------------
    LMQ_SDK_LIB       Points to the import libraries
    ----------------  ------------------------------------------------------------------------
-   LMQ_SDK_SYMBOLS   Points to the debug symbol files (PDB)
+   LMQ_SDK_SYMBOLS   Points to the debug symbols (PDB)
    ================  ========================================================================
 
 .. important::
 
-   The SDK installer modifies the environment. You must restart any command prompt or
-   Visual Studio instance to see the new environment variables. The enviroment variables
-   are referenced in the build files to find the include and lib subfolders.
+   The SDK installer modifies the environment variables.
+   
+   You must restart any command prompt or Visual Studio
+   instance to see the new environment variables after the
+   SDK installation.
+   
+   The enviroment variables are referenced from the build
+   files to find the 'include' and 'lib' subfolders.
 
 Subfolders
 ==========
@@ -66,8 +71,19 @@ The LwMQ SDK installer creates the following subfolders within the SDK root:
 Running Tests
 =============
 
-The LwMQ SDK ships with the full unit-test suite and scenario tests. See the 'tools' subfolder
-for more details, in particular RunningTests.txt
+The LwMQ SDK ships with the comprehensive unit-test suite and scenario tests
+to validate the functionality of the SDK on developer's and build machines.
+
+Our internal test suite comprises more tests, notably long-running stress tests
+and debug-only tests that calle API functions that arent part of the public API.
+
+Remember to point your debugger to the SDK's PDB folder (``%LMQ_SDK_SYMBOLS%``)
+which contains PDBs matching the redistributable binaries.
+
+You can also use our symbol server at ``https://www.lwmq.net/symbols`` which also
+contains symbols for the SDK tools.
+
+See the 'tools' subfolder for more details, in particular RunningTests.txt
 
 .. table::
    :width: 95%
@@ -77,7 +93,7 @@ for more details, in particular RunningTests.txt
    ======================  ========================================================================
    File                    Description
    ======================  ========================================================================
-   LwMQ.UnitTests.dll      Full unit-test suite for LwMQ (Visual Studio Test)
+   LwMQ.UnitTests.dll      Unit-test suite for LwMQ (Visual Studio Test)
    ----------------------  ------------------------------------------------------------------------
    LwMQ.ScenarioTests.exe  Scenario test suite for LwMQ (GoogleTest)
    ======================  ========================================================================
