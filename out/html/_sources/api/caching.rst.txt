@@ -60,7 +60,7 @@ and AES-GCM encryption.
 
     LwMQ supplies functions to hash any string or byte array into
     a 128-bit key suitable for use with the cache, see
-    ``LmqCacheKeyFromString()`` and ``LmqCacheKeyFromByteArray()``, however
+    ``LmqKeyFromString()`` and ``LmqKeyFromByteArray()``, however
     it should be observed that hash functions are not immune to
     collisions.
 
@@ -109,7 +109,7 @@ and AES-GCM encryption.
     For example, say you have a session ID of some kind in your system.
 
     Do not hash the session ID to make a key. Instead, create a unique
-    key (for example using ``LmqMakeRfc4122CacheKey()``) and use it as
+    key (for example using ``LmqMakeRfc4122Key()``) and use it as
     session key. This way, no computation is needed when retrieving
     the cached session entry as the session key *is* the cache key.
 
@@ -144,8 +144,6 @@ Types
 .. code:: cpp
 
     LMQ_CACHE
-    LMQ_CACHEKEY
-    LMQ_CACHEENTROPY
     LMQ_CACHEPARAMETERS
     LMQ_CACHEMETRICS
 
@@ -183,10 +181,10 @@ Core Cache Functions
     LMQAPI
     LmqAddCacheEntry (
         LMQ_CACHE Cache,
-        PCLMQ_CACHEKEY Key,
+        PCLMQ_KEY Key,
         PVOID Data,
         ULONG DataSize,
-        PCLMQ_CACHEENTROPY AdditionalEntropy,
+        PCLMQ_ENTROPY AdditionalEntropy,
         WORD EntryFlags,
         FLOAT TTLSec
         );
@@ -197,7 +195,7 @@ Core Cache Functions
         LMQ_CACHECOOKIE Cookie,
         PVOID Data,
         ULONG DataSize,
-        PCLMQ_CACHEENTROPY AdditionalEntropy,
+        PCLMQ_ENTROPY AdditionalEntropy,
         WORD EntryFlags,
         FLOAT TTLSec
         );
@@ -205,23 +203,23 @@ Core Cache Functions
     LMQAPI
     LmqRemoveCacheEntry (
         LMQ_CACHE Cache,
-        PCLMQ_CACHEKEY Key
+        PCLMQ_KEY Key
         );
 
     LMQAPI
     LmqLookupCacheEntry (
         LMQ_CACHE Cache,
-        PCLMQ_CACHEKEY Key,
+        PCLMQ_KEY Key,
         PULONG DataSize
         );
 
     LMQAPI
     LmqRetrieveCacheEntry (
         LMQ_CACHE Cache,
-        PCLMQ_CACHEKEY Key,
+        PCLMQ_KEY Key,
         PVOID Data,
         PULONG DataSize,
-        PCLMQ_CACHEENTROPY AdditionalEntropy,
+        PCLMQ_ENTROPY AdditionalEntropy,
         PVOID CacheMissContext
         );
 
@@ -231,7 +229,7 @@ Core Cache Functions
         LMQ_CACHECOOKIE Cookie,
         PVOID Data,
         ULONG DataSize,
-        PCLMQ_CACHEENTROPY AdditionalEntropy
+        PCLMQ_ENTROPY AdditionalEntropy
         );
 
 Cache Memory Allocation (Advanced)
@@ -261,51 +259,4 @@ Cache Extents Functions (Advanced)
     LmqAdvAddCacheExtent (
         LMQ_CACHE Cache,
         ULONG NewExtentSizeEntries
-        );
-
-Cache Keys Helper Functions
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. code:: cpp
-
-    LMQAPI
-    LmqCacheKeyFromStringA (
-        PCSTR String,
-        SIZE_T MaxLength,
-        PLMQ_CACHEKEY Key
-        );
-
-    LMQAPI
-    LmqCacheKeyFromStringW (
-        PCWSTR String,
-        SIZE_T MaxLength,
-        PLMQ_CACHEKEY Key
-        );
-
-    #ifdef UNICODE
-    #define LmqCacheKeyFromString  LmqCacheKeyFromStringW
-    #else
-    #define LmqCacheKeyFromString  LmqCacheKeyFromStringA
-    #endif
-
-    LMQAPI
-    LmqCacheKeyFromByteArray (
-        const BYTE* Buffer,
-        SIZE_T LengthBytes,
-        PLMQ_CACHEKEY Key
-        );
-
-    LMQAPI
-    LmqMakeRfc4122CacheKey (
-        PLMQ_CACHEKEY Key
-        );
-
-Cache Entropy Helper Functions
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. code:: cpp
-
-    LMQAPI
-    LmqMakeCacheEntropy (
-        PLMQ_CACHEENTROPY Entropy
         );

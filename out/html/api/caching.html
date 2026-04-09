@@ -149,7 +149,7 @@ from hashing a string or byte array, or can be Globally unique
 Identifiers (GUIDs).</p>
 <p>LwMQ supplies functions to hash any string or byte array into
 a 128-bit key suitable for use with the cache, see
-<code class="docutils literal notranslate"><span class="pre">LmqCacheKeyFromString()</span></code> and <code class="docutils literal notranslate"><span class="pre">LmqCacheKeyFromByteArray()</span></code>, however
+<code class="docutils literal notranslate"><span class="pre">LmqKeyFromString()</span></code> and <code class="docutils literal notranslate"><span class="pre">LmqKeyFromByteArray()</span></code>, however
 it should be observed that hash functions are not immune to
 collisions.</p>
 <p>The cache only stores unique keys. If the same key is added twice,
@@ -184,7 +184,7 @@ want to alleviate any collision risk, use a GUID as key, and store
 it with your data.</p>
 <p>For example, say you have a session ID of some kind in your system.</p>
 <p>Do not hash the session ID to make a key. Instead, create a unique
-key (for example using <code class="docutils literal notranslate"><span class="pre">LmqMakeRfc4122CacheKey()</span></code>) and use it as
+key (for example using <code class="docutils literal notranslate"><span class="pre">LmqMakeRfc4122Key()</span></code>) and use it as
 session key. This way, no computation is needed when retrieving
 the cached session entry as the session key <em>is</em> the cache key.</p>
 </div>
@@ -212,8 +212,6 @@ the cached session entry as the session key <em>is</em> the cache key.</p>
 <section id="types">
 <h3>Types<a class="headerlink" href="#types" title="Link to this heading"></a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQ_CACHE</span>
-<span class="n">LMQ_CACHEKEY</span>
-<span class="n">LMQ_CACHEENTROPY</span>
 <span class="n">LMQ_CACHEPARAMETERS</span>
 <span class="n">LMQ_CACHEMETRICS</span>
 </pre></div>
@@ -249,10 +247,10 @@ the cached session entry as the session key <em>is</em> the cache key.</p>
 <span class="n">LMQAPI</span>
 <span class="nf">LmqAddCacheEntry</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">LMQ_CACHE</span><span class="w"> </span><span class="n">Cache</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PCLMQ_CACHEKEY</span><span class="w"> </span><span class="n">Key</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCLMQ_KEY</span><span class="w"> </span><span class="n">Key</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
 <span class="w">    </span><span class="n">ULONG</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PCLMQ_CACHEENTROPY</span><span class="w"> </span><span class="n">AdditionalEntropy</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCLMQ_ENTROPY</span><span class="w"> </span><span class="n">AdditionalEntropy</span><span class="p">,</span>
 <span class="w">    </span><span class="n">WORD</span><span class="w"> </span><span class="n">EntryFlags</span><span class="p">,</span>
 <span class="w">    </span><span class="n">FLOAT</span><span class="w"> </span><span class="n">TTLSec</span>
 <span class="w">    </span><span class="p">);</span>
@@ -263,7 +261,7 @@ the cached session entry as the session key <em>is</em> the cache key.</p>
 <span class="w">    </span><span class="n">LMQ_CACHECOOKIE</span><span class="w"> </span><span class="n">Cookie</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
 <span class="w">    </span><span class="n">ULONG</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PCLMQ_CACHEENTROPY</span><span class="w"> </span><span class="n">AdditionalEntropy</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCLMQ_ENTROPY</span><span class="w"> </span><span class="n">AdditionalEntropy</span><span class="p">,</span>
 <span class="w">    </span><span class="n">WORD</span><span class="w"> </span><span class="n">EntryFlags</span><span class="p">,</span>
 <span class="w">    </span><span class="n">FLOAT</span><span class="w"> </span><span class="n">TTLSec</span>
 <span class="w">    </span><span class="p">);</span>
@@ -271,23 +269,23 @@ the cached session entry as the session key <em>is</em> the cache key.</p>
 <span class="n">LMQAPI</span>
 <span class="nf">LmqRemoveCacheEntry</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">LMQ_CACHE</span><span class="w"> </span><span class="n">Cache</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PCLMQ_CACHEKEY</span><span class="w"> </span><span class="n">Key</span>
+<span class="w">    </span><span class="n">PCLMQ_KEY</span><span class="w"> </span><span class="n">Key</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="n">LMQAPI</span>
 <span class="nf">LmqLookupCacheEntry</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">LMQ_CACHE</span><span class="w"> </span><span class="n">Cache</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PCLMQ_CACHEKEY</span><span class="w"> </span><span class="n">Key</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCLMQ_KEY</span><span class="w"> </span><span class="n">Key</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PULONG</span><span class="w"> </span><span class="n">DataSize</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="n">LMQAPI</span>
 <span class="nf">LmqRetrieveCacheEntry</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">LMQ_CACHE</span><span class="w"> </span><span class="n">Cache</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PCLMQ_CACHEKEY</span><span class="w"> </span><span class="n">Key</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCLMQ_KEY</span><span class="w"> </span><span class="n">Key</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PULONG</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PCLMQ_CACHEENTROPY</span><span class="w"> </span><span class="n">AdditionalEntropy</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCLMQ_ENTROPY</span><span class="w"> </span><span class="n">AdditionalEntropy</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">CacheMissContext</span>
 <span class="w">    </span><span class="p">);</span>
 
@@ -297,7 +295,7 @@ the cached session entry as the session key <em>is</em> the cache key.</p>
 <span class="w">    </span><span class="n">LMQ_CACHECOOKIE</span><span class="w"> </span><span class="n">Cookie</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
 <span class="w">    </span><span class="n">ULONG</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PCLMQ_CACHEENTROPY</span><span class="w"> </span><span class="n">AdditionalEntropy</span>
+<span class="w">    </span><span class="n">PCLMQ_ENTROPY</span><span class="w"> </span><span class="n">AdditionalEntropy</span>
 <span class="w">    </span><span class="p">);</span>
 </pre></div>
 </div>
@@ -325,51 +323,6 @@ the cached session entry as the session key <em>is</em> the cache key.</p>
 <span class="nf">LmqAdvAddCacheExtent</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">LMQ_CACHE</span><span class="w"> </span><span class="n">Cache</span><span class="p">,</span>
 <span class="w">    </span><span class="n">ULONG</span><span class="w"> </span><span class="n">NewExtentSizeEntries</span>
-<span class="w">    </span><span class="p">);</span>
-</pre></div>
-</div>
-</section>
-<section id="cache-keys-helper-functions">
-<h4>Cache Keys Helper Functions<a class="headerlink" href="#cache-keys-helper-functions" title="Link to this heading"></a></h4>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
-<span class="nf">LmqCacheKeyFromStringA</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">PCSTR</span><span class="w"> </span><span class="n">String</span><span class="p">,</span>
-<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">MaxLength</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PLMQ_CACHEKEY</span><span class="w"> </span><span class="n">Key</span>
-<span class="w">    </span><span class="p">);</span>
-
-<span class="n">LMQAPI</span>
-<span class="nf">LmqCacheKeyFromStringW</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">PCWSTR</span><span class="w"> </span><span class="n">String</span><span class="p">,</span>
-<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">MaxLength</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PLMQ_CACHEKEY</span><span class="w"> </span><span class="n">Key</span>
-<span class="w">    </span><span class="p">);</span>
-
-<span class="cp">#ifdef UNICODE</span>
-<span class="cp">#define LmqCacheKeyFromString  LmqCacheKeyFromStringW</span>
-<span class="cp">#else</span>
-<span class="cp">#define LmqCacheKeyFromString  LmqCacheKeyFromStringA</span>
-<span class="cp">#endif</span>
-
-<span class="n">LMQAPI</span>
-<span class="nf">LmqCacheKeyFromByteArray</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
-<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">LengthBytes</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PLMQ_CACHEKEY</span><span class="w"> </span><span class="n">Key</span>
-<span class="w">    </span><span class="p">);</span>
-
-<span class="n">LMQAPI</span>
-<span class="nf">LmqMakeRfc4122CacheKey</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">PLMQ_CACHEKEY</span><span class="w"> </span><span class="n">Key</span>
-<span class="w">    </span><span class="p">);</span>
-</pre></div>
-</div>
-</section>
-<section id="cache-entropy-helper-functions">
-<h4>Cache Entropy Helper Functions<a class="headerlink" href="#cache-entropy-helper-functions" title="Link to this heading"></a></h4>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
-<span class="nf">LmqMakeCacheEntropy</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">PLMQ_CACHEENTROPY</span><span class="w"> </span><span class="n">Entropy</span>
 <span class="w">    </span><span class="p">);</span>
 </pre></div>
 </div>

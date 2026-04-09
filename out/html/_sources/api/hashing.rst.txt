@@ -37,6 +37,7 @@ Types
 
     LMQ_KEY
     LMQ_HASH
+    LMQ_ENTROPY
     LMQ_HMAC
     LMQ_HMAC_CONTEXT
 
@@ -172,3 +173,51 @@ This function provides a fast way to compare HMACs, which can be used for exampl
     bool operator==(const LMQ_HMAC& HMAC1, const LMQ_HMAC& HMAC2)
 
     bool operator!=(const LMQ_HMAC& HMAC1, const LMQ_HMAC& HMAC2)
+
+Keys Functions
+--------------
+
+.. code:: cpp
+
+    LMQAPI
+    LmqKeyFromStringA (
+        PCSTR String,
+        SIZE_T MaxLength,
+        PLMQ_KEY Key
+        );
+
+    LMQAPI
+    LmqKeyFromStringW (
+        PCWSTR String,
+        SIZE_T MaxLength,
+        PLMQ_KEY Key
+        );
+
+    #ifdef UNICODE
+    #define LmqKeyFromString  LmqKeyFromStringW
+    #else
+    #define LmqKeyFromString  LmqKeyFromStringA
+    #endif
+
+    LMQAPI
+    LmqKeyFromByteArray (
+        const BYTE* Buffer,
+        SIZE_T LengthBytes,
+        PLMQ_KEY Key
+        );
+
+    LMQAPI
+    LmqMakeRfc4122Key (
+        PLMQ_KEY Key
+        );
+
+Entropy Functions
+-----------------
+
+.. code:: cpp
+
+    LMQAPI
+    LmqMakeEntropy (
+        PLMQ_ENTROPY Entropy
+        );
+

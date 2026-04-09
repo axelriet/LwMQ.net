@@ -63,6 +63,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#types">Types</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#hashing-functions">Hashing Functions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#hmac-functions">HMAC Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#keys-functions">Keys Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#entropy-functions">Entropy Functions</a></li>
 </ul>
 </li>
 </ul>
@@ -129,6 +131,7 @@
 <h3>Types<a class="headerlink" href="#types" title="Link to this heading"></a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQ_KEY</span>
 <span class="n">LMQ_HASH</span>
+<span class="n">LMQ_ENTROPY</span>
 <span class="n">LMQ_HMAC</span>
 <span class="n">LMQ_HMAC_CONTEXT</span>
 </pre></div>
@@ -251,6 +254,51 @@
 </pre></div>
 </div>
 </section>
+</section>
+<section id="keys-functions">
+<h3>Keys Functions<a class="headerlink" href="#keys-functions" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
+<span class="nf">LmqKeyFromStringA</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PCSTR</span><span class="w"> </span><span class="n">String</span><span class="p">,</span>
+<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">MaxLength</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLMQ_KEY</span><span class="w"> </span><span class="n">Key</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqKeyFromStringW</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PCWSTR</span><span class="w"> </span><span class="n">String</span><span class="p">,</span>
+<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">MaxLength</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLMQ_KEY</span><span class="w"> </span><span class="n">Key</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="cp">#ifdef UNICODE</span>
+<span class="cp">#define LmqKeyFromString  LmqKeyFromStringW</span>
+<span class="cp">#else</span>
+<span class="cp">#define LmqKeyFromString  LmqKeyFromStringA</span>
+<span class="cp">#endif</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqKeyFromByteArray</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
+<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">LengthBytes</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLMQ_KEY</span><span class="w"> </span><span class="n">Key</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqMakeRfc4122Key</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PLMQ_KEY</span><span class="w"> </span><span class="n">Key</span>
+<span class="w">    </span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="entropy-functions">
+<h3>Entropy Functions<a class="headerlink" href="#entropy-functions" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
+<span class="nf">LmqMakeEntropy</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PLMQ_ENTROPY</span><span class="w"> </span><span class="n">Entropy</span>
+<span class="w">    </span><span class="p">);</span>
+</pre></div>
+</div>
 </section>
 </section>
 </section>
