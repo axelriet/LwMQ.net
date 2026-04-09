@@ -80,7 +80,7 @@ int main()
     // with a transport and a send queue.
     //
 
-    LMQ_CHANNEL Channel;
+    LMQ_CHANNEL Channel{};
     
     CHECK(LmqCreateChannel(LMQ_CHANNELTYPE_ONE_TO_ONE,
                            &Channel));
@@ -93,7 +93,7 @@ int main()
                           LMQ_TRANSPORT_CREATIONFLAGS_SENDRECEIVE,
                           nullptr));
 
-    LMQ_SENDQUEUE SendQueue;
+    LMQ_SENDQUEUE SendQueue{};
 
     CHECK(LmqAddSendQueue(Channel,
                           LMQ_SENDQUEUETYPE_MONOPRODUCER_UNBOUNDED,
@@ -172,7 +172,7 @@ PostOneMessage (
     ) noexcept
 {
     HRESULT hr{};
-    LMQ_MESSAGE Message;
+    LMQ_MESSAGE Message{};
 
     CHECK_RETURN(LmqCreateMessage(LMQ_MESSAGEFRAMECOUNT_DEFAULT,
                                   &Message));
@@ -206,9 +206,9 @@ ReceiveOneMessage(
     _In_ BOOL PrintData
 ) noexcept
 {
-    USHORT FrameCount;
-    LMQ_MESSAGE Message;
-    UINT64 PayloadSizeBytes;
+    USHORT FrameCount{};
+    LMQ_MESSAGE Message{};
+    UINT64 PayloadSizeBytes{};
 
     CHECK_RETURN(LmqReceiveMessage(Channel,
                                    INFINITE,
@@ -224,9 +224,9 @@ ReceiveOneMessage(
 
     if (PrintData)
     {
-        ULONGLONG Sent;
-        SIZE_T DataSize;
-        const BYTE* Data;
+        ULONGLONG Sent{};
+        SIZE_T DataSize{};
+        const BYTE* Data{};
 
         CHECK_RETURN(LmqGetFrameData(Message,
                                      0,
