@@ -22,8 +22,6 @@ Prerequisites:
     sure to restart VS (if it was running) to catch
     the environment variables to LwMQ's inc and lib.
 
-    The SDK version must be 1.0.0.7 or later.
-
 Author:
 
     Axel Rietschin (26-Mar-2026)
@@ -88,7 +86,7 @@ int main()
     LMQ_CHANNEL Channel{};
     LMQ_TRANSPORT Transport{};
 
-    CHECK(LmqCreateChannel(LMQ_CHANNELTYPE_RAW_ONE_TO_ONE, // SDK 1.0.0.7 or later
+    CHECK(LmqCreateChannel(LMQ_CHANNELTYPE_RAW_ONE_TO_ONE,
                            &Channel));
 
     CHECK(LmqAddTransport(Channel,

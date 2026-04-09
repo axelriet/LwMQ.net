@@ -19,8 +19,6 @@ Prerequisites:
     sure to restart VS (if it was running) to catch
     the environment variables to LwMQ's inc and lib.
 
-    Min. SDK version: 1.0.0.10
-
 Author:
 
     Axel Rietschin (8-Apr-2026)
@@ -87,8 +85,8 @@ int main()
     static_assert(sizeof(g_SecretPassword) > 1);
 
     CHECK(LmqKeyFromStringA(&g_SecretPassword[0],
-                           sizeof(g_SecretPassword),
-                           &g_SecretKey));
+                            sizeof(g_SecretPassword),
+                            &g_SecretKey));
 
     //
     // Set up a bidirectional channel
