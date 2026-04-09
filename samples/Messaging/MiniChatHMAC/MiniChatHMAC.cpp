@@ -246,11 +246,11 @@ PostOneMessage (
 }
 
 HRESULT
-ReceiveOneMessage(
+ReceiveOneMessage (
     _In_ LMQ_CHANNEL Channel,
     _In_ int ExpectedPayloadSizeBytes,
     _In_ BOOL PrintData
-) noexcept
+    ) noexcept
 {
     PCLMQ_HMAC Hmac{};
     const BYTE* Data{};
