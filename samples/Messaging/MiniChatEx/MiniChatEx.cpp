@@ -255,7 +255,7 @@ ReceiveOneMessage(
 
         if (ExpectedPayloadSizeBytes && (PayloadSizeBytes != ExpectedPayloadSizeBytes))
         {
-            printf("The message has an unexpected payload size: %zu, expected %d\n", PayloadSizeBytes, ExpectedPayloadSizeBytes);
+            printf("The message has an unexpected payload size: %zu, expected %zu\n", PayloadSizeBytes, ExpectedPayloadSizeBytes);
 
             return E_FAIL;
         }

@@ -100,7 +100,7 @@ LmqGetSystemTime (
     VOID
     ) noexcept
 {
-    return static_cast<ULONGLONG>(ReadNoFence64(reinterpret_cast<PLONG64>(0x7FFE0014)));
+    return __pragma(warning(suppress:26472)) static_cast<ULONGLONG>(ReadNoFence64(reinterpret_cast<PLONG64>(0x7FFE0014)));
 }
 
 #endif
