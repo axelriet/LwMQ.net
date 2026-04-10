@@ -44,7 +44,11 @@ Types
 Hashing Functions
 -----------------
 
-The hashing functions are meant to be fast. They are not cryptographic and should not be used for security purposes. The hash comparison function is designed to be resistant to timing attacks by taking the same amount of time regardless of how many bytes match between the two hashes.
+The hashing functions are meant to be fast.
+
+They are not cryptographic and should not be used for security purposes.
+
+The hash comparison function is designed to be resistant to timing attacks by taking the same amount of time regardless of how many bytes match between the two hashes.
 
 .. code:: cpp
 
@@ -90,7 +94,7 @@ The encryption and hashing algorithms used to compute HMACs in LwMQ are meant to
 
 The intent is to provide a way for security architects to include message authentication codes in their LwMQ messaging payload with reasonabe impact on performance, knowing the data links are supposed to be relatively secure within the realms of applicability of LwMQ.
 
-You can protect the keys using LmqProtectKey(). In that case, you can pass the protected key to LmqComputeHMAC() and LmqVerifyHMAC() provided that you set the IsProtectedKey parameter to TRUE. The functions take care of unprotecting a copy of the key and of properly erasing the unprotected copy when no longer needed.
+You can protect the keys using LmqProtectKey(). In that case, you can pass the protected key to LmqComputeHMAC() and LmqVerifyHMAC() provided that you set the ``IsProtectedKey`` parameter to TRUE. The functions take care of unprotecting a copy of the key and of properly erasing the unprotected copy when no longer needed.
 
 For highly secure cryptographic operations, consider using well known facilities such as `CryptoAPI`_, Crypto Next Generation (`CNG`_), or `OpenSSL`_.
 
@@ -126,11 +130,19 @@ THis set of functions is meant for cases where only a few HMACs need to be compu
 HMAC Functions
 ^^^^^^^^^^^^^^
 
-This set of functions is meant for cases where many HMACs need to be computed or verified with the same key, and the caller wants to pay the cost of key setup only once. The called typically calls LmqInitHMACEx() once then calls LmqComputeHMACEx() or LmqVerifyHMACEx() as many times as needed, then calls LmqDestroyHMACEx() to free the context when no longer needed, for example at program exit.
+This set of functions is meant for cases where many HMACs need to be computed or verified with the same key, and the caller wants to pay the cost of key setup only once.
 
-You can protect the keys using LmqProtectKey(). In that case, you can pass the protected key to LmqInitHMACEx() provided that you set the IsProtectedKey parameter to TRUE. The function will unprotect a copy of the key and properly erase it when no longer needed. Additionaly, the Context is encrypted when using a protected key. This helps protect against memory dumps saving the decryption context intact by reducing the time where the context is unencypted in memory. The function uses a copy of the context and decrypts it, then safely disposes of the copy when no longer needed. Note, however, that encryption/decryption of the key and context incurs a performance penalty, and that there is still a narrow window of opportunity for an attacker to dump the memory while the context is unencrypted.
+The callers typically calls LmqInitHMACEx() once then calls LmqComputeHMACEx() or LmqVerifyHMACEx() as many times as needed, then calls LmqDestroyHMACEx() to free the context when no longer needed, for example at program exit.
 
-If you use protected keys, it is NOT recommended to unprotect the key prior to calling LmqInitHMACEx() with the IsProtectedKey parameter set to FALSE, as in this case the context will not be encrypted. 
+You can protect the keys using LmqProtectKey(). In that case, you can pass the protected key to LmqInitHMACEx() provided that you set the ``IsProtectedKey`` parameter to TRUE.
+
+The function will unprotect a copy of the key and properly erase it when no longer needed.
+
+Additionally, the Context is encrypted when using a protected key. This helps protect against memory dumps saving the decryption context intact by reducing the time where the context is unencypted in memory.
+
+The function uses a copy of the context and decrypts it, then safely disposes of the copy when no longer needed. Note, however, that encryption/decryption of the key and context incurs a performance penalty, and that there is still a narrow window of opportunity for an attacker to dump the memory while the context is unencrypted.
+
+If you use protected keys, it is NOT recommended to unprotect the key prior to calling LmqInitHMACEx() with the ``IsProtectedKey`` parameter set to FALSE, as in this case the context will not be encrypted. 
 
 .. code:: cpp
 
@@ -165,7 +177,9 @@ If you use protected keys, it is NOT recommended to unprotect the key prior to c
 HMAC Equality Functions
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-This function provides a fast way to compare HMACs, which can be used for example to verify that a computed HMAC matches an expected value. The function is designed to be resistant to timing attacks by taking the same amount of time regardless of how many bytes match between the two HMACs.
+This function provides a fast way to compare HMACs, which can be used for example to verify that a computed HMAC matches an expected value.
+
+The function is designed to be resistant to timing attacks by taking the same amount of time regardless of how many bytes match between the two HMACs.
 
 .. code:: cpp
 
@@ -245,7 +259,7 @@ Key Protection Functions
 
 Those functions allow you to protect and unprotect keys in memory for use within a particular process instance's lifetime, which can help mitigate the risk of key exposure through memory dumps.
 
-When you protect a key using LmqProtectKey(), the key is encrypted in place. You can then pass the protected key to the HMAC functions with the IsProtectedKey parameter set to TRUE, and the functions will take care of unprotecting a copy of the key and properly erasing the unprotected copy when no longer needed.
+When you protect a key using LmqProtectKey(), the key is encrypted in place. You can then pass the protected key to the HMAC functions with the ``IsProtectedKey`` parameter set to TRUE, and the functions will take care of unprotecting a copy of the key and properly erasing the unprotected copy when no longer needed.
 
 You can also unprotect a key using LmqUnprotectKey() if you need to use the unprotected key for other purposes, but be aware that this increases the risk of key exposure.
 
