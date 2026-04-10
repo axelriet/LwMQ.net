@@ -19,6 +19,8 @@ Prerequisites:
     sure to restart VS (if it was running) to catch
     the environment variables to LwMQ's inc and lib.
 
+    Min. SDK version: 1.0.0.11
+
 Author:
 
     Axel Rietschin (8-Apr-2026)
@@ -63,15 +65,18 @@ SenderThread (
     ) noexcept;
 
 //
-// Not the best example. Password and/or key storage
-// are both out of scope for this sample, but in any
-// case never store the password in the code, nor the
-// derived key unencrypted for the lifetime of the
-// process!
+// Not the best example. Password storage and retrieval
+// is out of scope for this sample, but in any case never
+// store the password in the code!
 //
 
-static LMQ_KEY g_SecretKey;
 static const CHAR g_SecretPassword[] = { "Password" };
+
+//
+// The HMAC key is encrypted at rest in this process.
+//
+
+static LMQ_KEY g_HmacKey;
 
 int main()
 {
@@ -79,14 +84,16 @@ int main()
            "Start two instances of MiniChatHMAC and start typing or pasting text.\n");
 
     //
-    // Derive a key from the password.
+    // Derive a key from the password and protect it.
     //
 
     static_assert(sizeof(g_SecretPassword) > 1);
 
     CHECK(LmqKeyFromStringA(&g_SecretPassword[0],
                             sizeof(g_SecretPassword),
-                            &g_SecretKey));
+                            &g_HmacKey));
+
+    CHECK(LmqProtectKey(&g_HmacKey));
 
     //
     // Set up a bidirectional channel
@@ -194,7 +201,8 @@ PostOneMessage (
 
     CHECK_RETURN(LmqComputeHMAC(reinterpret_cast<const BYTE*>(MessagePayload),
                                 MessagePayloadSizeBytes,
-                                &g_SecretKey,
+                                &g_HmacKey,
+                                TRUE,
                                 &Hmac));
 
     //
@@ -311,7 +319,8 @@ ReceiveOneMessage (
 
     CHECK_RETURN(LmqVerifyHMAC(Data,
                                DataSizeBytes,
-                               &g_SecretKey,
+                               &g_HmacKey,
+                               TRUE,
                                Hmac));
 
     //
