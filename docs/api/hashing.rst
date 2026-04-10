@@ -221,3 +221,18 @@ Entropy Functions
         PLMQ_ENTROPY Entropy
         );
 
+Key Protection Functions
+------------------------
+
+.. code:: cpp
+
+    LMQAPI
+    LmqProtectKey (
+        PLMQ_KEY KeyToProtectInPlace
+        );
+
+    LMQAPI
+    LmqUnprotectKey (
+        PCLMQ_KEY ProtectedKey,
+        PLMQ_KEY UnprotectedKey
+        );
