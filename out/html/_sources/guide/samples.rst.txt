@@ -16,7 +16,6 @@ Supposing you are in a ``D:\GIT`` folder on your computer, run:
 
 This commmand clones the GitHub repository in a subfolder named ``LwMQ.net``
 
-
 Building the samples
 ====================
 
@@ -93,3 +92,21 @@ If you made some experiment that you think is worth sharing, please consider
 contributing it back to the samples repository on GitHub.
 
 The samples are provided as-is and are not intended to be used as production code.
+
+.. important::
+
+    The samples are designed to be simple and easy to understand, and may not follow best practices for production code. They are intended for educational purposes only.
+
+    If you run into *any* issue while working with LwMQ, always run your code in a debugger, for example the Visual Studio debugger, WinDbg, or WinDbgX.
+
+    If you suspect a crash when running outside a debugger, install WinDbg as the default post-mortem crash debugger by running ``Windbg /I`` (or ``WinDbgX /I``) from an elevated command prompt (the switch is forward slash immediately followed by a CAPITAL i letter, the casing is important!) and the debugger will pop up when any process crashes on your system.
+
+    If you use Visual Studio, you can configure the debugger for post-mortem crash debugging from the Tools | Options | Debugging | Just-In-Time dialog. Then make sure to check Native plus any other relevant modes.
+    
+    You can only have one post-mortem debugger installed at any given time.
+
+    Remember that our symbols are at http://www.lwmq.net/symbols and that you can configure your debugger to use this symbol server to get the best debugging experience.
+    
+    LwMQ's APIs return errors often accompanied with elaborate diagnostic messages that are *only* visible from inside a debugger.
+    
+    These messages can be very helpful to understand what went wrong and how to fix it. LwMQ goes to great lengths to provide useful diagnostics to help developers build robust applications.
