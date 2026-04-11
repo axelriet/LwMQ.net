@@ -4,13 +4,14 @@ Copyright (c) Axel Rietschin Software Development, LLC
 
 Module Name:
 
-    MiniChatHMAC.cpp
+    MiniChatHMACCompressed.cpp
 
 Abstract:
 
     Simplistic peer-to-peer chat to demonstrate LwMQ's
     messaging functionality with message authentication
-    codes prepended in an dedicated message frame.
+    codes prepended in an dedicated message frame and
+    data compression.
 
 Prerequisites:
 
@@ -21,7 +22,7 @@ Prerequisites:
 
 Author:
 
-    Axel Rietschin (8-Apr-2026)
+    Axel Rietschin (10-Apr-2026)
 
 Environment:
 
@@ -37,7 +38,6 @@ Environment:
 
 #include <api-lwmq-time.h>
 #include <api-lwmq-hash.h>
-#include <api-lwmq-storage.h>
 #include <api-lwmq-messaging.h>
 
 #include <api-lwmq-samples-common.h>
@@ -76,8 +76,8 @@ static const CHAR g_SecretPassword[] = { "Password" };
 
 int main()
 {
-    printf("MiniChatHMAC IPC 1.0 - Account must have SeCreateGlobalPrivilege!\n"
-           "Start two instances of MiniChatHMAC and start typing or pasting text.\n");
+    printf("MiniChatHMACCompressed IPC 1.0 - Account must have SeCreateGlobalPrivilege!\n"
+           "Start two instances of MiniChatHMACCompressed and start typing or pasting text.\n");
 
     //
     // Derive a key from the password.
