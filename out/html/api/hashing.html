@@ -65,6 +65,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#hmac-functions">HMAC Functions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#keys-functions">Keys Functions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#entropy-functions">Entropy Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#key-protection-functions">Key Protection Functions</a></li>
 </ul>
 </li>
 </ul>
@@ -139,7 +140,9 @@
 </section>
 <section id="hashing-functions">
 <h3>Hashing Functions<a class="headerlink" href="#hashing-functions" title="Link to this heading"></a></h3>
-<p>The hashing functions are meant to be fast. They are not cryptographic and should not be used for security purposes. The hash comparison function is designed to be resistant to timing attacks by taking the same amount of time regardless of how many bytes match between the two hashes.</p>
+<p>The hashing functions are meant to be fast.</p>
+<p>They are not cryptographic and should not be used for security purposes.</p>
+<p>The hash comparison function is designed to be resistant to timing attacks by taking the same amount of time regardless of how many bytes match between the two hashes.</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
 <span class="nf">LmqHashByteArray32</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
@@ -163,8 +166,8 @@
 
 <span class="n">LMQAPI_</span><span class="p">(</span><span class="n">BOOL</span><span class="p">)</span>
 <span class="n">LmqAreEqualHashes</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">_In_</span><span class="w"> </span><span class="n">PCLMQ_HASH</span><span class="w"> </span><span class="n">Hash1</span><span class="p">,</span>
-<span class="w">    </span><span class="n">_In_</span><span class="w"> </span><span class="n">PCLMQ_HASH</span><span class="w"> </span><span class="n">Hash2</span>
+<span class="w">    </span><span class="n">PCLMQ_HASH</span><span class="w"> </span><span class="n">Hash1</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCLMQ_HASH</span><span class="w"> </span><span class="n">Hash2</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="c1">//</span>
@@ -181,6 +184,7 @@
 <h3>HMAC Functions<a class="headerlink" href="#hmac-functions" title="Link to this heading"></a></h3>
 <p>The encryption and hashing algorithms used to compute HMACs in LwMQ are meant to be fast as their primary design goal. The cipher used is a weakened (low round count) version of an otherwise secure algorithm tuned for excellent performance on modern processors.</p>
 <p>The intent is to provide a way for security architects to include message authentication codes in their LwMQ messaging payload with reasonabe impact on performance, knowing the data links are supposed to be relatively secure within the realms of applicability of LwMQ.</p>
+<p>You can protect the keys using LmqProtectKey(). In that case, you can pass the protected key to LmqComputeHMAC() and LmqVerifyHMAC() provided that you set the <code class="docutils literal notranslate"><span class="pre">IsProtectedKey</span></code> parameter to TRUE. The functions take care of unprotecting a copy of the key and of properly erasing the unprotected copy when no longer needed.</p>
 <p>For highly secure cryptographic operations, consider using well known facilities such as <a class="reference external" href="https://learn.microsoft.com/en-us/windows/win32/seccrypto/cryptoapi-system-architecture">CryptoAPI</a>, Crypto Next Generation (<a class="reference external" href="https://docs.microsoft.com/en-us/windows/win32/seccng/cng-portal">CNG</a>), or <a class="reference external" href="https://www.openssl.org/">OpenSSL</a>.</p>
 <section id="one-shot-hmac-functions">
 <h4>One-shot HMAC Functions<a class="headerlink" href="#one-shot-hmac-functions" title="Link to this heading"></a></h4>
@@ -190,6 +194,7 @@
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
 <span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">LengthBytes</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PCLMQ_KEY</span><span class="w"> </span><span class="n">Key</span><span class="p">,</span>
+<span class="w">    </span><span class="n">BOOL</span><span class="w"> </span><span class="n">IsProtectedKey</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PLMQ_HMAC</span><span class="w"> </span><span class="n">HMAC</span>
 <span class="w">    </span><span class="p">);</span>
 
@@ -198,6 +203,7 @@
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
 <span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">LengthBytes</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PCLMQ_KEY</span><span class="w"> </span><span class="n">Key</span><span class="p">,</span>
+<span class="w">    </span><span class="n">BOOL</span><span class="w"> </span><span class="n">IsProtectedKey</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PCLMQ_HMAC</span><span class="w"> </span><span class="n">HMAC</span>
 <span class="w">    </span><span class="p">);</span>
 </pre></div>
@@ -205,10 +211,17 @@
 </section>
 <section id="id1">
 <h4>HMAC Functions<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
-<p>This set of functions is meant for cases where many HMACs need to be computed or verified with the same key, and the caller wants to pay the cost of key setup only once. The called typically calls LmqInitHMACEx() once then calls LmqComputeHMACEx() or LmqVerifyHMACEx() as many times as needed, then calls LmqDestroyHMACEx() to free the context when no longer needed, for example at program exit.</p>
+<p>This set of functions is meant for cases where many HMACs need to be computed or verified with the same key, and the caller wants to pay the cost of key setup only once.</p>
+<p>The callers typically calls LmqInitHMACEx() once then calls LmqComputeHMACEx() or LmqVerifyHMACEx() as many times as needed, then calls LmqDestroyHMACEx() to free the context when no longer needed, for example at program exit.</p>
+<p>You can protect the keys using LmqProtectKey(). In that case, you can pass the protected key to LmqInitHMACEx() provided that you set the <code class="docutils literal notranslate"><span class="pre">IsProtectedKey</span></code> parameter to TRUE.</p>
+<p>The function will unprotect a copy of the key and properly erase it when no longer needed.</p>
+<p>Additionally, the Context is encrypted when using a protected key. This helps protect against memory dumps saving the decryption context intact by reducing the time where the context is unencypted in memory.</p>
+<p>The function uses a copy of the context and decrypts it, then safely disposes of the copy when no longer needed. Note, however, that encryption/decryption of the key and context incurs a performance penalty, and that there is still a narrow window of opportunity for an attacker to dump the memory while the context is unencrypted.</p>
+<p>If you use protected keys, it is NOT recommended to unprotect the key prior to calling LmqInitHMACEx() with the <code class="docutils literal notranslate"><span class="pre">IsProtectedKey</span></code> parameter set to FALSE, as in this case the context will not be encrypted.</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
 <span class="nf">LmqInitHMACEx</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">PCLMQ_KEY</span><span class="w"> </span><span class="n">Key</span><span class="p">,</span>
+<span class="w">    </span><span class="n">BOOL</span><span class="w"> </span><span class="n">IsProtectedKey</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PLMQ_HMAC_CONTEXT</span><span class="w"> </span><span class="n">Context</span>
 <span class="w">    </span><span class="p">);</span>
 
@@ -237,7 +250,8 @@
 </section>
 <section id="hmac-equality-functions">
 <h4>HMAC Equality Functions<a class="headerlink" href="#hmac-equality-functions" title="Link to this heading"></a></h4>
-<p>This function provides a fast way to compare HMACs, which can be used for example to verify that a computed HMAC matches an expected value. The function is designed to be resistant to timing attacks by taking the same amount of time regardless of how many bytes match between the two HMACs.</p>
+<p>This function provides a fast way to compare HMACs, which can be used for example to verify that a computed HMAC matches an expected value.</p>
+<p>The function is designed to be resistant to timing attacks by taking the same amount of time regardless of how many bytes match between the two HMACs.</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI_</span><span class="p">(</span><span class="n">BOOL</span><span class="p">)</span>
 <span class="n">LmqAreEqualHMACs</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">PCLMQ_HMAC</span><span class="w"> </span><span class="n">HMAC1</span><span class="p">,</span>
@@ -257,6 +271,8 @@
 </section>
 <section id="keys-functions">
 <h3>Keys Functions<a class="headerlink" href="#keys-functions" title="Link to this heading"></a></h3>
+<p>The key functions allow you to create LMQ_KEY structures from ASCII and Unicode strings, or byte arrays, and to generate RFC 4122 Type 4 random keys.</p>
+<p>The keys can then be used for HMAC computations or other purposes, and also be protected in memory using LmqProtectKey().</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
 <span class="nf">LmqKeyFromStringA</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">PCSTR</span><span class="w"> </span><span class="n">String</span><span class="p">,</span>
@@ -293,9 +309,36 @@
 </section>
 <section id="entropy-functions">
 <h3>Entropy Functions<a class="headerlink" href="#entropy-functions" title="Link to this heading"></a></h3>
+<p>This function fills the provided LMQ_ENTROPY structure with random data that can be used as a source of entropy for various purposes, such as generating random keys or nonces.</p>
+<p>The quality of the entropy provided by this function depends on the underlying implementation and the platform’s capabilities.</p>
+<p>It is designed to be fast and suitable for general use cases, but it may not be suitable for cryptographic purposes where high-quality randomness is required.</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
 <span class="nf">LmqMakeEntropy</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">PLMQ_ENTROPY</span><span class="w"> </span><span class="n">Entropy</span>
+<span class="w">    </span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="key-protection-functions">
+<h3>Key Protection Functions<a class="headerlink" href="#key-protection-functions" title="Link to this heading"></a></h3>
+<p>Those functions allow you to protect and unprotect keys in memory for use within a particular process instance’s lifetime, which can help mitigate the risk of key exposure through memory dumps.</p>
+<p>When you protect a key using LmqProtectKey(), the key is encrypted in place. You can then pass the protected key to the HMAC functions with the <code class="docutils literal notranslate"><span class="pre">IsProtectedKey</span></code> parameter set to TRUE, and the functions will take care of unprotecting a copy of the key and properly erasing the unprotected copy when no longer needed.</p>
+<p>You can also unprotect a key using LmqUnprotectKey() if you need to use the unprotected key for other purposes, but be aware that this increases the risk of key exposure.</p>
+<p>When you are done with a key, you should call LmqEraseKey() to securely erase a key, protected or not, from memory.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
+<span class="nf">LmqProtectKey</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PLMQ_KEY</span><span class="w"> </span><span class="n">KeyToProtectInPlace</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqUnprotectKey</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PCLMQ_KEY</span><span class="w"> </span><span class="n">ProtectedKey</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLMQ_KEY</span><span class="w"> </span><span class="n">UnprotectedDestinationKey</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqEraseKey</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PLMQ_KEY</span><span class="w"> </span><span class="n">Key</span>
 <span class="w">    </span><span class="p">);</span>
 </pre></div>
 </div>
