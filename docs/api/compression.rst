@@ -58,9 +58,9 @@ Buffer Compression Functions
 
     LMQAPI
     LmqCompressBuffer (
-        UCHAR const* UncompressedBuffer,
+        const void* UncompressedBuffer,
         LONG UncompressedBufferSize,
-        PUCHAR CompressedBuffer,
+        void* CompressedBuffer,
         LONG CompressedBufferSize,
         PLONG FinalCompressedSize,
         LMQ_COMPRESSIONWORKSPACE CompressionWorkspace
@@ -68,9 +68,9 @@ Buffer Compression Functions
 
     LMQAPI
     LmqDecompressBuffer (
-        PUCHAR UncompressedBuffer,
+        void* UncompressedBuffer,
         LONG UncompressedBufferSize,
-        UCHAR const* CompressedBuffer,
+        const void* CompressedBuffer,
         LONG CompressedBufferSize,
         PLONG FinalUncompressedSize
         );
@@ -82,7 +82,7 @@ One-Shot Compression Functions (BLOB)
 
     LMQAPI
     LmqCompressData (
-        UCHAR const* UncompressedBuffer,
+        const void* UncompressedBuffer,
         LONG UncompressedBufferSize,
         PLMQ_COMPRESSEDDATABLOB CompressedDataBlob,
         PLONG CompressedDataBlobSize
@@ -90,14 +90,14 @@ One-Shot Compression Functions (BLOB)
 
     LMQAPI
     LmqDecompressData (
-        LMQ_COMPRESSEDDATABLOB CompressedDataBlob,
-        PUCHAR UncompressedBuffer,
+        const LMQ_COMPRESSEDDATABLOB CompressedDataBlob,
+        void* UncompressedBuffer,
         PLONG UncompressedBufferSize
         );
 
     LMQAPI
     LmqGetCompressedDataBlobSizes (
-        LMQ_COMPRESSEDDATABLOB CompressedDataBlob,
+        const LMQ_COMPRESSEDDATABLOB CompressedDataBlob,
         PLONG CompressedBlobSize,
         PLONG UncompressedDataSize
         );
