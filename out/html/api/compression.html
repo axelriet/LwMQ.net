@@ -148,9 +148,9 @@
 
 <span class="n">LMQAPI</span>
 <span class="nf">LmqCompressBuffer</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">UCHAR</span><span class="w"> </span><span class="k">const</span><span class="o">*</span><span class="w"> </span><span class="n">UncompressedBuffer</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">UncompressedBuffer</span><span class="p">,</span>
 <span class="w">    </span><span class="n">LONG</span><span class="w"> </span><span class="n">UncompressedBufferSize</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PUCHAR</span><span class="w"> </span><span class="n">CompressedBuffer</span><span class="p">,</span>
+<span class="w">    </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">CompressedBuffer</span><span class="p">,</span>
 <span class="w">    </span><span class="n">LONG</span><span class="w"> </span><span class="n">CompressedBufferSize</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PLONG</span><span class="w"> </span><span class="n">FinalCompressedSize</span><span class="p">,</span>
 <span class="w">    </span><span class="n">LMQ_COMPRESSIONWORKSPACE</span><span class="w"> </span><span class="n">CompressionWorkspace</span>
@@ -158,9 +158,9 @@
 
 <span class="n">LMQAPI</span>
 <span class="nf">LmqDecompressBuffer</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">PUCHAR</span><span class="w"> </span><span class="n">UncompressedBuffer</span><span class="p">,</span>
+<span class="w">    </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">UncompressedBuffer</span><span class="p">,</span>
 <span class="w">    </span><span class="n">LONG</span><span class="w"> </span><span class="n">UncompressedBufferSize</span><span class="p">,</span>
-<span class="w">    </span><span class="n">UCHAR</span><span class="w"> </span><span class="k">const</span><span class="o">*</span><span class="w"> </span><span class="n">CompressedBuffer</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">CompressedBuffer</span><span class="p">,</span>
 <span class="w">    </span><span class="n">LONG</span><span class="w"> </span><span class="n">CompressedBufferSize</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PLONG</span><span class="w"> </span><span class="n">FinalUncompressedSize</span>
 <span class="w">    </span><span class="p">);</span>
@@ -171,7 +171,7 @@
 <h3>One-Shot Compression Functions (BLOB)<a class="headerlink" href="#one-shot-compression-functions-blob" title="Link to this heading"></a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
 <span class="nf">LmqCompressData</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">UCHAR</span><span class="w"> </span><span class="k">const</span><span class="o">*</span><span class="w"> </span><span class="n">UncompressedBuffer</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">UncompressedBuffer</span><span class="p">,</span>
 <span class="w">    </span><span class="n">LONG</span><span class="w"> </span><span class="n">UncompressedBufferSize</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PLMQ_COMPRESSEDDATABLOB</span><span class="w"> </span><span class="n">CompressedDataBlob</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PLONG</span><span class="w"> </span><span class="n">CompressedDataBlobSize</span>
@@ -179,14 +179,14 @@
 
 <span class="n">LMQAPI</span>
 <span class="nf">LmqDecompressData</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">LMQ_COMPRESSEDDATABLOB</span><span class="w"> </span><span class="n">CompressedDataBlob</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PUCHAR</span><span class="w"> </span><span class="n">UncompressedBuffer</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">LMQ_COMPRESSEDDATABLOB</span><span class="w"> </span><span class="n">CompressedDataBlob</span><span class="p">,</span>
+<span class="w">    </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">UncompressedBuffer</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PLONG</span><span class="w"> </span><span class="n">UncompressedBufferSize</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="n">LMQAPI</span>
 <span class="nf">LmqGetCompressedDataBlobSizes</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">LMQ_COMPRESSEDDATABLOB</span><span class="w"> </span><span class="n">CompressedDataBlob</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">LMQ_COMPRESSEDDATABLOB</span><span class="w"> </span><span class="n">CompressedDataBlob</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PLONG</span><span class="w"> </span><span class="n">CompressedBlobSize</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PLONG</span><span class="w"> </span><span class="n">UncompressedDataSize</span>
 <span class="w">    </span><span class="p">);</span>

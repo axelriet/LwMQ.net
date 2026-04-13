@@ -19,8 +19,6 @@ Prerequisites:
     sure to restart VS (if it was running) to catch
     the environment variables to LwMQ's inc and lib.
 
-    Min. SDK version: 1.0.0.11
-
 Author:
 
     Axel Rietschin (8-Apr-2026)
