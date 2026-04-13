@@ -213,7 +213,7 @@ ReceiveOneMessage(
 
         CHECK_RETURN(LmqGetFrameData(Message,
                                      0,
-                                     &Data,
+                                     PPCVOID(&Data),
                                      &DataSizeBytes,
                                      nullptr,
                                      nullptr));

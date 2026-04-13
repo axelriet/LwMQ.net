@@ -10,8 +10,7 @@ Abstract:
 
     Simplistic peer-to-peer chat to demonstrate LwMQ's
     messaging functionality with message authentication
-    codes prepended in an dedicated message frame and
-    data compression.
+    codes prepended in an dedicated message frame.
 
 Prerequisites:
 
@@ -22,7 +21,7 @@ Prerequisites:
 
 Author:
 
-    Axel Rietschin (10-Apr-2026)
+    Axel Rietschin (8-Apr-2026)
 
 Environment:
 
@@ -38,6 +37,7 @@ Environment:
 
 #include <api-lwmq-time.h>
 #include <api-lwmq-hash.h>
+#include <api-lwmq-storage.h>
 #include <api-lwmq-messaging.h>
 
 #include <api-lwmq-samples-common.h>
@@ -64,30 +64,35 @@ SenderThread (
     ) noexcept;
 
 //
-// Not the best example. Password and/or key storage
-// are both out of scope for this sample, but in any
-// case never store the password in the code, nor the
-// derived key unencrypted for the lifetime of the
-// process!
+// Not the best example. Password storage and retrieval
+// is out of scope for this sample, but in any case never
+// store the password in the code!
 //
 
-static LMQ_KEY g_SecretKey;
 static const CHAR g_SecretPassword[] = { "Password" };
+
+//
+// The HMAC key is encrypted at rest in this process.
+//
+
+static LMQ_KEY g_HmacKey;
 
 int main()
 {
-    printf("MiniChatHMACCompressed IPC 1.0 - Account must have SeCreateGlobalPrivilege!\n"
-           "Start two instances of MiniChatHMACCompressed and start typing or pasting text.\n");
+    printf("MiniChatHMAC IPC 1.0 - Account must have SeCreateGlobalPrivilege!\n"
+           "Start two instances of MiniChatHMAC and start typing or pasting text.\n");
 
     //
-    // Derive a key from the password.
+    // Derive a key from the password and protect it.
     //
 
     static_assert(sizeof(g_SecretPassword) > 1);
 
     CHECK(LmqKeyFromStringA(&g_SecretPassword[0],
                             sizeof(g_SecretPassword),
-                            &g_SecretKey));
+                            &g_HmacKey));
+
+    CHECK(LmqProtectKey(&g_HmacKey));
 
     //
     // Set up a bidirectional channel
@@ -193,9 +198,10 @@ PostOneMessage (
     // Compute the message authentication code.
     //
 
-    CHECK_RETURN(LmqComputeHMAC(reinterpret_cast<const BYTE*>(MessagePayload),
+    CHECK_RETURN(LmqComputeHMAC(MessagePayload,
                                 MessagePayloadSizeBytes,
-                                &g_SecretKey,
+                                &g_HmacKey,
+                                TRUE,
                                 &Hmac));
 
     //
@@ -210,7 +216,7 @@ PostOneMessage (
     //
 
     CHECK_RETURN(LmqAppendFrame(Message,
-                                reinterpret_cast<const BYTE*>(&Hmac),
+                                &Hmac,
                                 sizeof(Hmac),
                                 LMQ_TIMESTAMP_NONE));
 
@@ -218,10 +224,20 @@ PostOneMessage (
     // By convention for this app, put the payload in frame 1.
     //
 
+    SIZE_T CompressedDataBlobSize;
+    LMQ_COMPRESSEDDATABLOB CompressedBlob;
+
+    CHECK_RETURN(LmqCompressData(MessagePayload,
+                                 MessagePayloadSizeBytes,
+                                 &CompressedBlob,
+                                 &CompressedDataBlobSize));
+
     CHECK_RETURN(LmqAppendFrame(Message,
-                                reinterpret_cast<const BYTE*>(MessagePayload),
-                                MessagePayloadSizeBytes,
+                                CompressedBlob,
+                                CompressedDataBlobSize,
                                 Timestamp));
+
+    CHECK_RETURN(LmqFreeCompressedDataBlob(&CompressedBlob));
 
     //
     // Post the message.
@@ -243,6 +259,8 @@ PostOneMessage (
 
     return S_OK;
 }
+
+#pragma warning(disable:6262) // Function uses '131092' bytes of stack.
 
 HRESULT
 ReceiveOneMessage (
@@ -276,7 +294,7 @@ ReceiveOneMessage (
 
     CHECK_RETURN(LmqGetFrameData(Message,
                                  0,
-                                 reinterpret_cast<const BYTE**>(&Hmac),
+                                 PPCVOID(&Hmac),
                                  &DataSizeBytes,
                                  nullptr,
                                  nullptr));
@@ -294,14 +312,21 @@ ReceiveOneMessage (
 
     CHECK_RETURN(LmqGetFrameData(Message,
                                  1,
-                                 &Data,
+                                 PPCVOID(&Data),
                                  &DataSizeBytes,
                                  nullptr,
                                  nullptr));
 
-    if (ExpectedPayloadSizeBytes && (DataSizeBytes != ExpectedPayloadSizeBytes))
+    WCHAR Buffer[63 * 1024];
+    SIZE_T UncompressedDataSizeBytes;
+
+    CHECK_RETURN(LmqDecompressData(LmqCompressedDataBlobFromPointer(Data),
+                                   &Buffer[0],
+                                   &UncompressedDataSizeBytes));
+
+    if (ExpectedPayloadSizeBytes && (UncompressedDataSizeBytes != ExpectedPayloadSizeBytes))
     {
-        printf("The message has an unexpected payload size: %zu, expected %zu\n", DataSizeBytes, ExpectedPayloadSizeBytes);
+        printf("The message has an unexpected payload size: %zu, expected %zu\n", UncompressedDataSizeBytes, ExpectedPayloadSizeBytes);
 
         return E_FAIL;
     }
@@ -310,9 +335,10 @@ ReceiveOneMessage (
     // Verify the message integrity and authenticity.
     //
 
-    CHECK_RETURN(LmqVerifyHMAC(Data,
-                               DataSizeBytes,
-                               &g_SecretKey,
+    CHECK_RETURN(LmqVerifyHMAC(&Buffer[0],
+                               UncompressedDataSizeBytes,
+                               &g_HmacKey,
+                               TRUE,
                                Hmac));
 
     //
@@ -325,15 +351,13 @@ ReceiveOneMessage (
 
         wprintf(L"%.*ls",
                 Cch,
-                reinterpret_cast<PCWSTR>(Data));
+                &Buffer[0]);
     }
 
     CHECK_RETURN(LmqDisposeReceivedMessage(&Message));
 
     return S_OK;
 }
-
-#pragma warning(disable:6262) // Function uses '131092' bytes of stack.
 
 VOID
 CDECL

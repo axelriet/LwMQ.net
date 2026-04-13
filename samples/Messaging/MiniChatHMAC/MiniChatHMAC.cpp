@@ -19,8 +19,6 @@ Prerequisites:
     sure to restart VS (if it was running) to catch
     the environment variables to LwMQ's inc and lib.
 
-    Min. SDK version: 1.0.0.11
-
 Author:
 
     Axel Rietschin (8-Apr-2026)
@@ -39,7 +37,6 @@ Environment:
 
 #include <api-lwmq-time.h>
 #include <api-lwmq-hash.h>
-#include <api-lwmq-storage.h>
 #include <api-lwmq-messaging.h>
 
 #include <api-lwmq-samples-common.h>
@@ -284,7 +281,7 @@ ReceiveOneMessage (
 
     CHECK_RETURN(LmqGetFrameData(Message,
                                  0,
-                                 reinterpret_cast<const BYTE**>(&Hmac),
+                                 PPCVOID(&Hmac),
                                  &DataSizeBytes,
                                  nullptr,
                                  nullptr));
@@ -302,7 +299,7 @@ ReceiveOneMessage (
 
     CHECK_RETURN(LmqGetFrameData(Message,
                                  1,
-                                 &Data,
+                                 PPCVOID(&Data),
                                  &DataSizeBytes,
                                  nullptr,
                                  nullptr));

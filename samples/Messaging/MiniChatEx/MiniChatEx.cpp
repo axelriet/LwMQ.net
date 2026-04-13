@@ -224,13 +224,13 @@ ReceiveOneMessage(
 
     if (PrintData)
     {
+        PCWSTR Data{};
         ULONGLONG Sent{};
-        const BYTE* Data{};
         SIZE_T DataSizeBytes{};
 
         CHECK_RETURN(LmqGetFrameData(Message,
                                      0,
-                                     &Data,
+                                     PPCVOID(&Data),
                                      &DataSizeBytes,
                                      &Sent,
                                      nullptr));
@@ -242,7 +242,7 @@ ReceiveOneMessage(
         wprintf(L"%8.1fus - %.*ls",
                 (ElapsedNs - g_TimingAdjustmentNs) / 1000.0,
                 Cch,
-                reinterpret_cast<PCWSTR>(Data));
+                Data);
     }
     else
     {
