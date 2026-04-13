@@ -266,8 +266,6 @@ ReceiveOneMessage(
     return S_OK;
 }
 
-#pragma warning(disable:6262) // Function uses '131092' bytes of stack.
-
 VOID
 CDECL
 SenderThread (
@@ -286,7 +284,7 @@ SenderThread (
 
     while (TRUE)
     {
-        WCHAR Buffer[63 * 1024];
+        static WCHAR Buffer[63 * 1024];
 
         if (fgetws(&Buffer[0],
                    _countof(Buffer),

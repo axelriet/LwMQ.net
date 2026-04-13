@@ -79,8 +79,8 @@ static LMQ_KEY g_HmacKey;
 
 int main()
 {
-    printf("MiniChatHMAC IPC 1.0 - Account must have SeCreateGlobalPrivilege!\n"
-           "Start two instances of MiniChatHMAC and start typing or pasting text.\n");
+    printf("MiniChatHMAC (Compressed) IPC 1.0 - Account must have SeCreateGlobalPrivilege!\n"
+           "Start two instances of MiniChatHMACCompressed and start typing or pasting text.\n");
 
     //
     // Derive a key from the password and protect it.
@@ -260,8 +260,6 @@ PostOneMessage (
     return S_OK;
 }
 
-#pragma warning(disable:6262) // Function uses '131092' bytes of stack.
-
 HRESULT
 ReceiveOneMessage (
     _In_ LMQ_CHANNEL Channel,
@@ -317,8 +315,8 @@ ReceiveOneMessage (
                                  nullptr,
                                  nullptr));
 
-    WCHAR Buffer[63 * 1024];
-    SIZE_T UncompressedDataSizeBytes;
+    static WCHAR Buffer[63 * 1024]{};
+    SIZE_T UncompressedDataSizeBytes{ sizeof (Buffer) };
 
     CHECK_RETURN(LmqDecompressData(LmqCompressedDataBlobFromPointer(Data),
                                    &Buffer[0],
@@ -347,7 +345,7 @@ ReceiveOneMessage (
 
     if (PrintData)
     {
-        const int Cch{ __pragma(warning(suppress:26472)) static_cast<int>(DataSizeBytes / sizeof(WCHAR)) };
+        const int Cch{ __pragma(warning(suppress:26472)) static_cast<int>(UncompressedDataSizeBytes / sizeof(WCHAR)) };
 
         wprintf(L"%.*ls",
                 Cch,
@@ -377,7 +375,7 @@ SenderThread (
 
     while (TRUE)
     {
-        WCHAR Buffer[63 * 1024];
+        static WCHAR Buffer[63 * 1024];
 
         if (fgetws(&Buffer[0],
                    _countof(Buffer),
