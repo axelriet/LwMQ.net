@@ -105,7 +105,7 @@ int main()
                            &Channel));
 
     CHECK(LmqAddTransport(Channel,
-                          L"ipc://MiniChatHMAC-v1",
+                          L"ipc://MiniChatHMACCompressed-v1",
                           64 * 1024,
                           4,
                           4,
