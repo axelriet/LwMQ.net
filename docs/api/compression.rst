@@ -47,7 +47,7 @@ Buffer Compression Functions
 
     LMQAPI
     LmqAllocateCompressionWorkspace (
-        LONG MaxUncompressedBufferSize,
+        SIZE_T MaxUncompressedBufferSize,
         PLMQ_COMPRESSIONWORKSPACE CompressionWorkspace
         );
 
@@ -59,20 +59,20 @@ Buffer Compression Functions
     LMQAPI
     LmqCompressBuffer (
         const void* UncompressedBuffer,
-        LONG UncompressedBufferSize,
+        SIZE_T UncompressedBufferSize,
         void* CompressedBuffer,
-        LONG CompressedBufferSize,
-        PLONG FinalCompressedSize,
+        SIZE_T CompressedBufferSize,
+        PSIZE_T FinalCompressedSize,
         LMQ_COMPRESSIONWORKSPACE CompressionWorkspace
         );
 
     LMQAPI
     LmqDecompressBuffer (
         void* UncompressedBuffer,
-        LONG UncompressedBufferSize,
+        SIZE_T UncompressedBufferSize,
         const void* CompressedBuffer,
-        LONG CompressedBufferSize,
-        PLONG FinalUncompressedSize
+        SIZE_T CompressedBufferSize,
+        PSIZE_T FinalUncompressedSize
         );
 
 One-Shot Compression Functions (BLOB)
@@ -83,23 +83,23 @@ One-Shot Compression Functions (BLOB)
     LMQAPI
     LmqCompressData (
         const void* UncompressedBuffer,
-        LONG UncompressedBufferSize,
+        SIZE_T UncompressedBufferSize,
         PLMQ_COMPRESSEDDATABLOB CompressedDataBlob,
-        PLONG CompressedDataBlobSize
+        PSIZE_T CompressedDataBlobSize
         );
 
     LMQAPI
     LmqDecompressData (
         const LMQ_COMPRESSEDDATABLOB CompressedDataBlob,
         void* UncompressedBuffer,
-        PLONG UncompressedBufferSize
+        PSIZE_T UncompressedBufferSize
         );
 
     LMQAPI
     LmqGetCompressedDataBlobSizes (
         const LMQ_COMPRESSEDDATABLOB CompressedDataBlob,
-        PLONG CompressedBlobSize,
-        PLONG UncompressedDataSize
+        PSIZE_T CompressedBlobSize,
+        PSIZE_T UncompressedDataSize
         );
 
     LMQAPI
@@ -107,9 +107,8 @@ One-Shot Compression Functions (BLOB)
         PLMQ_COMPRESSEDDATABLOB CompressedDataBlob
         );
 
-    #ifdef __cplusplus
-    #define LmqCompressedDataBlobFromPointer(__Pointer__) reinterpret_cast<LMQ_COMPRESSEDDATABLOB>(__Pointer__)
-    #else
-    #define LmqCompressedDataBlobFromPointer(__Pointer__) ((LMQ_COMPRESSEDDATABLOB)(__Pointer__))
-    #endif
-    
+    const
+    LMQ_COMPRESSEDDATABLOB
+    LmqCompressedDataBlobFromPointer (
+        const BYTE* Ptr
+        );

@@ -68,7 +68,7 @@ Core KV-Store Functions
         LMQ_KVSTORE KvStore,
         PCLMQ_KVSTOREKEY Key,
         PVOID Data,
-        ULONG DataSize,
+        SIZE_T DataSize,
         BOOL UseDataCompression
         );
 
@@ -76,7 +76,7 @@ Core KV-Store Functions
     LmqLookupKvStoreEntry (
         LMQ_KVSTORE KvStore,
         PCLMQ_KVSTOREKEY Key,
-        PULONG DataSize
+        PSIZE_T DataSize
     );
 
     LMQAPI
@@ -84,7 +84,7 @@ Core KV-Store Functions
         LMQ_KVSTORE KvStore,
         PCLMQ_KVSTOREKEY Key,
         PVOID Data,
-        PULONG DataSize
+        PSIZE_T DataSize
         );
 
     LMQAPI
