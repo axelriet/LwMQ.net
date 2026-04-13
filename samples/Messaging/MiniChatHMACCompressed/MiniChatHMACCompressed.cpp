@@ -4,12 +4,13 @@ Copyright (c) Axel Rietschin Software Development, LLC
 
 Module Name:
 
-    MiniChatEx.cpp
+    MiniChatHMACCompressed.cpp
 
 Abstract:
 
     Simplistic peer-to-peer chat to demonstrate LwMQ's
-    basic functionality with latency printing.
+    messaging functionality with message authentication
+    codes prepended in an dedicated message frame.
 
 Prerequisites:
 
@@ -20,15 +21,13 @@ Prerequisites:
 
 Author:
 
-    Axel Rietschin (23-Mar-2026)
+    Axel Rietschin (8-Apr-2026)
 
 Environment:
 
     User Mode.
 
 --*/
-
-#define USE_PRECISE_BUT_SLOWER_TIMESTAMPS
 
 #include <Windows.h>
 
@@ -37,6 +36,8 @@ Environment:
 #include <process.h>
 
 #include <api-lwmq-time.h>
+#include <api-lwmq-hash.h>
+#include <api-lwmq-storage.h>
 #include <api-lwmq-messaging.h>
 
 #include <api-lwmq-samples-common.h>
@@ -62,38 +63,56 @@ SenderThread (
     _In_ PVOID Param
     ) noexcept;
 
+//
+// Not the best example. Password storage and retrieval
+// is out of scope for this sample, but in any case never
+// store the password in the code!
+//
+
+static const CHAR g_SecretPassword[] = { "Password" };
+
+//
+// The HMAC key is encrypted at rest in this process.
+//
+
+static LMQ_KEY g_HmacKey;
+
 int main()
 {
-    printf("MiniChatEx IPC 1.0 - Account must have SeCreateGlobalPrivilege!\n"
-           "Start two instances of MiniChatEx and start typing or pasting text.\n");
+    printf("MiniChatHMAC IPC 1.0 - Account must have SeCreateGlobalPrivilege!\n"
+           "Start two instances of MiniChatHMAC and start typing or pasting text.\n");
 
-#ifdef USE_PRECISE_BUT_SLOWER_TIMESTAMPS
+    //
+    // Derive a key from the password and protect it.
+    //
 
-    g_TimingAdjustmentNs = ComputeTimingOverhead();
+    static_assert(sizeof(g_SecretPassword) > 1);
 
-    printf("Using precise timestamps with a time adjustment of %.0fns.\n", g_TimingAdjustmentNs);
+    CHECK(LmqKeyFromStringA(&g_SecretPassword[0],
+                            sizeof(g_SecretPassword),
+                            &g_HmacKey));
 
-#endif
+    CHECK(LmqProtectKey(&g_HmacKey));
 
     //
     // Set up a bidirectional channel
     // with a transport and a send queue.
     //
 
-    LMQ_CHANNEL Channel{};
+    LMQ_CHANNEL Channel;
     
     CHECK(LmqCreateChannel(LMQ_CHANNELTYPE_ONE_TO_ONE,
                            &Channel));
 
     CHECK(LmqAddTransport(Channel,
-                          L"ipc://MiniChatEx-v1",
+                          L"ipc://MiniChatHMAC-v1",
                           64 * 1024,
                           4,
                           4,
                           LMQ_TRANSPORT_CREATIONFLAGS_SENDRECEIVE,
                           nullptr));
 
-    LMQ_SENDQUEUE SendQueue{};
+    LMQ_SENDQUEUE SendQueue;
 
     CHECK(LmqAddSendQueue(Channel,
                           LMQ_SENDQUEUETYPE_MONOPRODUCER_UNBOUNDED,
@@ -172,15 +191,57 @@ PostOneMessage (
     ) noexcept
 {
     HRESULT hr{};
+    LMQ_HMAC Hmac{};
     LMQ_MESSAGE Message{};
 
-    CHECK_RETURN(LmqCreateMessage(LMQ_MESSAGEFRAMECOUNT_DEFAULT,
+    //
+    // Compute the message authentication code.
+    //
+
+    CHECK_RETURN(LmqComputeHMAC(MessagePayload,
+                                MessagePayloadSizeBytes,
+                                &g_HmacKey,
+                                TRUE,
+                                &Hmac));
+
+    //
+    // Create a message, hinting about 2 frames.
+    //
+
+    CHECK_RETURN(LmqCreateMessage(2,
                                   &Message));
 
+    //
+    // By convention for this app, put the HMAC in frame 0.
+    //
+
     CHECK_RETURN(LmqAppendFrame(Message,
-                                reinterpret_cast<const BYTE*>(MessagePayload),
-                                MessagePayloadSizeBytes,
+                                &Hmac,
+                                sizeof(Hmac),
+                                LMQ_TIMESTAMP_NONE));
+
+    //
+    // By convention for this app, put the payload in frame 1.
+    //
+
+    SIZE_T CompressedDataBlobSize;
+    LMQ_COMPRESSEDDATABLOB CompressedBlob;
+
+    CHECK_RETURN(LmqCompressData(MessagePayload,
+                                 MessagePayloadSizeBytes,
+                                 &CompressedBlob,
+                                 &CompressedDataBlobSize));
+
+    CHECK_RETURN(LmqAppendFrame(Message,
+                                CompressedBlob,
+                                CompressedDataBlobSize,
                                 Timestamp));
+
+    CHECK_RETURN(LmqFreeCompressedDataBlob(&CompressedBlob));
+
+    //
+    // Post the message.
+    //
 
     if (FAILED(hr = LmqPostMessage(SendQueue,
                                    &Message,
@@ -199,74 +260,104 @@ PostOneMessage (
     return S_OK;
 }
 
+#pragma warning(disable:6262) // Function uses '131092' bytes of stack.
+
 HRESULT
-ReceiveOneMessage(
+ReceiveOneMessage (
     _In_ LMQ_CHANNEL Channel,
     _In_ SIZE_T ExpectedPayloadSizeBytes,
     _In_ BOOL PrintData
-) noexcept
+    ) noexcept
 {
+    PCLMQ_HMAC Hmac{};
+    const BYTE* Data{};
     USHORT FrameCount{};
     LMQ_MESSAGE Message{};
-    UINT64 PayloadSizeBytes{};
+    SIZE_T DataSizeBytes{};
 
     CHECK_RETURN(LmqReceiveMessage(Channel,
                                    INFINITE,
                                    &FrameCount,
-                                   &PayloadSizeBytes,
+                                   nullptr,
                                    &Message));
 
-#ifdef USE_PRECISE_BUT_SLOWER_TIMESTAMPS 
-    const ULONGLONG Now{ RtlGetSystemTimePrecise() };
-#else
-    const ULONGLONG Now{ LmqGetSystemTime() };
-#endif
+    if (FrameCount != 2)
+    {
+        printf("The message has an unexpected number of frames: %d, should be 2 for this app.\n", FrameCount);
+
+        return E_FAIL;
+    }
+
+    //
+    // By convention for this app, the HMAC is in frame 0.
+    //
+
+    CHECK_RETURN(LmqGetFrameData(Message,
+                                 0,
+                                 PPCVOID(&Hmac),
+                                 &DataSizeBytes,
+                                 nullptr,
+                                 nullptr));
+
+    if (DataSizeBytes != sizeof(LMQ_HMAC))
+    {
+        printf("Frame 0 has an unexpected size, should be %zu for this app.\n", sizeof(LMQ_HMAC));
+
+        return E_FAIL;
+    }
+
+    //
+    // By convention for this app, the payload is in frame 1.
+    //
+
+    CHECK_RETURN(LmqGetFrameData(Message,
+                                 1,
+                                 PPCVOID(&Data),
+                                 &DataSizeBytes,
+                                 nullptr,
+                                 nullptr));
+
+    WCHAR Buffer[63 * 1024];
+    SIZE_T UncompressedDataSizeBytes;
+
+    CHECK_RETURN(LmqDecompressData(LmqCompressedDataBlobFromPointer(Data),
+                                   &Buffer[0],
+                                   &UncompressedDataSizeBytes));
+
+    if (ExpectedPayloadSizeBytes && (UncompressedDataSizeBytes != ExpectedPayloadSizeBytes))
+    {
+        printf("The message has an unexpected payload size: %zu, expected %zu\n", UncompressedDataSizeBytes, ExpectedPayloadSizeBytes);
+
+        return E_FAIL;
+    }
+
+    //
+    // Verify the message integrity and authenticity.
+    //
+
+    CHECK_RETURN(LmqVerifyHMAC(&Buffer[0],
+                               UncompressedDataSizeBytes,
+                               &g_HmacKey,
+                               TRUE,
+                               Hmac));
+
+    //
+    // The message is authentic, sir! I concur, sir!
+    //
 
     if (PrintData)
     {
-        PCWSTR Data{};
-        ULONGLONG Sent{};
-        SIZE_T DataSizeBytes{};
-
-        CHECK_RETURN(LmqGetFrameData(Message,
-                                     0,
-                                     PPCVOID(&Data),
-                                     &DataSizeBytes,
-                                     &Sent,
-                                     nullptr));
-
-        const auto ElapsedNs{ Sent ? ((Now - Sent) * 100ULL) : 0 }; // Convert to ns
-
         const int Cch{ __pragma(warning(suppress:26472)) static_cast<int>(DataSizeBytes / sizeof(WCHAR)) };
 
-        wprintf(L"%8.1fus - %.*ls",
-                (ElapsedNs - g_TimingAdjustmentNs) / 1000.0,
+        wprintf(L"%.*ls",
                 Cch,
-                Data);
-    }
-    else
-    {
-        if (FrameCount != 1)
-        {
-            printf("The message has an unexpected number of frames: %d, should be 1 for this app.\n", FrameCount);
-
-            return E_FAIL;
-        }
-
-        if (ExpectedPayloadSizeBytes && (PayloadSizeBytes != ExpectedPayloadSizeBytes))
-        {
-            printf("The message has an unexpected payload size: %zu, expected %zu\n", PayloadSizeBytes, ExpectedPayloadSizeBytes);
-
-            return E_FAIL;
-        }
+                &Buffer[0]);
     }
 
     CHECK_RETURN(LmqDisposeReceivedMessage(&Message));
 
     return S_OK;
 }
-
-#pragma warning(disable:6262) // Function uses '131092' bytes of stack.
 
 VOID
 CDECL
@@ -292,17 +383,10 @@ SenderThread (
                    _countof(Buffer),
                    stdin) != nullptr)
         {
-#ifdef USE_PRECISE_BUT_SLOWER_TIMESTAMPS 
             CHECK(PostOneMessage(SendQueue,
                                  &Buffer[0],
                                  sizeof(WCHAR) * wcslen(&Buffer[0]),
-                                 LMQ_TIMESTAMP_USE_SYSTEMTIME_PRECISE));
-#else
-            CHECK(PostOneMessage(SendQueue,
-                                 &Buffer[0],
-                                 sizeof(WCHAR) * wcslen(&Buffer[0]),
-                                 LMQ_TIMESTAMP_USE_SYSTEMTIME));
-#endif
+                                 LMQ_TIMESTAMP_NONE));
         }
         else
         {

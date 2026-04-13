@@ -213,7 +213,7 @@ ReceiveOneMessage(
 
         CHECK_RETURN(LmqGetFrameData(Message,
                                      0,
-                                     &Data,
+                                     PPCVOID(&Data),
                                      &DataSizeBytes,
                                      nullptr,
                                      nullptr));
@@ -266,7 +266,7 @@ SenderThread (
 
     while (TRUE)
     {
-        WCHAR Buffer[64 * 1024];
+        WCHAR Buffer[63 * 1024];
 
         if (fgetws(&Buffer[0],
                    _countof(Buffer),
