@@ -362,7 +362,7 @@
 <span class="n">LMQAPI</span>
 <span class="nf">LmqAppendFrame</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">LMQ_MESSAGE</span><span class="w"> </span><span class="n">Message</span><span class="p">,</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
 <span class="w">    </span><span class="n">UINT64</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
 <span class="w">    </span><span class="n">ULONG64</span><span class="w"> </span><span class="n">Timestamp</span>
 <span class="w">    </span><span class="p">);</span>
@@ -370,7 +370,7 @@
 <span class="n">LMQAPI</span>
 <span class="nf">LmqAppendStaticFrame</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">LMQ_MESSAGE</span><span class="w"> </span><span class="n">Message</span><span class="p">,</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
 <span class="w">    </span><span class="n">UINT64</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
 <span class="w">    </span><span class="n">ULONG64</span><span class="w"> </span><span class="n">Timestamp</span>
 <span class="w">    </span><span class="p">);</span>
@@ -378,7 +378,7 @@
 <span class="n">LMQAPI</span>
 <span class="nf">LmqAppendExternalFrame</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">LMQ_MESSAGE</span><span class="w"> </span><span class="n">Message</span><span class="p">,</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span><span class="w"> </span><span class="c1">// Callback *may* change data</span>
 <span class="w">    </span><span class="n">UINT64</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
 <span class="w">    </span><span class="n">ULONG64</span><span class="w"> </span><span class="n">Timestamp</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PLMQ_MESSAGECALLBACK</span><span class="w"> </span><span class="n">Callback</span><span class="p">,</span>
@@ -396,7 +396,7 @@
 <span class="nf">LmqGetFrameData</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">LMQ_MESSAGE</span><span class="w"> </span><span class="n">Message</span><span class="p">,</span>
 <span class="w">    </span><span class="n">USHORT</span><span class="w"> </span><span class="n">FrameIndex</span><span class="p">,</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">**</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCVOID</span><span class="o">*</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PUINT64</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PULONG64</span><span class="w"> </span><span class="n">Timestamp</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PLMQ_MESSAGEFRAMEENUMHINT</span><span class="w"> </span><span class="n">EnumHint</span>
@@ -679,7 +679,7 @@ the risk of memory leaks or dangling pointers in the application.</p>
 
 <span class="k">typedef</span><span class="w"> </span><span class="n">HRESULT</span><span class="p">(</span><span class="n">REENTRANT_CALLBACK</span><span class="o">*</span><span class="w"> </span><span class="n">PLMQ_MESSAGECALLBACK</span><span class="p">)</span><span class="w"> </span><span class="p">(</span>
 <span class="w">                </span><span class="n">LQM_MESSAGECALLBACKREASON</span><span class="w"> </span><span class="n">Reason</span><span class="p">,</span>
-<span class="w">                </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
+<span class="w">                </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
 <span class="w">                </span><span class="n">UINT64</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
 <span class="w">                </span><span class="n">PVOID</span><span class="w"> </span><span class="n">Context</span><span class="p">);</span>
 

@@ -258,7 +258,7 @@ Messages & Frames
     LMQAPI
     LmqAppendExternalFrame (
         LMQ_MESSAGE Message,
-        PCVOID Data,
+        PVOID Data, // Callback *may* change data
         UINT64 DataSize,
         ULONG64 Timestamp,
         PLMQ_MESSAGECALLBACK Callback,

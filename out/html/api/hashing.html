@@ -145,21 +145,21 @@
 <p>The hash comparison function is designed to be resistant to timing attacks by taking the same amount of time regardless of how many bytes match between the two hashes.</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
 <span class="nf">LmqHashByteArray32</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
 <span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">LengthBytes</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PUINT32</span><span class="w"> </span><span class="n">Hash</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="n">LMQAPI</span>
 <span class="nf">LmqHashByteArray64</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
 <span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">LengthBytes</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PUINT64</span><span class="w"> </span><span class="n">Hash</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="n">LMQAPI</span>
 <span class="nf">LmqHashByteArray128</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
 <span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">LengthBytes</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PLMQ_HASH</span><span class="w"> </span><span class="n">Hash</span>
 <span class="w">    </span><span class="p">);</span>
@@ -191,7 +191,7 @@
 <p>THis set of functions is meant for cases where only a few HMACs need to be computed or verified, and the caller does not mind paying the cost of key setup every time. This simplicity comes at some preformance cost.</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
 <span class="nf">LmqComputeHMAC</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
 <span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">LengthBytes</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PCLMQ_KEY</span><span class="w"> </span><span class="n">Key</span><span class="p">,</span>
 <span class="w">    </span><span class="n">BOOL</span><span class="w"> </span><span class="n">IsProtectedKey</span><span class="p">,</span>
@@ -200,7 +200,7 @@
 
 <span class="n">LMQAPI</span>
 <span class="nf">LmqVerifyHMAC</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
 <span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">LengthBytes</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PCLMQ_KEY</span><span class="w"> </span><span class="n">Key</span><span class="p">,</span>
 <span class="w">    </span><span class="n">BOOL</span><span class="w"> </span><span class="n">IsProtectedKey</span><span class="p">,</span>
@@ -227,7 +227,7 @@
 
 <span class="n">LMQAPI</span>
 <span class="nf">LmqComputeHMACEx</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
 <span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">LengthBytes</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PCLMQ_HMAC_CONTEXT</span><span class="w"> </span><span class="n">Context</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PLMQ_HMAC</span><span class="w"> </span><span class="n">HMAC</span>
@@ -235,7 +235,7 @@
 
 <span class="n">LMQAPI</span>
 <span class="nf">LmqVerifyHMACEx</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
 <span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">LengthBytes</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PCLMQ_HMAC_CONTEXT</span><span class="w"> </span><span class="n">Context</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PCLMQ_HMAC</span><span class="w"> </span><span class="n">HMAC</span>
