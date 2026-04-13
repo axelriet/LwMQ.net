@@ -152,7 +152,7 @@
 <span class="w">    </span><span class="n">LMQ_KVSTORE</span><span class="w"> </span><span class="n">KvStore</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PCLMQ_KVSTOREKEY</span><span class="w"> </span><span class="n">Key</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
-<span class="w">    </span><span class="n">ULONG</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
 <span class="w">    </span><span class="n">BOOL</span><span class="w"> </span><span class="n">UseDataCompression</span>
 <span class="w">    </span><span class="p">);</span>
 
@@ -160,7 +160,7 @@
 <span class="nf">LmqLookupKvStoreEntry</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">LMQ_KVSTORE</span><span class="w"> </span><span class="n">KvStore</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PCLMQ_KVSTOREKEY</span><span class="w"> </span><span class="n">Key</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PULONG</span><span class="w"> </span><span class="n">DataSize</span>
+<span class="w">    </span><span class="n">PSIZE_T</span><span class="w"> </span><span class="n">DataSize</span>
 <span class="p">);</span>
 
 <span class="n">LMQAPI</span>
@@ -168,7 +168,7 @@
 <span class="w">    </span><span class="n">LMQ_KVSTORE</span><span class="w"> </span><span class="n">KvStore</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PCLMQ_KVSTOREKEY</span><span class="w"> </span><span class="n">Key</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PULONG</span><span class="w"> </span><span class="n">DataSize</span>
+<span class="w">    </span><span class="n">PSIZE_T</span><span class="w"> </span><span class="n">DataSize</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="n">LMQAPI</span>
