@@ -242,7 +242,7 @@ Messages & Frames
     LMQAPI
     LmqAppendFrame (
         LMQ_MESSAGE Message,
-        const BYTE* Data,
+        PCVOID Data,
         UINT64 DataSize,
         ULONG64 Timestamp
         );
@@ -250,7 +250,7 @@ Messages & Frames
     LMQAPI
     LmqAppendStaticFrame (
         LMQ_MESSAGE Message,
-        const BYTE* Data,
+        PCVOID Data,
         UINT64 DataSize,
         ULONG64 Timestamp
         );
@@ -258,7 +258,7 @@ Messages & Frames
     LMQAPI
     LmqAppendExternalFrame (
         LMQ_MESSAGE Message,
-        const BYTE* Data,
+        PCVOID Data,
         UINT64 DataSize,
         ULONG64 Timestamp,
         PLMQ_MESSAGECALLBACK Callback,
@@ -276,7 +276,7 @@ Messages & Frames
     LmqGetFrameData (
         LMQ_MESSAGE Message,
         USHORT FrameIndex,
-        const BYTE** Data,
+        PCVOID* Data,
         PUINT64 DataSize,
         PULONG64 Timestamp,
         PLMQ_MESSAGEFRAMEENUMHINT EnumHint
@@ -518,7 +518,7 @@ Functions
 
     typedef HRESULT(REENTRANT_CALLBACK* PLMQ_MESSAGECALLBACK) (
                     LQM_MESSAGECALLBACKREASON Reason,
-                    const BYTE* Data,
+                    PCVOID Data,
                     UINT64 DataSize,
                     PVOID Context);
 

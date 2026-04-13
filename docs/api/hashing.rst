@@ -54,21 +54,21 @@ The hash comparison function is designed to be resistant to timing attacks by ta
 
     LMQAPI
     LmqHashByteArray32 (
-        const BYTE* Buffer,
+        PCVOID Buffer,
         SIZE_T LengthBytes,
         PUINT32 Hash
         );
 
     LMQAPI
     LmqHashByteArray64 (
-        const BYTE* Buffer,
+        PCVOID Buffer,
         SIZE_T LengthBytes,
         PUINT64 Hash
         );
 
     LMQAPI
     LmqHashByteArray128 (
-        const BYTE* Buffer,
+        PCVOID Buffer,
         SIZE_T LengthBytes,
         PLMQ_HASH Hash
         );
@@ -111,7 +111,7 @@ THis set of functions is meant for cases where only a few HMACs need to be compu
 
     LMQAPI
     LmqComputeHMAC (
-        const BYTE* Buffer,
+        PCVOID Buffer,
         SIZE_T LengthBytes,
         PCLMQ_KEY Key,
         BOOL IsProtectedKey,
@@ -120,7 +120,7 @@ THis set of functions is meant for cases where only a few HMACs need to be compu
 
     LMQAPI
     LmqVerifyHMAC (
-        const BYTE* Buffer,
+        PCVOID Buffer,
         SIZE_T LengthBytes,
         PCLMQ_KEY Key,
         BOOL IsProtectedKey,
@@ -155,7 +155,7 @@ If you use protected keys, it is NOT recommended to unprotect the key prior to c
 
     LMQAPI
     LmqComputeHMACEx (
-        const BYTE* Buffer,
+        PCVOID Buffer,
         SIZE_T LengthBytes,
         PCLMQ_HMAC_CONTEXT Context,
         PLMQ_HMAC HMAC
@@ -163,7 +163,7 @@ If you use protected keys, it is NOT recommended to unprotect the key prior to c
 
     LMQAPI
     LmqVerifyHMACEx (
-        const BYTE* Buffer,
+        PCVOID Buffer,
         SIZE_T LengthBytes,
         PCLMQ_HMAC_CONTEXT Context,
         PCLMQ_HMAC HMAC
