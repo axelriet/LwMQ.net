@@ -229,6 +229,7 @@ PostOneMessage (
 
     CHECK_RETURN(LmqCompressData(MessagePayload,
                                  MessagePayloadSizeBytes,
+                                 LMQ_COMPRESSION_LZ4,
                                  &CompressedBlob,
                                  &CompressedDataBlobSize));
 
