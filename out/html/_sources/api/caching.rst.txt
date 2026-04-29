@@ -132,8 +132,9 @@ Dependencies
 
 .. code:: cpp
 
-    api-lwmq-heap-1-0.dll
     api-lwmq-hash-1-0.dll
+    api-lwmq-heap-1-0.dll
+    api-lwmq-storage-1-0.dll
 
 Overview
 ========

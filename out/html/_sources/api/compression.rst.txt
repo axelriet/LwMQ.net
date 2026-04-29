@@ -4,7 +4,7 @@ LwMQ Compression API
 
 LwMQ includes fast LZ4-based functions for compressing and decompressing data buffers, which can be used in conjunction with the messaging features, or independently. The implementation uses fast processor-specific routines for optimal performance on modern hardware and should match or outperform most compression libraries as far as compression and decompression speed.
 
-The LZ4 compression scheme offers fast compression and ultrafast decompression with reasonable compression ratio for most compressible payloads.
+The LZ4 compression scheme offers fast compression and ultrafast decompression with reasonable compression ratio for most compressible payloads, while the Deflate compression scheme is more thorough and provides better compression at the expense of speed. The Deflate implementation in LwMQ still favors speed over compression ratio. Expect the compression ratio to be approximately comparable to Zlib at level 2. If your application requires maximum compression, consider using Zlib or some other library externally.
 
 The API offers a one-shot BLOB mode that compresses a buffer into a blob that is allocated by the API, making usage straightforward, as well as a buffer-based compression API.
 
