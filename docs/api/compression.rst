@@ -56,6 +56,7 @@ Types
 
 .. code:: cpp
 
+    LMQ_COMPRESSIONTYPE
     LMQ_COMPRESSIONWORKSPACE
     LMQ_COMPRESSEDDATABLOB
 
@@ -66,13 +67,13 @@ Buffer Compression Functions
 
     LMQAPI
     LmqAllocateCompressionWorkspace (
-        SIZE_T MaxUncompressedBufferSize,
+        LMQ_COMPRESSIONTYPE CompressionType,
         PLMQ_COMPRESSIONWORKSPACE CompressionWorkspace
         );
 
     LMQAPI
     LmqFreeCompressionWorkspace (
-        LMQ_COMPRESSIONWORKSPACE CompressionWorkspace
+        PLMQ_COMPRESSIONWORKSPACE CompressionWorkspace
         );
 
     LMQAPI
@@ -81,8 +82,9 @@ Buffer Compression Functions
         SIZE_T UncompressedBufferSize,
         void* CompressedBuffer,
         SIZE_T CompressedBufferSize,
+        LMQ_COMPRESSIONTYPE CompressionType,
         PSIZE_T FinalCompressedSize,
-        LMQ_COMPRESSIONWORKSPACE CompressionWorkspace
+        LMQ_COMPRESSIONWORKSPACE CompressionWorkspace // Optional
         );
 
     LMQAPI
@@ -91,6 +93,7 @@ Buffer Compression Functions
         SIZE_T UncompressedBufferSize,
         const void* CompressedBuffer,
         SIZE_T CompressedBufferSize,
+        LMQ_COMPRESSIONTYPE CompressionType,
         PSIZE_T FinalUncompressedSize
         );
 
@@ -103,6 +106,7 @@ One-Shot Compression Functions (BLOB)
     LmqCompressData (
         const void* UncompressedBuffer,
         SIZE_T UncompressedBufferSize,
+        LMQ_COMPRESSIONTYPE CompressionType,
         PLMQ_COMPRESSEDDATABLOB CompressedDataBlob,
         PSIZE_T CompressedDataBlobSize
         );
