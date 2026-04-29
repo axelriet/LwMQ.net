@@ -69,7 +69,7 @@ Core KV-Store Functions
         PCLMQ_KVSTOREKEY Key,
         PVOID Data,
         SIZE_T DataSize,
-        BOOL UseDataCompression
+        LMQ_COMPRESSIONTYPE CompressionType
         );
 
     LMQAPI

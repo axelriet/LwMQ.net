@@ -103,9 +103,26 @@
              
   <section id="lwmq-compression-api">
 <h1>LwMQ Compression API<a class="headerlink" href="#lwmq-compression-api" title="Link to this heading"></a></h1>
-<p>LwMQ includes fast LZ4-based functions for compressing and decompressing data buffers, which can be used in conjunction with the messaging features, or independently. The implementation uses fast processor-specific routines for optimal performance on modern hardware and should match or outperform most compression libraries as far as compression and decompression speed.</p>
-<p>The LZ4 compression scheme offers fast compression and ultrafast decompression with reasonable compression ratio for most compressible payloads, while the Deflate compression scheme is more thorough and provides better compression at the expense of speed. The Deflate implementation in LwMQ still favors speed over compression ratio. Expect the compression ratio to be approximately comparable to Zlib at level 2. If your application requires maximum compression, consider using Zlib or some other library externally.</p>
-<p>The API offers a one-shot BLOB mode that compresses a buffer into a blob that is allocated by the API, making usage straightforward, as well as a buffer-based compression API.</p>
+<p>LwMQ includes fast LZ4 and Deflate functions for compressing and
+decompressing data buffers, which can be used in conjunction with
+the messaging features, or independently.</p>
+<p>The implementation uses fast processor-specific routines for
+optimal performance on modern hardware and should match or
+outperform most compression libraries as far as compression
+and decompression speed.</p>
+<p>The LZ4 compression scheme offers fast compression and ultrafast
+decompression with reasonable compression ratio for most
+compressible payloads, while the Deflate compression scheme is
+more thorough and provides better compression at the expense of
+speed.</p>
+<p>The Deflate implementation in LwMQ still favors speed over
+compression ratio. Expect the compression ratio to be approximately
+comparable to Zlib at level 2. If your application requires
+maximum compression, consider using Zlib or some other library
+externally.</p>
+<p>The API offers a one-shot BLOB mode that compresses a buffer into
+a blob that is allocated by the API, making usage straightforward,
+as well as a buffer-based compression API.</p>
 <section id="c-and-c-header-file">
 <h2>C and C++ Header File<a class="headerlink" href="#c-and-c-header-file" title="Link to this heading"></a></h2>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;api-lwmq-storage.h&gt;</span>
@@ -128,7 +145,8 @@
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
 <section id="types">
 <h3>Types<a class="headerlink" href="#types" title="Link to this heading"></a></h3>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQ_COMPRESSIONWORKSPACE</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQ_COMPRESSIONTYPE</span>
+<span class="n">LMQ_COMPRESSIONWORKSPACE</span>
 <span class="n">LMQ_COMPRESSEDDATABLOB</span>
 </pre></div>
 </div>
@@ -137,13 +155,13 @@
 <h3>Buffer Compression Functions<a class="headerlink" href="#buffer-compression-functions" title="Link to this heading"></a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
 <span class="nf">LmqAllocateCompressionWorkspace</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">MaxUncompressedBufferSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_COMPRESSIONTYPE</span><span class="w"> </span><span class="n">CompressionType</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PLMQ_COMPRESSIONWORKSPACE</span><span class="w"> </span><span class="n">CompressionWorkspace</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="n">LMQAPI</span>
 <span class="nf">LmqFreeCompressionWorkspace</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">LMQ_COMPRESSIONWORKSPACE</span><span class="w"> </span><span class="n">CompressionWorkspace</span>
+<span class="w">    </span><span class="n">PLMQ_COMPRESSIONWORKSPACE</span><span class="w"> </span><span class="n">CompressionWorkspace</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="n">LMQAPI</span>
@@ -152,8 +170,9 @@
 <span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">UncompressedBufferSize</span><span class="p">,</span>
 <span class="w">    </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">CompressedBuffer</span><span class="p">,</span>
 <span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">CompressedBufferSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_COMPRESSIONTYPE</span><span class="w"> </span><span class="n">CompressionType</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PSIZE_T</span><span class="w"> </span><span class="n">FinalCompressedSize</span><span class="p">,</span>
-<span class="w">    </span><span class="n">LMQ_COMPRESSIONWORKSPACE</span><span class="w"> </span><span class="n">CompressionWorkspace</span>
+<span class="w">    </span><span class="n">LMQ_COMPRESSIONWORKSPACE</span><span class="w"> </span><span class="n">CompressionWorkspace</span><span class="w"> </span><span class="c1">// Optional</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="n">LMQAPI</span>
@@ -162,6 +181,7 @@
 <span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">UncompressedBufferSize</span><span class="p">,</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">CompressedBuffer</span><span class="p">,</span>
 <span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">CompressedBufferSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_COMPRESSIONTYPE</span><span class="w"> </span><span class="n">CompressionType</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PSIZE_T</span><span class="w"> </span><span class="n">FinalUncompressedSize</span>
 <span class="w">    </span><span class="p">);</span>
 </pre></div>
@@ -173,6 +193,7 @@
 <span class="nf">LmqCompressData</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">UncompressedBuffer</span><span class="p">,</span>
 <span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">UncompressedBufferSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_COMPRESSIONTYPE</span><span class="w"> </span><span class="n">CompressionType</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PLMQ_COMPRESSEDDATABLOB</span><span class="w"> </span><span class="n">CompressedDataBlob</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PSIZE_T</span><span class="w"> </span><span class="n">CompressedDataBlobSize</span>
 <span class="w">    </span><span class="p">);</span>
