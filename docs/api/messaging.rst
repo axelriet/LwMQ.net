@@ -4,11 +4,16 @@
 LwMQ Messaging API
 ******************
 
-This section documents LwMQ's core messaging APIs, which are transport-agnostic and form the basis for LwMQ's messaging capabilities.
+This section documents LwMQ's core messaging APIs, which are transport-agnostic
+and form the basis for LwMQ's messaging capabilities.
 
-These APIs allow applications to create messages, append data frames to messages, and post ad receive messages through communication channels.
+These APIs allow applications to create messages, append data frames to messages,
+and post ad receive messages through communication channels.
 
-The messaging APIs are designed for high performance with high throughput and low latency through a DMA-first underlying architecture, making them suitable for a wide range of applications that require efficient ultra-high-performance message-based communication.
+The messaging APIs are designed for high performance with high throughput and
+low latency through a DMA-first underlying architecture, making them suitable for
+a wide range of applications that require efficient ultra-high-performance
+message-based communication.
 
 C and C++ Header File
 =====================

@@ -184,7 +184,7 @@ Core Cache Functions
         LMQ_CACHE Cache,
         PCLMQ_KEY Key,
         PVOID Data,
-        ULONG DataSize,
+        SIZE_T DataSize,
         PCLMQ_ENTROPY AdditionalEntropy,
         WORD EntryFlags,
         FLOAT TTLSec
@@ -195,7 +195,7 @@ Core Cache Functions
         LMQ_CACHE Cache,
         LMQ_CACHECOOKIE Cookie,
         PVOID Data,
-        ULONG DataSize,
+        SIZE_T DataSize,
         PCLMQ_ENTROPY AdditionalEntropy,
         WORD EntryFlags,
         FLOAT TTLSec
@@ -211,7 +211,7 @@ Core Cache Functions
     LmqLookupCacheEntry (
         LMQ_CACHE Cache,
         PCLMQ_KEY Key,
-        PULONG DataSize
+        PSIZE_T DataSize
         );
 
     LMQAPI
@@ -219,7 +219,7 @@ Core Cache Functions
         LMQ_CACHE Cache,
         PCLMQ_KEY Key,
         PVOID Data,
-        PULONG DataSize,
+        PSIZE_T DataSize,
         PCLMQ_ENTROPY AdditionalEntropy,
         PVOID CacheMissContext
         );
@@ -229,7 +229,7 @@ Core Cache Functions
         LMQ_CACHE Cache,
         LMQ_CACHECOOKIE Cookie,
         PVOID Data,
-        ULONG DataSize,
+        SIZE_T DataSize,
         PCLMQ_ENTROPY AdditionalEntropy
         );
 
@@ -242,7 +242,7 @@ Cache Memory Allocation (Advanced)
     LmqAdvCacheMemAlloc (
         LMQ_CACHE Cache,
         PVOID* DataPointerAddress,
-        ULONG DataSize
+        SIZE_T DataSize
         );
 
     LMQAPI

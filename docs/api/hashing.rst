@@ -1,10 +1,32 @@
-****************
-LwMQ Hashing API
-****************
+*************************************
+LwMQ Hashing, CRC, HMAC, and Key APIs
+*************************************
 
-LwMQ provides a set of fast hashing and HMAC functions that can be used for various purposes such as message integrity checks, and more.
+LwMQ provides a set of fast hashing CRC, HMAC, and key generation
+functions that can be used for various purposes such as message
+integrity checks, record identity, and more.
 
-Remember that every hash function is subject to collisions, and the hashing functions provided by LwMQ are not cryptographic. They are designed for speed and should not be used for security-sensitive applications. However, they provide a fast solution for everyday message integrity checks, enabling application to include checksums and HMACs at a reasonable performance cost.
+Remember that every hash function is subject to collisions, and the
+hashing functions provided by LwMQ are not cryptographic. They are
+designed for speed and should not be used for security-sensitive
+applications. However, they provide a fast solution for everyday
+message integrity checks, enabling application to include checksums
+and HMACs at a reasonable performance cost.
+
+.. important::
+
+    We want to emphasise once more that the HMAC and hashing functions
+    provided with LwMQ are meant to offer a *fast* and reasonable way
+    to include message integrity and authenticity at minimal performance
+    cost.
+    
+    With them, you can detect a wide range of data corruptions
+    and incorporate lightweight message integrity and authentication,
+    through a pre-shared key, to verify that a message was sent by a
+    trusted party (knowing the pre-shared key) and has not been tampered
+    with during transmission.
+
+    Exchanging and storing keys are outside of the scope of LwMQ.
 
 C and C++ Header File
 =====================
@@ -41,23 +63,74 @@ Types
     LMQ_HMAC
     LMQ_HMAC_CONTEXT
 
-Hashing Functions
------------------
+Fast CRC Functions
+------------------
 
-The hashing functions are meant to be fast.
+The Crc16 function produces a T10-DIF CRC. The Crc32 function produces
+a CRC-32 ISO/HDLC. The Crc64 function produces a CRC-64/XZ (CRC-64/GO-ECMA).
 
-They are not cryptographic and should not be used for security purposes.
+The resulting CRCs are meant to be used for message data corruption/validation
+checks. Each CRC correspond to some CRC standard but there are so many we had
+to pick some. For generic CRC's not provided here, you can use any external
+CRC library.
 
-The hash comparison function is designed to be resistant to timing attacks by taking the same amount of time regardless of how many bytes match between the two hashes.
+Picking a CRC size depends on your risk aversion. See https://en.wikipedia.org/wiki/Cyclic_redundancy_check for the theory.
+
+As a rule of thumb, use Crc16 for quick integrity checks on small messages (up to a
+few KBs) and Crc32 otherwise (up to several MBs) then Crc64 for huge messages, or
+switch to 64 or 128 bit hashes for added peace of mind at the expense of performances,
+or HMACs if you want to authentify the sender (by the fact they know a secret key) in
+addition to verifying the message integrity through a 128-bit hash.
+
+A HMAC is nothing more than an encrypted hash: if they don't know the key, it will
+be super-hard for them to generate the correct hash for a particular payload.
+
+On de receiving side, knowing the payload, the HMAC, and the pre-shared secret
+key, it is easy so see that they either didn't know the key, or that the message
+content was altered during transmission, as they cannot change the content and
+fix the hash without also knowing the secret key.
+
+Some security architects advocate that authentication or encryption must be
+super-strong or not be used at all. Here at LwMQ we think that a little security
+is better than no security. We also believe in the `defense-in-depth`_ principle
+where multiple layers of security are used conjointly to form a better defense.
+
+.. _defense-in-depth: https://en.wikipedia.org/wiki/Defense_in_depth_(computing)
 
 .. code:: cpp
 
     LMQAPI
-    LmqHashByteArray32 (
+    LmqComputeCrc16 (
+        PCVOID Buffer,
+        LengthBytes,
+        PUINT16 Crc16
+        );
+
+    LMQAPI
+    LmqComputeCrc32 (
         PCVOID Buffer,
         SIZE_T LengthBytes,
-        PUINT32 Hash
+        PUINT32 Crc32
         );
+
+    LMQAPI
+    LmqComputeCrc64 (
+        PCVOID Buffer,
+        SIZE_T LengthBytes,
+        PUINT64 Crc64
+        );
+
+Fast Hashing Functions
+----------------------
+
+They hash functions are not cryptographic and should not be used for
+strong security purposes.
+
+The hash comparison function is nevertheless designed to be resistant
+to timing attacks by taking the same amount of time regardless of how
+many bytes match between the two hashes.
+
+.. code:: cpp
 
     LMQAPI
     LmqHashByteArray64 (
@@ -80,7 +153,7 @@ The hash comparison function is designed to be resistant to timing attacks by ta
         );
 
     //
-    // C++ operator overloads for 128-bit hashes comparisons.
+    // C++ operator overloads for fast constant-time 128-bit hashes comparisons.
     //
 
     bool operator==(const LMQ_HASH& Hash1, const LMQ_HASH& Hash2);
@@ -90,13 +163,26 @@ The hash comparison function is designed to be resistant to timing attacks by ta
 HMAC Functions
 --------------
 
-The encryption and hashing algorithms used to compute HMACs in LwMQ are meant to be fast as their primary design goal. The cipher used is a weakened (low round count) version of an otherwise secure algorithm tuned for excellent performance on modern processors.
+The encryption and hashing algorithms used to compute HMACs in LwMQ are meant
+to be fast as their primary design goal. The cipher used is a weakened (lower
+round count) version of an otherwise secure algorithm tuned for excellent
+performance on modern processors.
 
-The intent is to provide a way for security architects to include message authentication codes in their LwMQ messaging payload with reasonabe impact on performance, knowing the data links are supposed to be relatively secure within the realms of applicability of LwMQ.
+The intent is to provide a way for security architects to include hash-based
+message authentication codes (HMAC) in their LwMQ messaging payload with reasonabe
+impact on performance, knowing the data links are supposed to be relatively secure
+within the realms of applicability of LwMQ.
 
-You can protect the keys using LmqProtectKey(). In that case, you can pass the protected key to LmqComputeHMAC() and LmqVerifyHMAC() provided that you set the ``IsProtectedKey`` parameter to TRUE. The functions take care of unprotecting a copy of the key and of properly erasing the unprotected copy when no longer needed.
+You can protect the keys in memory using LmqProtectKey(). In that case, you can
+pass the protected key to LmqComputeHMAC() and LmqVerifyHMAC() provided that you
+set the ``IsProtectedKey`` parameter to TRUE. The functions take care of unprotecting
+a copy of the key and of properly erasing the unprotected copy when no longer needed.
+This reduces the chances of key exposure by limiting the time the unprotected
+key is present in memory. When a key is no longer needed, including when exiting
+your program, securely erase any and all keys from memory using ``LmqEraseKey()``
 
-For highly secure cryptographic operations, consider using well known facilities such as `CryptoAPI`_, Crypto Next Generation (`CNG`_), or `OpenSSL`_.
+For highly secure cryptographic operations, consider using well known facilities
+such as `CryptoAPI`_, Crypto Next Generation (`CNG`_), or `OpenSSL`_ externally.
 
 .. _CryptoAPI: https://learn.microsoft.com/en-us/windows/win32/seccrypto/cryptoapi-system-architecture
 .. _CNG: https://docs.microsoft.com/en-us/windows/win32/seccng/cng-portal
@@ -105,7 +191,10 @@ For highly secure cryptographic operations, consider using well known facilities
 One-shot HMAC Functions
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-THis set of functions is meant for cases where only a few HMACs need to be computed or verified, and the caller does not mind paying the cost of key setup every time. This simplicity comes at some preformance cost.
+This set of functions is meant for cases where only a few HMACs need to be computed
+or verified, and the caller does not mind paying the cost of key setup every time.
+
+This simplicity comes at some preformance cost.
 
 .. code:: cpp
 
@@ -130,19 +219,32 @@ THis set of functions is meant for cases where only a few HMACs need to be compu
 HMAC Functions
 ^^^^^^^^^^^^^^
 
-This set of functions is meant for cases where many HMACs need to be computed or verified with the same key, and the caller wants to pay the cost of key setup only once.
+This set of functions is meant for cases where many HMACs need to be computed
+or verified with the same key, and the caller wants to pay the cost of key
+setup only once.
 
-The callers typically calls LmqInitHMACEx() once then calls LmqComputeHMACEx() or LmqVerifyHMACEx() as many times as needed, then calls LmqDestroyHMACEx() to free the context when no longer needed, for example at program exit.
+The callers typically calls LmqInitHMACEx() once then calls LmqComputeHMACEx()
+or LmqVerifyHMACEx() as many times as needed, then calls LmqDestroyHMACEx()
+to free the context when no longer needed, for example at program exit.
 
-You can protect the keys using LmqProtectKey(). In that case, you can pass the protected key to LmqInitHMACEx() provided that you set the ``IsProtectedKey`` parameter to TRUE.
+You can protect the keys using LmqProtectKey(). In that case, you can pass the
+protected key to LmqInitHMACEx() provided that you set the ``IsProtectedKey``
+parameter to TRUE. The function will unprotect a copy of the key internally
+and properly erase it when no longer needed.
 
-The function will unprotect a copy of the key and properly erase it when no longer needed.
+Additionally, the context is encrypted when using a protected key. This helps
+protect against memory dumps saving the decryption context intact by reducing
+the time where the context is unencypted in memory.
 
-Additionally, the Context is encrypted when using a protected key. This helps protect against memory dumps saving the decryption context intact by reducing the time where the context is unencypted in memory.
+The function uses a copy of the context and decrypts it, then safely disposes
+of the copy when no longer needed. Note, however, that encryption/decryption
+of the key and context incurs a performance penalty, and that there is still
+a narrow window of opportunity (some microseconds) for an attacker to dump
+the memory while the context is unencrypted or the key unprotected.
 
-The function uses a copy of the context and decrypts it, then safely disposes of the copy when no longer needed. Note, however, that encryption/decryption of the key and context incurs a performance penalty, and that there is still a narrow window of opportunity for an attacker to dump the memory while the context is unencrypted.
-
-If you use protected keys, it is NOT recommended to unprotect the key prior to calling LmqInitHMACEx() with the ``IsProtectedKey`` parameter set to FALSE, as in this case the context will not be encrypted. 
+If you use protected keys, it is NOT recommended to unprotect the key prior
+to calling LmqInitHMACEx() with the ``IsProtectedKey`` parameter set to FALSE,
+as in this case the context will not be encrypted. 
 
 .. code:: cpp
 
@@ -177,9 +279,11 @@ If you use protected keys, it is NOT recommended to unprotect the key prior to c
 HMAC Equality Functions
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-This function provides a fast way to compare HMACs, which can be used for example to verify that a computed HMAC matches an expected value.
+This function provides a fast way to compare HMACs, which can be used
+to verify that a computed HMAC matches an expected value.
 
-The function is designed to be resistant to timing attacks by taking the same amount of time regardless of how many bytes match between the two HMACs.
+The function is designed to be resistant to timing attacks by taking the
+same amount of time regardless of how many bytes match between the two HMACs.
 
 .. code:: cpp
 
@@ -190,7 +294,7 @@ The function is designed to be resistant to timing attacks by taking the same am
         );
 
     //
-    // C++ operator overloads for HMAC comparison
+    // C++ operator overloads for fast constant-time HMAC comparisons.
     //
     
     bool operator==(const LMQ_HMAC& HMAC1, const LMQ_HMAC& HMAC2)
@@ -200,9 +304,13 @@ The function is designed to be resistant to timing attacks by taking the same am
 Keys Functions
 --------------
 
-The key functions allow you to create LMQ_KEY structures from ASCII and Unicode strings, or byte arrays, and to generate RFC 4122 Type 4 random keys.
+The key generation functions allow you to create ``LMQ_KEY`` structures
+from ASCII and Unicode strings, or byte arrays, and to generate RFC
+4122 Type 4 random keys.
 
-The keys can then be used for HMAC computations or other purposes, and also be protected in memory using LmqProtectKey().
+The keys can then be used for HMAC computations, LwMQ Cache keys, or
+other purposes, and can also be protected/unprotected in memory using
+``LmqProtectKey()`` and ``LmqUnprotectKey()``, respectively.
 
 .. code:: cpp
 
@@ -241,11 +349,16 @@ The keys can then be used for HMAC computations or other purposes, and also be p
 Entropy Functions
 -----------------
 
-This function fills the provided LMQ_ENTROPY structure with random data that can be used as a source of entropy for various purposes, such as generating random keys or nonces.
+This function fills the provided ``LMQ_ENTROPY`` structure with random data
+that can be used as a source of entropy for various purposes, such as
+generating random keys or nonces.
 
-The quality of the entropy provided by this function depends on the underlying implementation and the platform's capabilities.
+The quality of the entropy provided by this function depends on the
+underlying implementation and the platform's capabilities.
 
-It is designed to be fast and suitable for general use cases, but it may not be suitable for cryptographic purposes where high-quality randomness is required.
+It is designed to be fast and suitable for general use cases, but it may not
+be suitable for cryptographic purposes where high-quality randomness is
+required.
 
 .. code:: cpp
 
@@ -257,13 +370,22 @@ It is designed to be fast and suitable for general use cases, but it may not be 
 Key Protection Functions
 ------------------------
 
-Those functions allow you to protect and unprotect keys in memory for use within a particular process instance's lifetime, which can help mitigate the risk of key exposure through memory dumps.
+Those functions allow you to protect and unprotect keys in memory for use
+within a particular process instance's lifetime, which can help mitigate
+the risk of key exposure through memory dumps.
 
-When you protect a key using LmqProtectKey(), the key is encrypted in place. You can then pass the protected key to the HMAC functions with the ``IsProtectedKey`` parameter set to TRUE, and the functions will take care of unprotecting a copy of the key and properly erasing the unprotected copy when no longer needed.
+When you protect a key using ``LmqProtectKey()``, the key is encrypted in place. You
+can then pass the protected key to the HMAC functions with the ``IsProtectedKey``
+parameter set to TRUE, and the functions will take care of unprotecting a copy
+of the key and properly erasing the unprotected copy when no longer needed.
 
-You can also unprotect a key using LmqUnprotectKey() if you need to use the unprotected key for other purposes, but be aware that this increases the risk of key exposure.
+You can also unprotect a key using ``LmqUnprotectKey()`` if you need to use the
+unprotected key for other purposes, but be aware that this increases the risk
+of key exposure. The key can be re-protected by calling ``LmqProtectKey()`` on
+it again.
 
-When you are done with a key, you should call LmqEraseKey() to securely erase a key, protected or not, from memory.
+When you are done with a key, you should call ``LmqEraseKey()`` to securely erase
+the key, protected or not, from memory.
 
 .. code:: cpp
 
