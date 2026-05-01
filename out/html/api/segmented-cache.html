@@ -26,7 +26,7 @@
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="LwMQ Hashing API" href="hashing.html" />
+    <link rel="next" title="LwMQ Hashing, CRC, HMAC, and Key APIs" href="hashing.html" />
     <link rel="prev" title="LwMQ Caching API" href="caching.html" /> 
 </head>
 
@@ -65,7 +65,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="hashing.html">LwMQ Hashing API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hashing.html">LwMQ Hashing, CRC, HMAC, and Key APIs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="storage.html">LwMQ Storage API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="compression.html">LwMQ Compression API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utilities/index.html">LwMQ Utility APIs</a></li>
@@ -178,7 +178,7 @@
 <span class="w">    </span><span class="n">LMQ_SEGMENTEDCACHE</span><span class="w"> </span><span class="n">Cache</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PCLMQ_KEY</span><span class="w"> </span><span class="n">Key</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
-<span class="w">    </span><span class="n">ULONG</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PCLMQ_ENTROPY</span><span class="w"> </span><span class="n">AdditionalEntropy</span><span class="p">,</span>
 <span class="w">    </span><span class="n">WORD</span><span class="w"> </span><span class="n">EntryFlags</span><span class="p">,</span>
 <span class="w">    </span><span class="n">FLOAT</span><span class="w"> </span><span class="n">TTLSec</span>
@@ -189,7 +189,7 @@
 <span class="w">    </span><span class="n">LMQ_CACHE</span><span class="w"> </span><span class="n">Cache</span><span class="p">,</span>
 <span class="w">    </span><span class="n">LMQ_CACHECOOKIE</span><span class="w"> </span><span class="n">Cookie</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
-<span class="w">    </span><span class="n">ULONG</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PCLMQ_ENTROPY</span><span class="w"> </span><span class="n">AdditionalEntropy</span><span class="p">,</span>
 <span class="w">    </span><span class="n">WORD</span><span class="w"> </span><span class="n">EntryFlags</span><span class="p">,</span>
 <span class="w">    </span><span class="n">FLOAT</span><span class="w"> </span><span class="n">TTLSec</span>
@@ -205,7 +205,7 @@
 <span class="nf">LmqLookupSegmentedCacheEntry</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">LMQ_SEGMENTEDCACHE</span><span class="w"> </span><span class="n">Cache</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PCLMQ_KEY</span><span class="w"> </span><span class="n">Key</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PULONG</span><span class="w"> </span><span class="n">DataSize</span>
+<span class="w">    </span><span class="n">PSIZE_T</span><span class="w"> </span><span class="n">DataSize</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="n">LMQAPI</span>
@@ -213,7 +213,7 @@
 <span class="w">    </span><span class="n">LMQ_SEGMENTEDCACHE</span><span class="w"> </span><span class="n">Cache</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PCLMQ_KEY</span><span class="w"> </span><span class="n">Key</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PULONG</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PSIZE_T</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PCLMQ_ENTROPY</span><span class="w"> </span><span class="n">AdditionalEntropy</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">CacheMissContext</span>
 <span class="w">    </span><span class="p">);</span>
@@ -223,7 +223,7 @@
 <span class="w">    </span><span class="n">LMQ_CACHE</span><span class="w"> </span><span class="n">Cache</span><span class="p">,</span>
 <span class="w">    </span><span class="n">LMQ_CACHECOOKIE</span><span class="w"> </span><span class="n">Cookie</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
-<span class="w">    </span><span class="n">ULONG</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PCLMQ_ENTROPY</span><span class="w"> </span><span class="n">AdditionalEntropy</span>
 <span class="w">    </span><span class="p">);</span>
 </pre></div>
@@ -235,7 +235,7 @@
 <span class="nf">LmqAdvSegmentedCacheMemAlloc</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">LMQ_SEGMENTEDCACHE</span><span class="w"> </span><span class="n">Cache</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PVOID</span><span class="o">*</span><span class="w"> </span><span class="n">DataPointerAddress</span><span class="p">,</span>
-<span class="w">    </span><span class="n">ULONG</span><span class="w"> </span><span class="n">DataSize</span>
+<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">DataSize</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="n">LMQAPI</span>
@@ -265,7 +265,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="caching.html" class="btn btn-neutral float-left" title="LwMQ Caching API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="hashing.html" class="btn btn-neutral float-right" title="LwMQ Hashing API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="hashing.html" class="btn btn-neutral float-right" title="LwMQ Hashing, CRC, HMAC, and Key APIs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

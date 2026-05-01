@@ -16,10 +16,11 @@ list of files to be removed.
 
 As such, it performs well where other approaches fail in presence of
 very large numbers of files and folders, deep folder structures, and extended
-length paths.
+length paths. The function is optimized for constant memory usage (it only
+performs a single allocation) and reliability in demanding scenarios.
 
 The function can delete files matching a list of file specifications in one
-pass, for example ``"*.tmp;*.dmp;*.log"`` older than 30 days, and it can be
+pass, for example ``"*.tmp;*.dmp;*.log"`` older than N days, and it can be
 configured to ignore errors when trying to delete files and folders.
 
 Additionally, a *maximum run time* can be specified to cap the time spent

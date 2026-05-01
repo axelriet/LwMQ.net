@@ -55,7 +55,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../messaging.html">LwMQ Messaging API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../caching.html">LwMQ Caching API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../segmented-cache.html">LwMQ Segmented Cache API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../hashing.html">LwMQ Hashing API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hashing.html">LwMQ Hashing, CRC, HMAC, and Key APIs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../storage.html">LwMQ Storage API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../compression.html">LwMQ Compression API</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">LwMQ Utility APIs</a><ul class="current">
@@ -116,9 +116,10 @@ build an in-memory representation of the entire folder structure or the
 list of files to be removed.</p>
 <p>As such, it performs well where other approaches fail in presence of
 very large numbers of files and folders, deep folder structures, and extended
-length paths.</p>
+length paths. The function is optimized for constant memory usage (it only
+performs a single allocation) and reliability in demanding scenarios.</p>
 <p>The function can delete files matching a list of file specifications in one
-pass, for example <code class="docutils literal notranslate"><span class="pre">&quot;*.tmp;*.dmp;*.log&quot;</span></code> older than 30 days, and it can be
+pass, for example <code class="docutils literal notranslate"><span class="pre">&quot;*.tmp;*.dmp;*.log&quot;</span></code> older than N days, and it can be
 configured to ignore errors when trying to delete files and folders.</p>
 <p>Additionally, a <em>maximum run time</em> can be specified to cap the time spent
 cleaning up, which is useful in scenarios where the cleanup operation is

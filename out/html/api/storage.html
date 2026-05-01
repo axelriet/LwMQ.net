@@ -27,7 +27,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="LwMQ Compression API" href="compression.html" />
-    <link rel="prev" title="LwMQ Hashing API" href="hashing.html" /> 
+    <link rel="prev" title="LwMQ Hashing, CRC, HMAC, and Key APIs" href="hashing.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -55,7 +55,7 @@
 <li class="toctree-l2"><a class="reference internal" href="messaging.html">LwMQ Messaging API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="caching.html">LwMQ Caching API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="segmented-cache.html">LwMQ Segmented Cache API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hashing.html">LwMQ Hashing API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hashing.html">LwMQ Hashing, CRC, HMAC, and Key APIs</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">LwMQ Storage API</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#c-and-c-header-file">C and C++ Header File</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#binaries">Binaries</a></li>
@@ -130,7 +130,6 @@
 <section id="types">
 <h3>Types<a class="headerlink" href="#types" title="Link to this heading"></a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQ_KVSTORE</span>
-<span class="n">LMQ_KVSTOREKEY</span>
 </pre></div>
 </div>
 </section>
@@ -150,7 +149,7 @@
 <span class="n">LMQAPI</span>
 <span class="nf">LmqAddKvStoreEntry</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">LMQ_KVSTORE</span><span class="w"> </span><span class="n">KvStore</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PCLMQ_KVSTOREKEY</span><span class="w"> </span><span class="n">Key</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCLMQ_KEY</span><span class="w"> </span><span class="n">Key</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
 <span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">DataSize</span><span class="p">,</span>
 <span class="w">    </span><span class="n">LMQ_COMPRESSIONTYPE</span><span class="w"> </span><span class="n">CompressionType</span>
@@ -159,14 +158,14 @@
 <span class="n">LMQAPI</span>
 <span class="nf">LmqLookupKvStoreEntry</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">LMQ_KVSTORE</span><span class="w"> </span><span class="n">KvStore</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PCLMQ_KVSTOREKEY</span><span class="w"> </span><span class="n">Key</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCLMQ_KEY</span><span class="w"> </span><span class="n">Key</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PSIZE_T</span><span class="w"> </span><span class="n">DataSize</span>
 <span class="p">);</span>
 
 <span class="n">LMQAPI</span>
 <span class="nf">LmqRetrieveKvStoreEntry</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">LMQ_KVSTORE</span><span class="w"> </span><span class="n">KvStore</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PCLMQ_KVSTOREKEY</span><span class="w"> </span><span class="n">Key</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCLMQ_KEY</span><span class="w"> </span><span class="n">Key</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">Data</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PSIZE_T</span><span class="w"> </span><span class="n">DataSize</span>
 <span class="w">    </span><span class="p">);</span>
@@ -174,7 +173,7 @@
 <span class="n">LMQAPI</span>
 <span class="nf">LmqDeleteKvStoreEntry</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">LMQ_KVSTORE</span><span class="w"> </span><span class="n">KvStore</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PCLMQ_KVSTOREKEY</span><span class="w"> </span><span class="n">Key</span>
+<span class="w">    </span><span class="n">PCLMQ_KEY</span><span class="w"> </span><span class="n">Key</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="n">LMQAPI</span>
@@ -190,14 +189,14 @@
 <span class="nf">LmqKvStoreKeyFromStringA</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">PCSTR</span><span class="w"> </span><span class="n">String</span><span class="p">,</span>
 <span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">MaxLength</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PLMQ_KVSTOREKEY</span><span class="w"> </span><span class="n">Key</span>
+<span class="w">    </span><span class="n">PLMQ_KEY</span><span class="w"> </span><span class="n">Key</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="n">LMQAPI</span>
 <span class="nf">LmqKvStoreKeyFromStringW</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">PCWSTR</span><span class="w"> </span><span class="n">String</span><span class="p">,</span>
 <span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">MaxLength</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PLMQ_KVSTOREKEY</span><span class="w"> </span><span class="n">Key</span>
+<span class="w">    </span><span class="n">PLMQ_KEY</span><span class="w"> </span><span class="n">Key</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="cp">#ifdef UNICODE</span>
@@ -210,12 +209,12 @@
 <span class="nf">LmqKvStoreKeyFromByteArray</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
 <span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">LengthBytes</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PLMQ_KVSTOREKEY</span><span class="w"> </span><span class="n">Key</span>
+<span class="w">    </span><span class="n">PLMQ_KEY</span><span class="w"> </span><span class="n">Key</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="n">LMQAPI</span>
 <span class="nf">LmqMakeRfc4122KvStoreKey</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">PLMQ_KVSTOREKEY</span><span class="w"> </span><span class="n">Key</span>
+<span class="w">    </span><span class="n">PLMQ_KEY</span><span class="w"> </span><span class="n">Key</span>
 <span class="w">    </span><span class="p">);</span>
 </pre></div>
 </div>
@@ -228,7 +227,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="hashing.html" class="btn btn-neutral float-left" title="LwMQ Hashing API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hashing.html" class="btn btn-neutral float-left" title="LwMQ Hashing, CRC, HMAC, and Key APIs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="compression.html" class="btn btn-neutral float-right" title="LwMQ Compression API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

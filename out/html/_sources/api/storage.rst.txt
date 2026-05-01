@@ -44,7 +44,6 @@ Types
 .. code:: cpp
 
     LMQ_KVSTORE
-    LMQ_KVSTOREKEY
  
 Key-Value Storage Functions
 ---------------------------
@@ -66,7 +65,7 @@ Core KV-Store Functions
     LMQAPI
     LmqAddKvStoreEntry (
         LMQ_KVSTORE KvStore,
-        PCLMQ_KVSTOREKEY Key,
+        PCLMQ_KEY Key,
         PVOID Data,
         SIZE_T DataSize,
         LMQ_COMPRESSIONTYPE CompressionType
@@ -75,14 +74,14 @@ Core KV-Store Functions
     LMQAPI
     LmqLookupKvStoreEntry (
         LMQ_KVSTORE KvStore,
-        PCLMQ_KVSTOREKEY Key,
+        PCLMQ_KEY Key,
         PSIZE_T DataSize
     );
 
     LMQAPI
     LmqRetrieveKvStoreEntry (
         LMQ_KVSTORE KvStore,
-        PCLMQ_KVSTOREKEY Key,
+        PCLMQ_KEY Key,
         PVOID Data,
         PSIZE_T DataSize
         );
@@ -90,7 +89,7 @@ Core KV-Store Functions
     LMQAPI
     LmqDeleteKvStoreEntry (
         LMQ_KVSTORE KvStore,
-        PCLMQ_KVSTOREKEY Key
+        PCLMQ_KEY Key
         );
 
     LMQAPI
@@ -107,14 +106,14 @@ KV-Store Key Helpers Functions
     LmqKvStoreKeyFromStringA (
         PCSTR String,
         SIZE_T MaxLength,
-        PLMQ_KVSTOREKEY Key
+        PLMQ_KEY Key
         );
 
     LMQAPI
     LmqKvStoreKeyFromStringW (
         PCWSTR String,
         SIZE_T MaxLength,
-        PLMQ_KVSTOREKEY Key
+        PLMQ_KEY Key
         );
 
     #ifdef UNICODE
@@ -127,10 +126,10 @@ KV-Store Key Helpers Functions
     LmqKvStoreKeyFromByteArray (
         const BYTE* Buffer,
         SIZE_T LengthBytes,
-        PLMQ_KVSTOREKEY Key
+        PLMQ_KEY Key
         );
 
     LMQAPI
     LmqMakeRfc4122KvStoreKey (
-        PLMQ_KVSTOREKEY Key
+        PLMQ_KEY Key
         );

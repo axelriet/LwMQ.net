@@ -103,7 +103,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="caching.html">LwMQ Caching API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="segmented-cache.html">LwMQ Segmented Cache API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hashing.html">LwMQ Hashing API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hashing.html">LwMQ Hashing, CRC, HMAC, and Key APIs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="storage.html">LwMQ Storage API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="compression.html">LwMQ Compression API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utilities/index.html">LwMQ Utility APIs</a></li>
@@ -140,9 +140,14 @@
              
   <section id="lwmq-messaging-api">
 <h1>LwMQ Messaging API<a class="headerlink" href="#lwmq-messaging-api" title="Link to this heading"></a></h1>
-<p>This section documents LwMQ’s core messaging APIs, which are transport-agnostic and form the basis for LwMQ’s messaging capabilities.</p>
-<p>These APIs allow applications to create messages, append data frames to messages, and post ad receive messages through communication channels.</p>
-<p>The messaging APIs are designed for high performance with high throughput and low latency through a DMA-first underlying architecture, making them suitable for a wide range of applications that require efficient ultra-high-performance message-based communication.</p>
+<p>This section documents LwMQ’s core messaging APIs, which are transport-agnostic
+and form the basis for LwMQ’s messaging capabilities.</p>
+<p>These APIs allow applications to create messages, append data frames to messages,
+and post ad receive messages through communication channels.</p>
+<p>The messaging APIs are designed for high performance with high throughput and
+low latency through a DMA-first underlying architecture, making them suitable for
+a wide range of applications that require efficient ultra-high-performance
+message-based communication.</p>
 <section id="c-and-c-header-file">
 <h2>C and C++ Header File<a class="headerlink" href="#c-and-c-header-file" title="Link to this heading"></a></h2>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;api-lwmq-messaging.h&gt;</span>

@@ -18,14 +18,15 @@ more thorough and provides better compression at the expense of
 speed.
 
 The Deflate implementation in LwMQ still favors speed over
-compression ratio. Expect the compression ratio to be approximately
+compression ratio. Expect the ratio to be approximately
 comparable to Zlib at level 2. If your application requires
 maximum compression, consider using Zlib or some other library
 externally.
 
 The API offers a one-shot BLOB mode that compresses a buffer into
 a blob that is allocated by the API, making usage straightforward,
-as well as a buffer-based compression API.
+as well as a more traditional but very easy to use buffer-based
+compression API.
 
 C and C++ Header File
 =====================
@@ -78,9 +79,9 @@ Buffer Compression Functions
 
     LMQAPI
     LmqCompressBuffer (
-        const void* UncompressedBuffer,
+        PCVOID UncompressedBuffer,
         SIZE_T UncompressedBufferSize,
-        void* CompressedBuffer,
+        PVOID CompressedBuffer,
         SIZE_T CompressedBufferSize,
         LMQ_COMPRESSIONTYPE CompressionType,
         PSIZE_T FinalCompressedSize,
@@ -89,9 +90,9 @@ Buffer Compression Functions
 
     LMQAPI
     LmqDecompressBuffer (
-        void* UncompressedBuffer,
+        PVOID UncompressedBuffer,
         SIZE_T UncompressedBufferSize,
-        const void* CompressedBuffer,
+        PCVOID CompressedBuffer,
         SIZE_T CompressedBufferSize,
         LMQ_COMPRESSIONTYPE CompressionType,
         PSIZE_T FinalUncompressedSize
@@ -104,7 +105,7 @@ One-Shot Compression Functions (BLOB)
 
     LMQAPI
     LmqCompressData (
-        const void* UncompressedBuffer,
+        PCVOID UncompressedBuffer,
         SIZE_T UncompressedBufferSize,
         LMQ_COMPRESSIONTYPE CompressionType,
         PLMQ_COMPRESSEDDATABLOB CompressedDataBlob,
@@ -114,7 +115,7 @@ One-Shot Compression Functions (BLOB)
     LMQAPI
     LmqDecompressData (
         const LMQ_COMPRESSEDDATABLOB CompressedDataBlob,
-        void* UncompressedBuffer,
+        PVOID UncompressedBuffer,
         PSIZE_T UncompressedBufferSize
         );
 
