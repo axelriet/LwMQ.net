@@ -79,7 +79,9 @@ static LMQ_KEY g_HmacKey;
 int main()
 {
     printf("MiniChatHMAC IPC 1.0 - Account must have SeCreateGlobalPrivilege!\n"
-           "Start two instances of MiniChatHMAC and start typing or pasting text.\n");
+           "Start two instances of MiniChatHMAC and start typing or pasting text.\n\n");
+
+    printf("*** IF YOU GET AN ACCESS DENIED ERROR (0x8007005) CHECK THE ACCOUNT PRIVILEGES ***\n\n");
 
     //
     // Derive a key from the password and protect it.

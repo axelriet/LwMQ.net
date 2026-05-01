@@ -71,9 +71,11 @@ int main()
 
     g_TimingAdjustmentNs = ComputeTimingOverhead();
 
-    printf("Using precise timestamps with a time adjustment of %.0fns.\n", g_TimingAdjustmentNs);
+    printf("Using precise timestamps with a time adjustment of %.0fns.\n\n", g_TimingAdjustmentNs);
 
 #endif
+
+    printf("*** IF YOU GET AN ACCESS DENIED ERROR (0x8007005) CHECK THE ACCOUNT PRIVILEGES ***\n\n");
 
     //
     // Set up a bidirectional channel
