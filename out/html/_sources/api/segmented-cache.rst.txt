@@ -98,7 +98,7 @@ Core Segmented Cache Functions
     LmqAddSegmentedCacheEntry (
         LMQ_SEGMENTEDCACHE Cache,
         PCLMQ_KEY Key,
-        PVOID Data,
+        PCVOID Data,
         SIZE_T DataSize,
         PCLMQ_ENTROPY AdditionalEntropy,
         WORD EntryFlags,

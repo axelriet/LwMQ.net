@@ -4,11 +4,11 @@ Copyright (c) Axel Rietschin Software Development, LLC
 
 Module Name:
 
-    MiniCache.cpp
+    SegCache.cpp
 
 Abstract:
 
-    LwMQ In-Memory LRU cache demo.
+    LwMQ Segemented In-Memory LRU cache demo.
 
 Prerequisites:
 
@@ -19,7 +19,7 @@ Prerequisites:
 
 Author:
 
-    Axel Rietschin (14-Apr-2026)
+    Axel Rietschin (02-May-2026)
 
 Environment:
 
@@ -32,11 +32,12 @@ Environment:
 #include <format>
 
 #include <api-lwmq-time.h>
-#include <api-lwmq-cache.h>
+#include <api-lwmq-segmented-cache.h>
 
 #include <api-lwmq-samples-common.h>
 
 #define CACHE_SLOTS      (1'000'000)
+#define CACHE_SEGMENTS   (1'024)
 
 CHAR PayloadText1024[] = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
                          "Suspendisse maximus vel odio quis ultrices. Sed bibendum "
@@ -60,10 +61,10 @@ int main()
 {
     std::locale::global(std::locale("en_US.UTF-8"));
 
-    printf("MiniCache 1.0\nSingle Cache, 1KB entries.\n1 million slots, 1 million inserts, 1 million retrieval.\n");
+    printf("SegCache 1.0\n1024-way Segmented Cache, 1KB entries.\n1 million slots, 1 million inserts, 1 million retrieval.\n");
 
     LMQ_KEY Key{};
-    LMQ_CACHE Cache{};
+    LMQ_SEGMENTEDCACHE Cache{};
 
     //
     // Create a key that we'll modify later.
@@ -72,7 +73,7 @@ int main()
     CHECK(LmqMakeRfc4122Key(&Key));
 
     //
-    // Create a standard LRU data cache with 1 million slots.
+    // Create a 1024-way segmented LRU data cache with 1 million slots.
     //
 
     constexpr LMQ_CACHEPARAMETERS Parameters
@@ -83,15 +84,18 @@ int main()
         CACHE_SLOTS
     };
 
-    CHECK(LmqCreateCache(&Parameters,
-                         &Cache));
+    CHECK(LmqCreateSegmentedCache(&Parameters,
+                                  LMQ_SEGMENTEDCACHE_KEYTYPE_RFC4122,
+                                  0,
+                                  CACHE_SEGMENTS,
+                                  &Cache));
 
     //
     // Add 1 million entries. The key is made unique for
     // each entry simply by incrementing some part of it.
     //
 
-    printf("\nInserting 1 million x 1KB entries in the LRU cache.\n");
+    printf("\nInserting 1 million x 1KB entries in the Segmented LRU cache.\n");
 
     UINT64 StartNs = LmqGetTickCountNs();
 
@@ -104,13 +108,13 @@ int main()
 
         Key.DWord0 = Index;
 
-        CHECK(LmqAddCacheEntry(Cache,
-                               &Key,
-                               &PayloadText1024[0],
-                               sizeof(PayloadText1024),
-                               LMQ_CACHEENTRY_NO_ADDITIONAL_ENTROPY,
-                               LMQ_CACHEENTRY_FLAGS_NONE,
-                               0.0f));
+        CHECK(LmqAddSegmentedCacheEntry(Cache,
+                                        &Key,
+                                        &PayloadText1024[0],
+                                        sizeof(PayloadText1024),
+                                        LMQ_CACHEENTRY_NO_ADDITIONAL_ENTROPY,
+                                        LMQ_CACHEENTRY_FLAGS_NONE,
+                                        0.0f));
     }
 
     UINT64 ElapsedNs = LmqTimeElapsedNsSince(StartNs);
@@ -136,12 +140,12 @@ int main()
         SIZE_T DataSize{ sizeof(PayloadText1024) };
         BYTE RetrievedText[sizeof(PayloadText1024)];
 
-        CHECK(LmqRetrieveCacheEntry(Cache,
-                                    &Key,
-                                    &RetrievedText[0],
-                                    &DataSize,
-                                    LMQ_CACHEENTRY_NO_ADDITIONAL_ENTROPY,
-                                    nullptr));
+        CHECK(LmqRetrieveSegmentedCacheEntry(Cache,
+                                             &Key,
+                                             &RetrievedText[0],
+                                             &DataSize,
+                                             LMQ_CACHEENTRY_NO_ADDITIONAL_ENTROPY,
+                                             nullptr));
     }
 
     ElapsedNs = LmqTimeElapsedNsSince(StartNs);
@@ -160,8 +164,8 @@ int main()
 
     StartNs = LmqGetTickCountNs();
 
-    CHECK(LmqClearCache(Cache,
-                        FALSE));
+    CHECK(LmqClearSegmentedCache(Cache,
+                                 FALSE));
 
     ElapsedNs = LmqTimeElapsedNsSince(StartNs);
 
@@ -172,10 +176,10 @@ int main()
             std::format("{:.0Lf}", Throughput).c_str());
 
     //
-    // Done, destroy cache.
+    // Done, destroy segmented cache.
     //
 
-    CHECK(LmqDestroyCache(&Cache));
+    CHECK(LmqDestroySegmentedCache(&Cache));
 
     return 0;
 }
