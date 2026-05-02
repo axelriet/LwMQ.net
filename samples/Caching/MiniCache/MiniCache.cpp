@@ -4,11 +4,11 @@ Copyright (c) Axel Rietschin Software Development, LLC
 
 Module Name:
 
-    MiniCache.cpp
+    SegCache.cpp
 
 Abstract:
 
-    LwMQ In-Memory LRU cache demo.
+    LwMQ Segemented In-Memory LRU cache demo.
 
 Prerequisites:
 
@@ -19,7 +19,7 @@ Prerequisites:
 
 Author:
 
-    Axel Rietschin (14-Apr-2026)
+    Axel Rietschin (02-May-2026)
 
 Environment:
 
@@ -31,10 +31,8 @@ Environment:
 
 #include <format>
 
-#define USE_PRECISE_BUT_SLOWER_TIMESTAMPS
-
 #include <api-lwmq-time.h>
-#include <api-lwmq-cache.h>
+#include <api-lwmq-segmented-cache.h>
 
 #include <api-lwmq-samples-common.h>
 
@@ -62,10 +60,10 @@ int main()
 {
     std::locale::global(std::locale("en_US.UTF-8"));
 
-    printf("MiniCache 1.0\nSingle cache, 1KB entries.\n1 million slots, 1 million inserts, 1 million retrieval.\n");
+    printf("MiniCache 1.0\n1024-way Segmented Cache, 1KB entries.\n1 million slots, 1 million inserts, 1 million retrieval.\n");
 
     LMQ_KEY Key{};
-    LMQ_CACHE Cache{};
+    LMQ_SEGMENTEDCACHE Cache{};
 
     //
     // Create a key that we'll modify later.
@@ -74,7 +72,7 @@ int main()
     CHECK(LmqMakeRfc4122Key(&Key));
 
     //
-    // Create a standard LRU data cache with 1 million slots.
+    // Create a 1024-way segmented LRU data cache with 1 million slots.
     //
 
     constexpr LMQ_CACHEPARAMETERS Parameters
@@ -85,18 +83,15 @@ int main()
         ONE_MILLION
     };
 
-    CHECK(LmqCreateCache(&Parameters,
-                         &Cache));
+    CHECK(LmqCreateSegmentedCache(&Parameters,
+                                  LMQ_SEGMENTEDCACHE_KEYTYPE_RFC4122,
+                                  0,
+                                  1'024,
+                                  &Cache));
 
     //
-    // Add 2 million entries. The key is made unique for
+    // Add 1 million entries. The key is made unique for
     // each entry simply by incrementing some part of it.
-    // 
-    // Adding 2 million entries to a 1 million slot LRU
-    // cache will cause 1 million evictions. The second
-    // million "pushes out" the first million one by one
-    // amd make them fall off the cliff.
-    // 
     //
 
     printf("\nInserting 1 million x 1KB entries in the LRU cache.\n");
