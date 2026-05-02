@@ -72,7 +72,7 @@ Core Segmented Cache Functions
     LmqCreateSegmentedCache (
         PCLMQ_CACHEPARAMETERS Parameters,
         LMQ_SEGMENTEDCACHE_KEYTYPE KeyType,
-        BYTE KeyWordOffset,
+        BYTE KeyWordOffset, // Must be 0 for RFC4122 keys
         WORD Segments,
         PLMQ_SEGMENTEDCACHE Cache
         );

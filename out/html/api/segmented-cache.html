@@ -151,7 +151,7 @@
 <span class="nf">LmqCreateSegmentedCache</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">PCLMQ_CACHEPARAMETERS</span><span class="w"> </span><span class="n">Parameters</span><span class="p">,</span>
 <span class="w">    </span><span class="n">LMQ_SEGMENTEDCACHE_KEYTYPE</span><span class="w"> </span><span class="n">KeyType</span><span class="p">,</span>
-<span class="w">    </span><span class="n">BYTE</span><span class="w"> </span><span class="n">KeyWordOffset</span><span class="p">,</span>
+<span class="w">    </span><span class="n">BYTE</span><span class="w"> </span><span class="n">KeyWordOffset</span><span class="p">,</span><span class="w"> </span><span class="c1">// Must be 0 for RFC4122 keys</span>
 <span class="w">    </span><span class="n">WORD</span><span class="w"> </span><span class="n">Segments</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PLMQ_SEGMENTEDCACHE</span><span class="w"> </span><span class="n">Cache</span>
 <span class="w">    </span><span class="p">);</span>
