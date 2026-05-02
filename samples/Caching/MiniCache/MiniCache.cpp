@@ -4,11 +4,11 @@ Copyright (c) Axel Rietschin Software Development, LLC
 
 Module Name:
 
-    SegCache.cpp
+    MiniCache.cpp
 
 Abstract:
 
-    LwMQ Segemented In-Memory LRU cache demo.
+    LwMQ In-Memory LRU cache demo.
 
 Prerequisites:
 
@@ -19,7 +19,7 @@ Prerequisites:
 
 Author:
 
-    Axel Rietschin (02-May-2026)
+    Axel Rietschin (14-Apr-2026)
 
 Environment:
 
@@ -32,7 +32,7 @@ Environment:
 #include <format>
 
 #include <api-lwmq-time.h>
-#include <api-lwmq-segmented-cache.h>
+#include <api-lwmq-cache.h>
 
 #include <api-lwmq-samples-common.h>
 
@@ -60,10 +60,10 @@ int main()
 {
     std::locale::global(std::locale("en_US.UTF-8"));
 
-    printf("MiniCache 1.0\n1024-way Segmented Cache, 1KB entries.\n1 million slots, 1 million inserts, 1 million retrieval.\n");
+    printf("MiniCache 1.0\nSingle Cache, 1KB entries.\n1 million slots, 1 million inserts, 1 million retrieval.\n");
 
     LMQ_KEY Key{};
-    LMQ_SEGMENTEDCACHE Cache{};
+    LMQ_CACHE Cache{};
 
     //
     // Create a key that we'll modify later.
@@ -72,7 +72,7 @@ int main()
     CHECK(LmqMakeRfc4122Key(&Key));
 
     //
-    // Create a 1024-way segmented LRU data cache with 1 million slots.
+    // Create a standard LRU data cache with 1 million slots.
     //
 
     constexpr LMQ_CACHEPARAMETERS Parameters
@@ -83,11 +83,8 @@ int main()
         ONE_MILLION
     };
 
-    CHECK(LmqCreateSegmentedCache(&Parameters,
-                                  LMQ_SEGMENTEDCACHE_KEYTYPE_RFC4122,
-                                  0,
-                                  1'024,
-                                  &Cache));
+    CHECK(LmqCreateCache(&Parameters,
+                         &Cache));
 
     //
     // Add 1 million entries. The key is made unique for
