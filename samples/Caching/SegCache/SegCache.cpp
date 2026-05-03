@@ -74,9 +74,9 @@ LMQ_SEGMENTEDCACHE Cache{};
 static
 unsigned
 CALLBACK
-WorkerThread (
+RetrieveThread (
     PVOID Context
-    )
+    ) noexcept
 {
     //
     // Grab a local copy of the key.
@@ -95,7 +95,7 @@ WorkerThread (
     // Retrieve CACHE_SLOTS / QUERY_THREADS items
     //
 
-    DWORD StartIndex = (reinterpret_cast<UINT_PTR>(Context) & UINT_MAX);
+    const DWORD StartIndex = (reinterpret_cast<UINT_PTR>(Context) & UINT_MAX);
 
     for (DWORD Index = StartIndex; Index < (StartIndex + (CACHE_SLOTS / QUERY_THREADS)); Index++)
     {
@@ -143,11 +143,11 @@ int main()
 
     HANDLE Threads[QUERY_THREADS];
 
-    std::ranges::for_each(Threads, [](HANDLE& Thread)
+    std::ranges::for_each(Threads, [](HANDLE& Thread) noexcept
     {
         Thread = reinterpret_cast<HANDLE>(_beginthreadex(nullptr,
                                                          0,
-                                                         WorkerThread,
+                                                         RetrieveThread,
                                                          nullptr,
                                                          0,
                                                          nullptr));
@@ -218,7 +218,7 @@ int main()
     SetEvent(StartEvent);
 
     WaitForMultipleObjects(_countof(Threads),
-                           Threads,
+                           &Threads[0],
                            TRUE,
                            INFINITE);
 
@@ -234,7 +234,7 @@ int main()
     // Cleanup.
     //
 
-    std::ranges::for_each(Threads, [](HANDLE& Thread)
+    std::ranges::for_each(Threads, [](HANDLE& Thread) noexcept
     {
         CloseHandle(Thread);
     });
