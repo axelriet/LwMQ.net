@@ -40,24 +40,24 @@ Environment:
 
 #define CACHE_SLOTS  (1'024 * 1'024)
 
-CHAR PayloadText[] = "Lorem ipsum dolor sit amet non."
+const CHAR PayloadText[] = "Lorem ipsum dolor sit amet non."
 #ifndef TINY_PAYLOAD
-                     " Suspendisse maximus vel odio quis ultrices. Sed bibendum "
-                     "fringilla sem sit amet porta. Donec tristique tortor cursus, "
-                     "ultrices turpis a, finibus tellus. Donec at velit fringilla, "
-                     "volutpat nulla ut, ullamcorper risus. Maecenas non tempor "
-                     "sapien, feugiat consectetur elit. Nunc sed nibh sed velit "
-                     "molestie hendrerit. Sed sollicitudin, ligula vel porta fermentum, "
-                     "tortor enim tempor leo, vitae convallis nulla nunc ac ante. Nam "
-                     "molestie leo et urna posuere porttitor. Morbi non tincidunt purus, "
-                     "quis ultricies neque. Cras sed varius lectus. Morbi dictum risus "
-                     "ac neque finibus, vel iaculis odio rhoncus. Vivamus euismod neque "
-                     "massa, at efficitur sem sollicitudin id. Integer iaculis odio sed "
-                     "diam dignissim, a pulvinar purus scelerisque. Mauris a interdum "
-                     "arcu, vitae sodales arcu. Integer ac purus venenatis odio rhoncus "
-                     "interdum. Cras pretium maximus dignissim. Nulla sed diam ut risus "
-                     "tristique varius at in augue. Mauris nec lectus a est sollicitudin "
-                     "imperdiet vel. Maecenas scelerisque eu."
+                           " Suspendisse maximus vel odio quis ultrices. Sed bibendum "
+                           "fringilla sem sit amet porta. Donec tristique tortor cursus, "
+                           "ultrices turpis a, finibus tellus. Donec at velit fringilla, "
+                           "volutpat nulla ut, ullamcorper risus. Maecenas non tempor "
+                           "sapien, feugiat consectetur elit. Nunc sed nibh sed velit "
+                           "molestie hendrerit. Sed sollicitudin, ligula vel porta fermentum, "
+                           "tortor enim tempor leo, vitae convallis nulla nunc ac ante. Nam "
+                           "molestie leo et urna posuere porttitor. Morbi non tincidunt purus, "
+                           "quis ultricies neque. Cras sed varius lectus. Morbi dictum risus "
+                           "ac neque finibus, vel iaculis odio rhoncus. Vivamus euismod neque "
+                           "massa, at efficitur sem sollicitudin id. Integer iaculis odio sed "
+                           "diam dignissim, a pulvinar purus scelerisque. Mauris a interdum "
+                           "arcu, vitae sodales arcu. Integer ac purus venenatis odio rhoncus "
+                           "interdum. Cras pretium maximus dignissim. Nulla sed diam ut risus "
+                           "tristique varius at in augue. Mauris nec lectus a est sollicitudin "
+                           "imperdiet vel. Maecenas scelerisque eu."
 #endif
     ;
 
