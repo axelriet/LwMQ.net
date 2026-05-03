@@ -8,7 +8,7 @@ Module Name:
 
 Abstract:
 
-    LwMQ Segemented In-Memory LRU cache demo.
+    LwMQ Segmented In-Memory LRU cache demo.
 
 Prerequisites:
 
@@ -38,9 +38,11 @@ Environment:
 
 #include <api-lwmq-samples-common.h>
 
+// #define TINY_PAYLOAD     // Forces small payload
+
 #define CACHE_SLOTS      (1'024 * 1'024)
-#define CACHE_SEGMENTS   (64) // [1, 2, 4, 8, ..., 1024]
-#define WORKER_THREADS   (16)
+#define CACHE_SEGMENTS   (1'024) // [1, 2, 4, 8, ..., 1024]
+#define WORKER_THREADS   (32)
 #define ITEMS_PER_THREAD (CACHE_SLOTS / WORKER_THREADS)
 
 //
@@ -49,23 +51,26 @@ Environment:
 
 static_assert(CACHE_SLOTS % WORKER_THREADS == 0);
 
-CHAR PayloadText1024[] = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
-                         "Suspendisse maximus vel odio quis ultrices. Sed bibendum "
-                         "fringilla sem sit amet porta. Donec tristique tortor cursus, "
-                         "ultrices turpis a, finibus tellus. Donec at velit fringilla, "
-                         "volutpat nulla ut, ullamcorper risus. Maecenas non tempor "
-                         "sapien, feugiat consectetur elit. Nunc sed nibh sed velit "
-                         "molestie hendrerit. Sed sollicitudin, ligula vel porta fermentum, "
-                         "tortor enim tempor leo, vitae convallis nulla nunc ac ante. Nam "
-                         "molestie leo et urna posuere porttitor. Morbi non tincidunt purus, "
-                         "quis ultricies neque. Cras sed varius lectus. Morbi dictum risus "
-                         "ac neque finibus, vel iaculis odio rhoncus. Vivamus euismod neque "
-                         "massa, at efficitur sem sollicitudin id. Integer iaculis odio sed "
-                         "diam dignissim, a pulvinar purus scelerisque. Mauris a interdum "
-                         "arcu, vitae sodales arcu. Integer ac purus venenatis odio rhoncus "
-                         "interdum. Cras pretium maximus dignissim. Nulla sed diam ut risus "
-                         "tristique varius at in augue. Mauris nec lectus a est sollicitudin "
-                         "imperdiet vel.";
+CHAR PayloadText[] = "Lorem ipsum dolor sit amet non."
+#ifndef TINY_PAYLOAD
+                     " Suspendisse maximus vel odio quis ultrices. Sed bibendum "
+                     "fringilla sem sit amet porta. Donec tristique tortor cursus, "
+                     "ultrices turpis a, finibus tellus. Donec at velit fringilla, "
+                     "volutpat nulla ut, ullamcorper risus. Maecenas non tempor "
+                     "sapien, feugiat consectetur elit. Nunc sed nibh sed velit "
+                     "molestie hendrerit. Sed sollicitudin, ligula vel porta fermentum, "
+                     "tortor enim tempor leo, vitae convallis nulla nunc ac ante. Nam "
+                     "molestie leo et urna posuere porttitor. Morbi non tincidunt purus, "
+                     "quis ultricies neque. Cras sed varius lectus. Morbi dictum risus "
+                     "ac neque finibus, vel iaculis odio rhoncus. Vivamus euismod neque "
+                     "massa, at efficitur sem sollicitudin id. Integer iaculis odio sed "
+                     "diam dignissim, a pulvinar purus scelerisque. Mauris a interdum "
+                     "arcu, vitae sodales arcu. Integer ac purus venenatis odio rhoncus "
+                     "interdum. Cras pretium maximus dignissim. Nulla sed diam ut risus "
+                     "tristique varius at in augue. Mauris nec lectus a est sollicitudin "
+                     "imperdiet vel. Maecenas scelerisque eu."
+#endif
+    ;
 
 HANDLE StartEvent;
 
@@ -106,8 +111,8 @@ InsertThread (
 
         CHECK(LmqAddSegmentedCacheEntry(Cache,
                                         &LocalKey,
-                                        &PayloadText1024[0],
-                                        sizeof(PayloadText1024),
+                                        &PayloadText[0],
+                                        sizeof(PayloadText),
                                         LMQ_CACHEENTRY_NO_ADDITIONAL_ENTROPY,
                                         LMQ_CACHEENTRY_FLAGS_NONE,
                                         0.0f));
@@ -148,8 +153,8 @@ QueryThread (
     {
         LocalKey.QWord0 = Index;
 
-        SIZE_T DataSize{ sizeof(PayloadText1024) };
-        BYTE RetrievedText[sizeof(PayloadText1024)];
+        SIZE_T DataSize{ sizeof(PayloadText) };
+        BYTE RetrievedText[sizeof(PayloadText)];
 
         CHECK(LmqRetrieveSegmentedCacheEntry(Cache,
                                              &LocalKey,
@@ -166,8 +171,9 @@ int main()
 {
     std::locale::global(std::locale("en_US.UTF-8"));
 
-    printf("SegCache 1.0\n%s-way Segmented Cache, 1KB entries.\n%s slots/insertions/retrievals with %s threads.\n",
+    printf("SegCache 1.0 - LwMQ Segmented Cache Demo\n%s-way Segmented Cache, %s-byte entries.\n%s slots/insertions/retrievals with %s threads.\n",
            std::format("{:L}", CACHE_SEGMENTS).c_str(),
+           std::format("{:L}", sizeof(PayloadText)).c_str(),
            std::format("{:L}", CACHE_SLOTS).c_str(),
            std::format("{:L}", WORKER_THREADS).c_str());
 
@@ -230,7 +236,7 @@ int main()
     // Add entries.
     //
 
-    printf("\nInserting %s x 1KB entries using %d threads.\n",
+    printf("\nInserting %s entries using %d threads.\n",
            std::format("{:L}", CACHE_SLOTS).c_str(),
            WORKER_THREADS);
 
@@ -254,7 +260,7 @@ int main()
 
     double Throughput = ((double)CACHE_SLOTS / ElapsedNs * 1'000'000'000.0);
 
-    printf("Elapsed: %s [ms] @ %s multi-threaded insertion/sec (1KB items)\n\n",
+    printf("Elapsed: %s [ms] @ %s multi-threaded insertion/sec.\n\n",
            std::format("{:.0Lf}", ElapsedNs / 1'000'000.0).c_str(),
            std::format("{:.0Lf}", Throughput).c_str());
 
@@ -291,9 +297,11 @@ int main()
 
     Throughput = ((double)CACHE_SLOTS / ElapsedNs * 1'000'000'000.0);
 
-    printf("Elapsed: %s [ms] @ %s multi-threaded retrieval/sec (1KB items)\n",
+    printf("Elapsed: %s [ms] @ %s multi-threaded retrieval/sec (%s-byte items @ %.1f GB/sec)\n",
             std::format("{:.0Lf}", ElapsedNs / 1'000'000.0).c_str(),
-            std::format("{:.0Lf}", Throughput).c_str());
+            std::format("{:.0Lf}", Throughput).c_str(),
+            std::format("{:L}", sizeof(PayloadText)).c_str(),
+            (Throughput * sizeof(PayloadText)) / (1024.0 * 1024.0 * 1024.0));
 
     //
     // Cleanup.

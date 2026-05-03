@@ -36,31 +36,37 @@ Environment:
 
 #include <api-lwmq-samples-common.h>
 
-#define CACHE_SLOTS      (1'024 * 1'024)
+#define TINY_PAYLOAD     // Forces small payload
 
-CHAR PayloadText1024[] = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
-                         "Suspendisse maximus vel odio quis ultrices. Sed bibendum "
-                         "fringilla sem sit amet porta. Donec tristique tortor cursus, "
-                         "ultrices turpis a, finibus tellus. Donec at velit fringilla, "
-                         "volutpat nulla ut, ullamcorper risus. Maecenas non tempor "
-                         "sapien, feugiat consectetur elit. Nunc sed nibh sed velit "
-                         "molestie hendrerit. Sed sollicitudin, ligula vel porta fermentum, "
-                         "tortor enim tempor leo, vitae convallis nulla nunc ac ante. Nam "
-                         "molestie leo et urna posuere porttitor. Morbi non tincidunt purus, "
-                         "quis ultricies neque. Cras sed varius lectus. Morbi dictum risus "
-                         "ac neque finibus, vel iaculis odio rhoncus. Vivamus euismod neque "
-                         "massa, at efficitur sem sollicitudin id. Integer iaculis odio sed "
-                         "diam dignissim, a pulvinar purus scelerisque. Mauris a interdum "
-                         "arcu, vitae sodales arcu. Integer ac purus venenatis odio rhoncus "
-                         "interdum. Cras pretium maximus dignissim. Nulla sed diam ut risus "
-                         "tristique varius at in augue. Mauris nec lectus a est sollicitudin "
-                         "imperdiet vel.";
+#define CACHE_SLOTS  (1'024 * 1'024)
+
+CHAR PayloadText[] = "Lorem ipsum dolor sit amet non."
+#ifndef TINY_PAYLOAD
+                     " Suspendisse maximus vel odio quis ultrices. Sed bibendum "
+                     "fringilla sem sit amet porta. Donec tristique tortor cursus, "
+                     "ultrices turpis a, finibus tellus. Donec at velit fringilla, "
+                     "volutpat nulla ut, ullamcorper risus. Maecenas non tempor "
+                     "sapien, feugiat consectetur elit. Nunc sed nibh sed velit "
+                     "molestie hendrerit. Sed sollicitudin, ligula vel porta fermentum, "
+                     "tortor enim tempor leo, vitae convallis nulla nunc ac ante. Nam "
+                     "molestie leo et urna posuere porttitor. Morbi non tincidunt purus, "
+                     "quis ultricies neque. Cras sed varius lectus. Morbi dictum risus "
+                     "ac neque finibus, vel iaculis odio rhoncus. Vivamus euismod neque "
+                     "massa, at efficitur sem sollicitudin id. Integer iaculis odio sed "
+                     "diam dignissim, a pulvinar purus scelerisque. Mauris a interdum "
+                     "arcu, vitae sodales arcu. Integer ac purus venenatis odio rhoncus "
+                     "interdum. Cras pretium maximus dignissim. Nulla sed diam ut risus "
+                     "tristique varius at in augue. Mauris nec lectus a est sollicitudin "
+                     "imperdiet vel. Maecenas scelerisque eu."
+#endif
+    ;
 
 int main()
 {
     std::locale::global(std::locale("en_US.UTF-8"));
 
-    printf("MiniCache 1.0\nSingle Cache, 1KB entries.\n%s slots/insertions/retrievals.\n",
+    printf("MiniCache 1.0 - LwMQ Cache Demo\nSingle Cache, %s-byte entries.\n%s slots/insertions/retrievals.\n",
+           std::format("{:L}", sizeof(PayloadText)).c_str(),
            std::format("{:L}", CACHE_SLOTS).c_str());
 
     LMQ_KEY Key{};
@@ -108,8 +114,8 @@ int main()
 
         CHECK(LmqAddCacheEntry(Cache,
                                &Key,
-                               &PayloadText1024[0],
-                               sizeof(PayloadText1024),
+                               &PayloadText[0],
+                               sizeof(PayloadText),
                                LMQ_CACHEENTRY_NO_ADDITIONAL_ENTROPY,
                                LMQ_CACHEENTRY_FLAGS_NONE,
                                0.0f));
@@ -136,8 +142,8 @@ int main()
     {
         Key.DWord0 = Index;
 
-        SIZE_T DataSize{ sizeof(PayloadText1024) };
-        BYTE RetrievedText[sizeof(PayloadText1024)];
+        SIZE_T DataSize{ sizeof(PayloadText) };
+        BYTE RetrievedText[sizeof(PayloadText)];
 
         CHECK(LmqRetrieveCacheEntry(Cache,
                                     &Key,
@@ -151,9 +157,11 @@ int main()
 
     Throughput = ((double)CACHE_SLOTS / ElapsedNs * 1'000'000'000.0);
 
-    printf("Elapsed: %s [ms] @ %s retrieval/sec (1KB items)\n",
+    printf("Elapsed: %s [ms] @ %s retrieval/sec (%s-byte items @ %.1f GB/sec)\n",
             std::format("{:.0Lf}", ElapsedNs / 1'000'000.0).c_str(),
-            std::format("{:.0Lf}", Throughput).c_str());
+            std::format("{:.0Lf}", Throughput).c_str(),
+            std::format("{:L}", sizeof(PayloadText)).c_str(),
+            (Throughput * sizeof(PayloadText)) / (1024.0 * 1024.0 * 1024.0));
 
     //
     // Done, destroy cache.
