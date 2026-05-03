@@ -39,14 +39,15 @@ Environment:
 #include <api-lwmq-samples-common.h>
 
 #define CACHE_SLOTS      (1'024 * 1'024)
-#define CACHE_SEGMENTS   (1'024)
-#define QUERY_THREADS    (16)
+#define CACHE_SEGMENTS   (64) // [1, 2, 4, 8, ..., 1024]
+#define WORKER_THREADS   (16)
+#define ITEMS_PER_THREAD (CACHE_SLOTS / WORKER_THREADS)
 
 //
-// QUERY_THREADS must divide CACHE_SLOTS in this demo.
+// WORKER_THREADS must divide CACHE_SLOTS in this demo.
 //
 
-static_assert(CACHE_SLOTS % QUERY_THREADS == 0);
+static_assert(CACHE_SLOTS % WORKER_THREADS == 0);
 
 CHAR PayloadText1024[] = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
                          "Suspendisse maximus vel odio quis ultrices. Sed bibendum "
@@ -71,10 +72,9 @@ HANDLE StartEvent;
 LMQ_KEY Key{};
 LMQ_SEGMENTEDCACHE Cache{};
 
-static
 unsigned
 CALLBACK
-RetrieveThread (
+InsertThread (
     PVOID Context
     ) noexcept
 {
@@ -88,18 +88,65 @@ RetrieveThread (
     // Wait for the start event.
     //
 
-    WaitForSingleObject(StartEvent,
-                        INFINITE);
-
-    //
-    // Retrieve CACHE_SLOTS / QUERY_THREADS items
-    //
-
-    const DWORD StartIndex = (reinterpret_cast<UINT_PTR>(Context) & UINT_MAX);
-
-    for (DWORD Index = StartIndex; Index < (StartIndex + (CACHE_SLOTS / QUERY_THREADS)); Index++)
+    if (WaitForSingleObject(StartEvent,
+                            INFINITE) != WAIT_OBJECT_0)
     {
-        LocalKey.DWord0 = Index;
+        CHECK(E_UNEXPECTED);
+    }
+
+    //
+    // Insert items.
+    //
+
+    const SIZE_T StartIndex = reinterpret_cast<UINT_PTR>(Context) * ITEMS_PER_THREAD;
+
+    for (SIZE_T Index = StartIndex; Index < (StartIndex + ITEMS_PER_THREAD); Index++)
+    {
+        LocalKey.QWord0 = Index;
+
+        CHECK(LmqAddSegmentedCacheEntry(Cache,
+                                        &LocalKey,
+                                        &PayloadText1024[0],
+                                        sizeof(PayloadText1024),
+                                        LMQ_CACHEENTRY_NO_ADDITIONAL_ENTROPY,
+                                        LMQ_CACHEENTRY_FLAGS_NONE,
+                                        0.0f));
+    }
+
+    return 0;
+}
+
+unsigned
+CALLBACK
+QueryThread (
+    PVOID Context
+    ) noexcept
+{
+    //
+    // Grab a local copy of the key.
+    //
+
+    LMQ_KEY LocalKey{ Key };
+
+    //
+    // Wait for the start event.
+    //
+
+    if (WaitForSingleObject(StartEvent,
+                            INFINITE) != WAIT_OBJECT_0)
+    {
+        CHECK(E_UNEXPECTED);
+    }
+
+    //
+    // Retrieve items.
+    //
+
+    const SIZE_T StartIndex = reinterpret_cast<UINT_PTR>(Context) * ITEMS_PER_THREAD;
+
+    for (SIZE_T Index = StartIndex; Index < (StartIndex + ITEMS_PER_THREAD); Index++)
+    {
+        LocalKey.QWord0 = Index;
 
         SIZE_T DataSize{ sizeof(PayloadText1024) };
         BYTE RetrievedText[sizeof(PayloadText1024)];
@@ -119,7 +166,10 @@ int main()
 {
     std::locale::global(std::locale("en_US.UTF-8"));
 
-    printf("SegCache 1.0\n1024-way Segmented Cache, 1KB entries.\n1,048,576 slots/inserts, 1,048,576 retrievals with 16 threads.\n");
+    printf("SegCache 1.0\n%s-way Segmented Cache, 1KB entries.\n%s slots/insertions/retrievals with %s threads.\n",
+           std::format("{:L}", CACHE_SEGMENTS).c_str(),
+           std::format("{:L}", CACHE_SLOTS).c_str(),
+           std::format("{:L}", WORKER_THREADS).c_str());
 
     //
     // Create a key that we'll modify later.
@@ -128,7 +178,7 @@ int main()
     CHECK(LmqMakeRfc4122Key(&Key));
 
     //
-    // Create worker threads.
+    // Create an event to synchronize the worker's start.
     //
 
     StartEvent = CreateEvent(nullptr,
@@ -141,20 +191,8 @@ int main()
         CHECK(E_UNEXPECTED);
     }
 
-    HANDLE Threads[QUERY_THREADS];
-
-    std::ranges::for_each(Threads, [](HANDLE& Thread) noexcept
-    {
-        Thread = reinterpret_cast<HANDLE>(_beginthreadex(nullptr,
-                                                         0,
-                                                         RetrieveThread,
-                                                         nullptr,
-                                                         0,
-                                                         nullptr));
-    });
-
     //
-    // Create a 1024-way segmented LRU data cache with 1,048,576 slots.
+    // Create the segmented LRU data cache.
     //
 
     constexpr LMQ_CACHEPARAMETERS Parameters
@@ -172,46 +210,73 @@ int main()
                                   &Cache));
 
     //
-    // Add 1 million entries. The key is made unique for
-    // each entry simply by incrementing some part of it.
+    // Populate the cache.
     //
 
-    printf("\nInserting 1,048,576 x 1KB entries in the Segmented LRU cache (single-thread).\n");
+    SIZE_T ThreadIndex{};
+    HANDLE Threads[WORKER_THREADS];
+
+    std::ranges::for_each(Threads, [&ThreadIndex](HANDLE& Thread) noexcept
+    {
+        Thread = reinterpret_cast<HANDLE>(_beginthreadex(nullptr,
+                                                         0,
+                                                         InsertThread,
+                                                         reinterpret_cast<PVOID>(ThreadIndex++),
+                                                         0,
+                                                         nullptr));
+    });
+
+    //
+    // Add entries.
+    //
+
+    printf("\nInserting %s x 1KB entries using %d threads.\n",
+           std::format("{:L}", CACHE_SLOTS).c_str(),
+           WORKER_THREADS);
 
     UINT64 StartNs = LmqGetTickCountNs();
 
-    for (DWORD Index = 0; Index < CACHE_SLOTS; Index++)
-    {
-        //
-        // We stuff the Index in the key. That makes 1 million
-        // unique key although they only differ slightly.
-        //
+    SetEvent(StartEvent);
 
-        Key.DWord0 = Index;
-
-        CHECK(LmqAddSegmentedCacheEntry(Cache,
-                                        &Key,
-                                        &PayloadText1024[0],
-                                        sizeof(PayloadText1024),
-                                        LMQ_CACHEENTRY_NO_ADDITIONAL_ENTROPY,
-                                        LMQ_CACHEENTRY_FLAGS_NONE,
-                                        0.0f));
-    }
+    WaitForMultipleObjects(_countof(Threads),
+                           &Threads[0],
+                           TRUE,
+                           INFINITE);
 
     UINT64 ElapsedNs = LmqTimeElapsedNsSince(StartNs);
 
+    std::ranges::for_each(Threads, [](HANDLE& Thread) noexcept
+    {
+        CloseHandle(Thread);
+    });
+
+    ResetEvent(StartEvent);
+
     double Throughput = ((double)CACHE_SLOTS / ElapsedNs * 1'000'000'000.0);
 
-    printf("Elapsed: %s [ms] @ %s insertion/sec (1KB items)\n\n",
+    printf("Elapsed: %s [ms] @ %s multi-threaded insertion/sec (1KB items)\n\n",
            std::format("{:.0Lf}", ElapsedNs / 1'000'000.0).c_str(),
            std::format("{:.0Lf}", Throughput).c_str());
 
     //
-    // Retrieve all entries using QUERY_THREADS threads. The timing
-    // includes scheduling so the cache itself is faster than measured.
+    // Retrieve entries.
     //
 
-    printf("Retrieving 1,048,576 x 1KB using %d threads.\n", QUERY_THREADS);
+    ThreadIndex = 0;
+
+    std::ranges::for_each(Threads, [&ThreadIndex](HANDLE& Thread) noexcept
+    {
+        Thread = reinterpret_cast<HANDLE>(_beginthreadex(nullptr,
+                                                         0,
+                                                         QueryThread,
+                                                         reinterpret_cast<PVOID>(ThreadIndex++),
+                                                         0,
+                                                         nullptr));
+    });
+
+    printf("Retrieving %s x 1KB entries using %d threads.\n",
+           std::format("{:L}", CACHE_SLOTS).c_str(),
+           WORKER_THREADS);
 
     StartNs = LmqGetTickCountNs();
 
@@ -226,7 +291,7 @@ int main()
 
     Throughput = ((double)CACHE_SLOTS / ElapsedNs * 1'000'000'000.0);
 
-    printf("Elapsed: %s [ms] @ %s retrieval/sec (1KB items, timing includes scheduling)\n",
+    printf("Elapsed: %s [ms] @ %s multi-threaded retrieval/sec (1KB items)\n",
             std::format("{:.0Lf}", ElapsedNs / 1'000'000.0).c_str(),
             std::format("{:.0Lf}", Throughput).c_str());
 
@@ -240,25 +305,6 @@ int main()
     });
 
     CloseHandle(StartEvent);
-
-    //
-    // Clear the cache.
-    //
-
-    printf("\nClearing the cache.\n");
-
-    StartNs = LmqGetTickCountNs();
-
-    CHECK(LmqClearSegmentedCache(Cache,
-                                 FALSE));
-
-    ElapsedNs = LmqTimeElapsedNsSince(StartNs);
-
-    Throughput = ((double)CACHE_SLOTS / ElapsedNs * 1'000'000'000.0);
-
-    printf("Elapsed: %s [ms] @ %s entries/sec (frees all items)\n",
-            std::format("{:.0Lf}", ElapsedNs / 1'000'000.0).c_str(),
-            std::format("{:.0Lf}", Throughput).c_str());
 
     //
     // Done, destroy segmented cache.

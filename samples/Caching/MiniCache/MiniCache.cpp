@@ -36,7 +36,7 @@ Environment:
 
 #include <api-lwmq-samples-common.h>
 
-#define CACHE_SLOTS      (1'000'000)
+#define CACHE_SLOTS      (1'024 * 1'024)
 
 CHAR PayloadText1024[] = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
                          "Suspendisse maximus vel odio quis ultrices. Sed bibendum "
@@ -60,7 +60,8 @@ int main()
 {
     std::locale::global(std::locale("en_US.UTF-8"));
 
-    printf("MiniCache 1.0\nSingle Cache, 1KB entries.\n1 million slots, 1 million inserts, 1 million retrieval.\n");
+    printf("MiniCache 1.0\nSingle Cache, 1KB entries.\n%s slots/insertions/retrievals.\n",
+           std::format("{:L}", CACHE_SLOTS).c_str());
 
     LMQ_KEY Key{};
     LMQ_CACHE Cache{};
@@ -91,7 +92,8 @@ int main()
     // each entry simply by incrementing some part of it.
     //
 
-    printf("\nInserting 1 million x 1KB entries in the LRU cache.\n");
+    printf("\nInserting %s x 1KB entries in the LRU cache.\n",
+           std::format("{:L}", CACHE_SLOTS).c_str());
 
     UINT64 StartNs = LmqGetTickCountNs();
 
@@ -125,7 +127,8 @@ int main()
     // Retrieve all entries.
     //
 
-    printf("Retrieving 1 million x 1KB entries maintaining LRU property.\n");
+    printf("Retrieving %s x 1KB entries maintaining LRU property.\n",
+           std::format("{:L}", CACHE_SLOTS).c_str());
 
     StartNs = LmqGetTickCountNs();
 
@@ -149,25 +152,6 @@ int main()
     Throughput = ((double)CACHE_SLOTS / ElapsedNs * 1'000'000'000.0);
 
     printf("Elapsed: %s [ms] @ %s retrieval/sec (1KB items)\n",
-            std::format("{:.0Lf}", ElapsedNs / 1'000'000.0).c_str(),
-            std::format("{:.0Lf}", Throughput).c_str());
-
-    //
-    // Clear the cache.
-    //
-
-    printf("\nClearing the cache.\n");
-
-    StartNs = LmqGetTickCountNs();
-
-    CHECK(LmqClearCache(Cache,
-                        FALSE));
-
-    ElapsedNs = LmqTimeElapsedNsSince(StartNs);
-
-    Throughput = ((double)CACHE_SLOTS / ElapsedNs * 1'000'000'000.0);
-
-    printf("Elapsed: %s [ms] @ %s entries/sec (frees all items)\n",
             std::format("{:.0Lf}", ElapsedNs / 1'000'000.0).c_str(),
             std::format("{:.0Lf}", Throughput).c_str());
 
