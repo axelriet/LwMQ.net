@@ -65,7 +65,7 @@ int main()
 {
     std::locale::global(std::locale("en_US.UTF-8"));
 
-    printf("MiniCache 1.0 - LwMQ Cache Demo\nSingle Cache, %s-byte entries.\n%s slots/insertions/retrievals.\n",
+    printf("MiniCache 1.0 - LwMQ LRU Cache Demo.\n\nSingle Cache, %s-byte entries.\n%s slots/insertions/retrievals.\n",
            std::format("{:L}", sizeof(PayloadText)).c_str(),
            std::format("{:L}", CACHE_SLOTS).c_str());
 
@@ -98,7 +98,7 @@ int main()
     // each entry simply by incrementing some part of it.
     //
 
-    printf("\nInserting %s x 1KB entries in the LRU cache.\n",
+    printf("\nInserting %s entries.\n",
            std::format("{:L}", CACHE_SLOTS).c_str());
 
     UINT64 StartNs = LmqGetTickCountNs();
@@ -125,7 +125,7 @@ int main()
 
     double Throughput = ((double)CACHE_SLOTS / ElapsedNs * 1'000'000'000.0);
 
-    printf("Elapsed: %s [ms] @ %s insertion/sec (1KB items)\n\n",
+    printf("Elapsed: %s [ms] @ %s insertion/sec\n\n",
            std::format("{:.0Lf}", ElapsedNs / 1'000'000.0).c_str(),
            std::format("{:.0Lf}", Throughput).c_str());
 
@@ -133,7 +133,7 @@ int main()
     // Retrieve all entries.
     //
 
-    printf("Retrieving %s x 1KB entries maintaining LRU property.\n",
+    printf("Retrieving %s entries.\n",
            std::format("{:L}", CACHE_SLOTS).c_str());
 
     StartNs = LmqGetTickCountNs();
@@ -157,7 +157,7 @@ int main()
 
     Throughput = ((double)CACHE_SLOTS / ElapsedNs * 1'000'000'000.0);
 
-    printf("Elapsed: %s [ms] @ %s retrieval/sec (%s-byte items @ %.1f GB/sec)\n",
+    printf("Elapsed: %s [ms] @ %s LRU retrieval/sec (%s-byte items @ %.1f GB/sec)\n",
             std::format("{:.0Lf}", ElapsedNs / 1'000'000.0).c_str(),
             std::format("{:.0Lf}", Throughput).c_str(),
             std::format("{:L}", sizeof(PayloadText)).c_str(),

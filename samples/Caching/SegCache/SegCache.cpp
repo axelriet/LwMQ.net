@@ -171,7 +171,7 @@ int main()
 {
     std::locale::global(std::locale("en_US.UTF-8"));
 
-    printf("SegCache 1.0 - LwMQ Segmented Cache Demo\n%s-way Segmented Cache, %s-byte entries.\n%s slots/insertions/retrievals with %s threads.\n",
+    printf("SegCache 1.0 - LwMQ Segmented LRU Cache Demo.\n\n%s-way Segmented Cache, %s-byte entries.\n%s slots/insertions/retrievals with %s threads.\n",
            std::format("{:L}", CACHE_SEGMENTS).c_str(),
            std::format("{:L}", sizeof(PayloadText)).c_str(),
            std::format("{:L}", CACHE_SLOTS).c_str(),
@@ -280,7 +280,7 @@ int main()
                                                          nullptr));
     });
 
-    printf("Retrieving %s x 1KB entries using %d threads.\n",
+    printf("Retrieving %s entries using %d threads.\n",
            std::format("{:L}", CACHE_SLOTS).c_str(),
            WORKER_THREADS);
 
@@ -297,7 +297,7 @@ int main()
 
     Throughput = ((double)CACHE_SLOTS / ElapsedNs * 1'000'000'000.0);
 
-    printf("Elapsed: %s [ms] @ %s multi-threaded retrieval/sec (%s-byte items @ %.1f GB/sec)\n",
+    printf("Elapsed: %s [ms] @ %s multi-threaded LRU retrieval/sec (%s-byte items @ %.1f GB/sec)\n",
             std::format("{:.0Lf}", ElapsedNs / 1'000'000.0).c_str(),
             std::format("{:.0Lf}", Throughput).c_str(),
             std::format("{:L}", sizeof(PayloadText)).c_str(),
