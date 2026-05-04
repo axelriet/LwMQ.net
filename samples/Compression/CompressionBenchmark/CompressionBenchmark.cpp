@@ -34,7 +34,7 @@ Environment:
 
 #include <api-lwmq-samples-common.h>
 
-#include "..\PayloadText.inc"
+#include "..\..\Assets\PayloadText.inc"
 
 void
 PrintTimeAndSize (
@@ -45,7 +45,7 @@ PrintTimeAndSize (
 {
     printf("%s: %s [us] @ %.3f GB/sec. Data size: %s KB\n",
            Label,
-           std::format("{:.0Lf}", ElapsedNs / 1'000.0).c_str(),
+           std::format("{:.1Lf}", ElapsedNs / 1'000.0).c_str(),
            sizeof(PayloadText) / (double)ElapsedNs,
            std::format("{:.2Lf}", DataSize / 1024.0).c_str());
 }
