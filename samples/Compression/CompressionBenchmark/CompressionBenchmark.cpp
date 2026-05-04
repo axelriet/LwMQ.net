@@ -311,7 +311,7 @@ int main()
     // ------------------------------------------------------------------------
     //
 
-    printf("\nDemo 5: CompressedBuffer compression/decompression\n");
+    printf("\nDemo 5: Your compression/decompression\n");
 
     StartNs = LmqGetTickCountNs();
 
