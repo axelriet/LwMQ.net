@@ -59,7 +59,7 @@ Types
 
     LMQ_COMPRESSIONTYPE
     LMQ_COMPRESSIONWORKSPACE
-    LMQ_COMPRESSEDDATABLOB
+    LMQ_COMPRESSEDDATA
 
 Buffer Compression Functions
 ----------------------------
@@ -108,31 +108,31 @@ One-Shot Compression Functions (BLOB)
         PCVOID UncompressedBuffer,
         SIZE_T UncompressedBufferSize,
         LMQ_COMPRESSIONTYPE CompressionType,
-        PLMQ_COMPRESSEDDATABLOB CompressedDataBlob,
+        PLMQ_COMPRESSEDDATA CompressedDataBlob,
         PSIZE_T CompressedDataBlobSize
         );
 
     LMQAPI
     LmqDecompressData (
-        const LMQ_COMPRESSEDDATABLOB CompressedDataBlob,
+        const LMQ_COMPRESSEDDATA CompressedDataBlob,
         PVOID UncompressedBuffer,
         PSIZE_T UncompressedBufferSize
         );
 
     LMQAPI
-    LmqGetCompressedDataBlobSizes (
-        const LMQ_COMPRESSEDDATABLOB CompressedDataBlob,
+    LmqGetCompressedDataSize (
+        const LMQ_COMPRESSEDDATA CompressedDataBlob,
         PSIZE_T CompressedBlobSize,
         PSIZE_T UncompressedDataSize
         );
 
     LMQAPI
-    LmqFreeCompressedDataBlob (
-        PLMQ_COMPRESSEDDATABLOB CompressedDataBlob
+    LmqFreeCompressedData (
+        PLMQ_COMPRESSEDDATA CompressedDataBlob
         );
 
     const
-    LMQ_COMPRESSEDDATABLOB
-    LmqCompressedDataBlobFromPointer (
+    LMQ_COMPRESSEDDATA
+    LmqCompressedDataFromPointer (
         const BYTE* Ptr
         );
