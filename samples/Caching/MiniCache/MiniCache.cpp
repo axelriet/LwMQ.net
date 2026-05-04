@@ -27,8 +27,6 @@ Environment:
 
 --*/
 
-#include <Windows.h>
-
 #include <format>
 
 #include <api-lwmq-time.h>

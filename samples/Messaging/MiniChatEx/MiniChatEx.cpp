@@ -30,8 +30,6 @@ Environment:
 
 #define USE_PRECISE_BUT_SLOWER_TIMESTAMPS
 
-#include <Windows.h>
-
 #include <io.h>
 #include <fcntl.h>
 #include <process.h>

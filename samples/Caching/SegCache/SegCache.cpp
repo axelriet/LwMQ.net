@@ -27,7 +27,6 @@ Environment:
 
 --*/
 
-#include <Windows.h>
 #include <process.h>
 
 #include <format>

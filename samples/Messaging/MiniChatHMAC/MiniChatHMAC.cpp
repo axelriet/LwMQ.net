@@ -29,8 +29,6 @@ Environment:
 
 --*/
 
-#include <Windows.h>
-
 #include <io.h>
 #include <fcntl.h>
 #include <process.h>
