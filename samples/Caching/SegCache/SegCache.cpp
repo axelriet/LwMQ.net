@@ -37,7 +37,7 @@ Environment:
 
 #include <api-lwmq-samples-common.h>
 
-// #define TINY_PAYLOAD     // Forces small payload
+#define TINY_PAYLOAD     // Forces small payload, uncomment for 1KB
 
 #define CACHE_SLOTS      (1'024 * 1'024)
 #define CACHE_SEGMENTS   (1'024) // [1, 2, 4, 8, ..., 1024]
