@@ -191,7 +191,7 @@ Core Cache Functions
         );
 
     LMQAPI
-    LmqAddEntryFromCacheCallback (
+    LmqAddCacheEntryFromCallback (
         LMQ_CACHE Cache,
         LMQ_CACHECOOKIE Cookie,
         PVOID Data,

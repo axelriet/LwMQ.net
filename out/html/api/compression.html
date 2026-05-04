@@ -148,7 +148,7 @@ compression API.</p>
 <h3>Types<a class="headerlink" href="#types" title="Link to this heading"></a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQ_COMPRESSIONTYPE</span>
 <span class="n">LMQ_COMPRESSIONWORKSPACE</span>
-<span class="n">LMQ_COMPRESSEDDATABLOB</span>
+<span class="n">LMQ_COMPRESSEDDATA</span>
 </pre></div>
 </div>
 </section>
@@ -195,32 +195,32 @@ compression API.</p>
 <span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">UncompressedBuffer</span><span class="p">,</span>
 <span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">UncompressedBufferSize</span><span class="p">,</span>
 <span class="w">    </span><span class="n">LMQ_COMPRESSIONTYPE</span><span class="w"> </span><span class="n">CompressionType</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PLMQ_COMPRESSEDDATABLOB</span><span class="w"> </span><span class="n">CompressedDataBlob</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLMQ_COMPRESSEDDATA</span><span class="w"> </span><span class="n">CompressedDataBlob</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PSIZE_T</span><span class="w"> </span><span class="n">CompressedDataBlobSize</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="n">LMQAPI</span>
 <span class="nf">LmqDecompressData</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">LMQ_COMPRESSEDDATABLOB</span><span class="w"> </span><span class="n">CompressedDataBlob</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">LMQ_COMPRESSEDDATA</span><span class="w"> </span><span class="n">CompressedDataBlob</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">UncompressedBuffer</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PSIZE_T</span><span class="w"> </span><span class="n">UncompressedBufferSize</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="n">LMQAPI</span>
-<span class="nf">LmqGetCompressedDataBlobSizes</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">LMQ_COMPRESSEDDATABLOB</span><span class="w"> </span><span class="n">CompressedDataBlob</span><span class="p">,</span>
+<span class="nf">LmqGetCompressedDataSize</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">LMQ_COMPRESSEDDATA</span><span class="w"> </span><span class="n">CompressedDataBlob</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PSIZE_T</span><span class="w"> </span><span class="n">CompressedBlobSize</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PSIZE_T</span><span class="w"> </span><span class="n">UncompressedDataSize</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="n">LMQAPI</span>
-<span class="nf">LmqFreeCompressedDataBlob</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">PLMQ_COMPRESSEDDATABLOB</span><span class="w"> </span><span class="n">CompressedDataBlob</span>
+<span class="nf">LmqFreeCompressedData</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PLMQ_COMPRESSEDDATA</span><span class="w"> </span><span class="n">CompressedDataBlob</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="k">const</span>
-<span class="n">LMQ_COMPRESSEDDATABLOB</span>
-<span class="nf">LmqCompressedDataBlobFromPointer</span><span class="w"> </span><span class="p">(</span>
+<span class="n">LMQ_COMPRESSEDDATA</span>
+<span class="nf">LmqCompressedDataFromPointer</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Ptr</span>
 <span class="w">    </span><span class="p">);</span>
 </pre></div>
