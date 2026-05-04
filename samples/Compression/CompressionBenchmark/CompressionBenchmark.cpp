@@ -305,5 +305,35 @@ int main()
                      LmqTimeElapsedNsSince(StartNs),
                      UncompressedSize);
 
+#if 0
+
+    //
+    // ------------------------------------------------------------------------
+    //
+
+    printf("\nDemo 5: CompressedBuffer compression/decompression\n");
+
+    StartNs = LmqGetTickCountNs();
+
+    //
+    // Add your compression here. Store the compressed size in CompressedSize
+    //
+
+    PrintTimeAndSize("Compression",
+                     LmqTimeElapsedNsSince(StartNs),
+                     CompressedSize);
+
+    StartNs = LmqGetTickCountNs();
+
+    //
+    // Add your decompression here. Store the uncompressed size in UncompressedSize
+    //
+
+    PrintTimeAndSize("Decompression",
+                     LmqTimeElapsedNsSince(StartNs),
+                     UncompressedSize);
+
+#endif
+
     return 0;
 }
