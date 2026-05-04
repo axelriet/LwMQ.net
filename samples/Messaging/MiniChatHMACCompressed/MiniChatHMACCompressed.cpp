@@ -225,7 +225,7 @@ PostOneMessage (
     //
 
     SIZE_T CompressedDataBlobSize;
-    LMQ_COMPRESSEDDATABLOB CompressedBlob;
+    LMQ_COMPRESSEDDATA CompressedBlob;
 
     CHECK_RETURN(LmqCompressData(MessagePayload,
                                  MessagePayloadSizeBytes,
@@ -238,7 +238,7 @@ PostOneMessage (
                                 CompressedDataBlobSize,
                                 Timestamp));
 
-    CHECK_RETURN(LmqFreeCompressedDataBlob(&CompressedBlob));
+    CHECK_RETURN(LmqFreeCompressedData(&CompressedBlob));
 
     //
     // Post the message.
@@ -319,7 +319,7 @@ ReceiveOneMessage (
     static WCHAR Buffer[63 * 1024]{};
     SIZE_T UncompressedDataSizeBytes{ sizeof (Buffer) };
 
-    CHECK_RETURN(LmqDecompressData(LmqCompressedDataBlobFromPointer(Data),
+    CHECK_RETURN(LmqDecompressData(LmqCompressedDataFromPointer(Data),
                                    &Buffer[0],
                                    &UncompressedDataSizeBytes));
 
