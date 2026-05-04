@@ -36,6 +36,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SegCache", "Caching\SegCache\SegCache.vcxproj", "{F230E476-EEBD-44BD-816E-269194C20DF1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Compression", "Compression", "{78A97EFC-F1BF-4C77-BB3D-8E3B8F952F0E}"
+	ProjectSection(SolutionItems) = preProject
+		Compression\PayloadText.inc = Compression\PayloadText.inc
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CompressionBenchmark", "Compression\CompressionBenchmark\CompressionBenchmark.vcxproj", "{F230E476-EEBD-44BD-816E-269194C21DF1}"
 EndProject
