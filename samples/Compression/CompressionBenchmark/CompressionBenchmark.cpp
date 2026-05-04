@@ -36,6 +36,20 @@ Environment:
 
 #include "..\PayloadText.inc"
 
+void
+PrintTimeAndSize (
+    _In_ PCSTR Label,
+    _In_ UINT64 ElapsedNs,
+    _In_ SIZE_T DataSize
+    )
+{
+    printf("%s: %s [us] @ %.3f GB/sec. Data size: %s KB\n",
+           Label,
+           std::format("{:.0Lf}", ElapsedNs / 1'000.0).c_str(),
+           sizeof(PayloadText) / (double)ElapsedNs,
+           std::format("{:.2Lf}", DataSize / 1024.0).c_str());
+}
+
 int main()
 {
     std::locale::global(std::locale("en_US.UTF-8"));
@@ -45,94 +59,6 @@ int main()
            std::format("{:.2Lf}", sizeof(PayloadText) / 1024.0).c_str());
 
     UINT64 StartNs{};
-    UINT64 ElapsedNs{};
-
-    //
-    // One-shot compression (LZ4) ---------------------------------------------
-    //
-
-    printf("\nDemo 1: One-shot compression (LwMQ LZ4)\n");
-
-    SIZE_T FinalCompressedSize{};
-    LMQ_COMPRESSEDDATA CompressedBlob{};
-
-    //
-    // Warmup run.
-    //
-
-    CHECK(LmqCompressData(&PayloadText[0],
-                          sizeof(PayloadText),
-                          LMQ_COMPRESSION_LZ4,
-                          &CompressedBlob,
-                          &FinalCompressedSize));
-
-    CHECK(LmqFreeCompressedData(&CompressedBlob));
-
-    //
-    // Timed run.
-    //
-
-    StartNs = LmqGetTickCountNs();
-
-    CHECK(LmqCompressData(&PayloadText[0],
-                          sizeof(PayloadText),
-                          LMQ_COMPRESSION_LZ4,
-                          &CompressedBlob,
-                          &FinalCompressedSize));
-
-    ElapsedNs = LmqTimeElapsedNsSince(StartNs);
-
-    CHECK(LmqFreeCompressedData(&CompressedBlob));
-
-    printf("Elapsed: %s [us] @ %.3f GB/sec. Compressed data size: %s KB\n",
-            std::format("{:.0Lf}", ElapsedNs / 1'000.0).c_str(),
-            sizeof(PayloadText) / (double) ElapsedNs,
-            std::format("{:.2Lf}", FinalCompressedSize / 1024.0).c_str());
-
-    //
-    // One-shot compression (Deflate) -----------------------------------------
-    //
-
-    printf("\nDemo 2: One-shot compression (LwMQ Deflate)\n");
-
-    //
-    // Warmup run.
-    //
-
-    CHECK(LmqCompressData(&PayloadText[0],
-                          sizeof(PayloadText),
-                          LMQ_COMPRESSION_DEFLATE,
-                          &CompressedBlob,
-                          &FinalCompressedSize));
-
-    CHECK(LmqFreeCompressedData(&CompressedBlob));
-
-    //
-    // Timed run.
-    //
-
-    StartNs = LmqGetTickCountNs();
-
-    CHECK(LmqCompressData(&PayloadText[0],
-                          sizeof(PayloadText),
-                          LMQ_COMPRESSION_DEFLATE,
-                          &CompressedBlob,
-                          &FinalCompressedSize));
-
-    ElapsedNs = LmqTimeElapsedNsSince(StartNs);
-
-    CHECK(LmqFreeCompressedData(&CompressedBlob));
-
-    printf("Elapsed: %s [us] @ %.3f GB/sec. Compressed data size: %s KB\n",
-            std::format("{:.0Lf}", ElapsedNs / 1'000.0).c_str(),
-            sizeof(PayloadText) / (double) ElapsedNs,
-            std::format("{:.2Lf}", FinalCompressedSize / 1024.0).c_str());
-
-    //
-    // Buffer compression (LZ4) -----------------------------------------------
-    //
-
-    printf("\nDemo 3: Buffer compression (LwMQ LZ4)\n");
 
     //
     // The compressed buffer size must be larger. This is
@@ -144,25 +70,153 @@ int main()
     // compress that particular data or not.
     //
 
-    const SIZE_T CompressedBufferSize{ sizeof(PayloadText) + 1024 };
-    __pragma(warning(suppress: 26414)) auto CompressedBuffer = std::make_unique<BYTE[]>(CompressedBufferSize);
+    constexpr SIZE_T BufferSize{ sizeof(PayloadText) + 1024 };
 
-    if (!CompressedBuffer)
+    __pragma(warning(suppress: 26414)) auto CompressedBuffer = std::make_unique<BYTE[]>(BufferSize);
+    __pragma(warning(suppress: 26414)) auto UncompressedBuffer = std::make_unique<BYTE[]>(BufferSize);
+
+    if (!CompressedBuffer || !UncompressedBuffer)
     {
         CHECK(E_OUTOFMEMORY);
     }
 
     //
+    // One-shot compression (LZ4) ---------------------------------------------
+    //
+
+    printf("\nDemo 1: One-shot compression/decompression (LwMQ LZ4)\n");
+
+    SIZE_T CompressedSize{};
+    SIZE_T UncompressedSize{};
+
+    LMQ_COMPRESSEDDATA CompressedBlob{};
+
+    //
+    // Warmup run.
+    //
+
+    CHECK(LmqCompressData(&PayloadText[0],
+                          sizeof(PayloadText),
+                          LMQ_COMPRESSION_LZ4,
+                          &CompressedBlob,
+                          &CompressedSize));
+
+    UncompressedSize = BufferSize;
+
+    CHECK(LmqDecompressData(CompressedBlob,
+                            CompressedBuffer.get(),
+                            &UncompressedSize));
+
+    CHECK(LmqFreeCompressedData(&CompressedBlob));
+
+    //
+    // Timed run.
+    //
+
+    StartNs = LmqGetTickCountNs();
+
+    CHECK(LmqCompressData(&PayloadText[0],
+                          sizeof(PayloadText),
+                          LMQ_COMPRESSION_LZ4,
+                          &CompressedBlob,
+                          &CompressedSize));
+
+    PrintTimeAndSize("Compression",
+                     LmqTimeElapsedNsSince(StartNs),
+                     CompressedSize);
+
+    UncompressedSize = BufferSize;
+
+    StartNs = LmqGetTickCountNs();
+
+    CHECK(LmqDecompressData(CompressedBlob,
+                            CompressedBuffer.get(),
+                            &UncompressedSize));
+
+    PrintTimeAndSize("Decompression",
+                     LmqTimeElapsedNsSince(StartNs),
+                     UncompressedSize);
+
+    CHECK(LmqFreeCompressedData(&CompressedBlob));
+
+    //
+    // One-shot compression (Deflate) -----------------------------------------
+    //
+
+    printf("\nDemo 2: One-shot compression/decompression (LwMQ Deflate)\n");
+
+    //
+    // Warmup run.
+    //
+
+    CHECK(LmqCompressData(&PayloadText[0],
+                          sizeof(PayloadText),
+                          LMQ_COMPRESSION_DEFLATE,
+                          &CompressedBlob,
+                          &CompressedSize));
+
+    UncompressedSize = BufferSize;
+
+    CHECK(LmqDecompressData(CompressedBlob,
+                            CompressedBuffer.get(),
+                            &UncompressedSize));
+
+    CHECK(LmqFreeCompressedData(&CompressedBlob));
+
+    //
+    // Timed run.
+    //
+
+    StartNs = LmqGetTickCountNs();
+
+    CHECK(LmqCompressData(&PayloadText[0],
+                          sizeof(PayloadText),
+                          LMQ_COMPRESSION_DEFLATE,
+                          &CompressedBlob,
+                          &CompressedSize));
+
+    PrintTimeAndSize("Compression",
+                     LmqTimeElapsedNsSince(StartNs),
+                     CompressedSize);
+
+    UncompressedSize = BufferSize;
+
+    StartNs = LmqGetTickCountNs();
+
+    CHECK(LmqDecompressData(CompressedBlob,
+                            CompressedBuffer.get(),
+                            &UncompressedSize));
+
+    PrintTimeAndSize("Decompression",
+                     LmqTimeElapsedNsSince(StartNs),
+                     UncompressedSize);
+
+    CHECK(LmqFreeCompressedData(&CompressedBlob));
+
+    //
+    // Buffer compression (LZ4) -----------------------------------------------
+    //
+
+    printf("\nDemo 3: CompressedBuffer compression/decompression (LwMQ LZ4)\n");
+
+    //
     // Warmup run.
     //
 
     CHECK(LmqCompressBuffer(&PayloadText[0],
                             sizeof(PayloadText),
                             CompressedBuffer.get(),
-                            CompressedBufferSize,
+                            BufferSize,
                             LMQ_COMPRESSION_LZ4,
-                            &FinalCompressedSize,
+                            &CompressedSize,
                             nullptr));
+
+    CHECK(LmqDecompressBuffer(UncompressedBuffer.get(),
+                              BufferSize,
+                              CompressedBuffer.get(),
+                              CompressedSize,
+                              LMQ_COMPRESSION_LZ4,
+                              &UncompressedSize));
 
     //
     // Timed run.
@@ -173,23 +227,33 @@ int main()
     CHECK(LmqCompressBuffer(&PayloadText[0],
                             sizeof(PayloadText),
                             CompressedBuffer.get(),
-                            CompressedBufferSize,
+                            BufferSize,
                             LMQ_COMPRESSION_LZ4,
-                            &FinalCompressedSize,
+                            &CompressedSize,
                             nullptr));
 
-    ElapsedNs = LmqTimeElapsedNsSince(StartNs);
+    PrintTimeAndSize("Compression",
+                     LmqTimeElapsedNsSince(StartNs),
+                     CompressedSize);
 
-    printf("Elapsed: %s [us] @ %.3f GB/sec. Compressed data size: %s KB\n",
-            std::format("{:.0Lf}", ElapsedNs / 1'000.0).c_str(),
-            sizeof(PayloadText) / (double) ElapsedNs,
-            std::format("{:.2Lf}", FinalCompressedSize / 1024.0).c_str());
+    StartNs = LmqGetTickCountNs();
+
+    CHECK(LmqDecompressBuffer(UncompressedBuffer.get(),
+                              BufferSize,
+                              CompressedBuffer.get(),
+                              CompressedSize,
+                              LMQ_COMPRESSION_LZ4,
+                              &UncompressedSize));
+
+    PrintTimeAndSize("Decompression",
+                     LmqTimeElapsedNsSince(StartNs),
+                     UncompressedSize);
 
     //
     // Buffer compression (Deflate) -------------------------------------------
     //
 
-    printf("\nDemo 4: Buffer compression (LwMQ Deflate)\n");
+    printf("\nDemo 4: CompressedBuffer compression/decompression (LwMQ Deflate)\n");
 
     //
     // Warmup run.
@@ -198,10 +262,17 @@ int main()
     CHECK(LmqCompressBuffer(&PayloadText[0],
                             sizeof(PayloadText),
                             CompressedBuffer.get(),
-                            CompressedBufferSize,
+                            BufferSize,
                             LMQ_COMPRESSION_DEFLATE,
-                            &FinalCompressedSize,
+                            &CompressedSize,
                             nullptr));
+
+    CHECK(LmqDecompressBuffer(UncompressedBuffer.get(),
+                              BufferSize,
+                              CompressedBuffer.get(),
+                              CompressedSize,
+                              LMQ_COMPRESSION_DEFLATE,
+                              &UncompressedSize));
 
     //
     // Timed run.
@@ -212,17 +283,27 @@ int main()
     CHECK(LmqCompressBuffer(&PayloadText[0],
                             sizeof(PayloadText),
                             CompressedBuffer.get(),
-                            CompressedBufferSize,
+                            BufferSize,
                             LMQ_COMPRESSION_DEFLATE,
-                            &FinalCompressedSize,
+                            &CompressedSize,
                             nullptr));
 
-    ElapsedNs = LmqTimeElapsedNsSince(StartNs);
+    PrintTimeAndSize("Compression",
+                     LmqTimeElapsedNsSince(StartNs),
+                     CompressedSize);
 
-    printf("Elapsed: %s [us] @ %.3f GB/sec. Compressed data size: %s KB\n",
-            std::format("{:.0Lf}", ElapsedNs / 1'000.0).c_str(),
-            sizeof(PayloadText) / (double) ElapsedNs,
-            std::format("{:.2Lf}", FinalCompressedSize / 1024.0).c_str());
+    StartNs = LmqGetTickCountNs();
+
+    CHECK(LmqDecompressBuffer(UncompressedBuffer.get(),
+                              BufferSize,
+                              CompressedBuffer.get(),
+                              CompressedSize,
+                              LMQ_COMPRESSION_DEFLATE,
+                              &UncompressedSize));
+
+    PrintTimeAndSize("Decompression",
+                     LmqTimeElapsedNsSince(StartNs),
+                     UncompressedSize);
 
     return 0;
 }
