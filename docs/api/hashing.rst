@@ -404,3 +404,104 @@ the key, protected or not, from memory.
     LmqEraseKey (
         PLMQ_KEY Key
         );
+
+
+Hex String Conversion Functions
+-------------------------------
+
+The hexadecimal conversion functions quickly convert
+a GUID or a byte array into a null-terminated string
+representation, either ASCII or UNICODE.
+
+The GUID conversion functions have two variants, with
+or without enclosing braces. The hexadecimal letters are
+always lowercase. 
+
+The application must supply an appropriately sized
+buffer to receive the strings. The SDK header files
+contain exact details regarding the buffer sizes.
+
+.. note::
+
+    You can make safe versions of those functions yourself,
+    for example, knowing the number of characters written
+    by the GUID conversions functions is fixed, you could
+    easlily make a safe wrapper, e.g.:
+
+    HRESULT
+    SafeGuidToString (
+        REFGUID Guid,
+        PTCHAR Out,
+        SIZE_T BufferSizeCch
+        ) noexcept
+    {
+        //
+        // The functions always write 37 characters.
+        //
+
+        if (BufferSizeCch < (37 * sizeof(TCHAR)))
+        {
+            RETURN_WIN32(ERROR_INSUFFICIENT_BUFFER);
+        }
+
+        LmqGuidToString(Guid,
+                        Out);
+
+        return S_OK;
+    }
+
+    Alternatively, you could make safe macros with an assert in debug builds:
+
+    #define SafeGuidToString(Guid, Out, Cch) do { assert(Cch >= (37 * sizeof(TCHAR))) LmqGuidToString(Guid, Out); } while(0,0)
+
+    As a side note, Cch means "count of characters," as opposed to Cb with means "count of bytes."
+
+.. code:: cpp
+
+    LMQAPI_VOID
+    LmqGuidToStringA (
+        REFGUID Guid,
+        PCHAR Out // 37 ASCII chars
+        ) noexcept;
+
+    LMQAPI_VOID
+    LmqGuidToStringW (
+        REFGUID Guid,
+        PWCHAR Out // 37 UNICODE chars (74 bytes)
+        ) noexcept;
+
+    LMQAPI_VOID
+    LmqGuidToBracedStringA (
+        REFGUID Guid,
+        PCHAR Out // 39 ASCII chars
+        ) noexcept;
+
+    LMQAPI_VOID
+    LmqGuidToBracedStringW (
+        REFGUID Guid,
+        PWCHAR Out // 39 UNICODE chars (78 bytes)
+        ) noexcept;
+
+    LMQAPIIMP_VOID
+    LmqBytesToHexStringA (
+        const BYTE* Bytes,
+        const SIZE_T Count,
+        PCHAR Out // ((Count * 2) + 1) ASCII chars
+        ) noexcept;
+
+    LMQAPIIMP_VOID
+    LmqBytesToHexStringW (
+        const BYTE* Bytes,
+        const SIZE_T Count,
+        PWCHAR Out// ((Count * 2) + 1) UNICODE chars (((Count * 2) + 1) * 2 bytes)
+        ) noexcept;
+
+    #ifdef UNICODE
+    #define LmqGuidToString LmqGuidToStringW
+    #define LmqGuidToBracedString LmqGuidToBracedStringW
+    #define LmqBytesToHexString LmqBytesToHexStringW
+    #else
+    #define LmqGuidToString LmqGuidToStringA
+    #define LmqGuidToBracedString LmqGuidToBracedStringA
+    #define LmqBytesToHexString LmqBytesToHexStringA
+    #endif
