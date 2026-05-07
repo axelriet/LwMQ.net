@@ -65,8 +65,9 @@
 <li class="toctree-l4"><a class="reference internal" href="#fast-hashing-functions">Fast Hashing Functions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#hmac-functions">HMAC Functions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#keys-functions">Keys Functions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#entropy-functions">Entropy Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#entropy-generation-functions">Entropy Generation Functions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#key-protection-functions">Key Protection Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hex-string-conversion-functions">Hex String Conversion Functions</a></li>
 </ul>
 </li>
 </ul>
@@ -262,8 +263,8 @@ key is present in memory. When a key is no longer needed, including when exiting
 your program, securely erase any and all keys from memory using <code class="docutils literal notranslate"><span class="pre">LmqEraseKey()</span></code></p>
 <p>For highly secure cryptographic operations, consider using well known facilities
 such as <a class="reference external" href="https://learn.microsoft.com/en-us/windows/win32/seccrypto/cryptoapi-system-architecture">CryptoAPI</a>, Crypto Next Generation (<a class="reference external" href="https://docs.microsoft.com/en-us/windows/win32/seccng/cng-portal">CNG</a>), or <a class="reference external" href="https://www.openssl.org/">OpenSSL</a> externally.</p>
-<section id="one-shot-hmac-functions">
-<h4>One-shot HMAC Functions<a class="headerlink" href="#one-shot-hmac-functions" title="Link to this heading"></a></h4>
+<section id="fast-one-shot-hmac-functions">
+<h4>Fast One-shot HMAC Functions<a class="headerlink" href="#fast-one-shot-hmac-functions" title="Link to this heading"></a></h4>
 <p>This set of functions is meant for cases where only a few HMACs need to be computed
 or verified, and the caller does not mind paying the cost of key setup every time.</p>
 <p>This simplicity comes at some preformance cost.</p>
@@ -287,8 +288,8 @@ or verified, and the caller does not mind paying the cost of key setup every tim
 </pre></div>
 </div>
 </section>
-<section id="id1">
-<h4>HMAC Functions<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
+<section id="fast-hmac-functions">
+<h4>Fast HMAC Functions<a class="headerlink" href="#fast-hmac-functions" title="Link to this heading"></a></h4>
 <p>This set of functions is meant for cases where many HMACs need to be computed
 or verified with the same key, and the caller wants to pay the cost of key
 setup only once.</p>
@@ -405,8 +406,8 @@ other purposes, and can also be protected/unprotected in memory using
 </pre></div>
 </div>
 </section>
-<section id="entropy-functions">
-<h3>Entropy Functions<a class="headerlink" href="#entropy-functions" title="Link to this heading"></a></h3>
+<section id="entropy-generation-functions">
+<h3>Entropy Generation Functions<a class="headerlink" href="#entropy-generation-functions" title="Link to this heading"></a></h3>
 <p>This function fills the provided <code class="docutils literal notranslate"><span class="pre">LMQ_ENTROPY</span></code> structure with random data
 that can be used as a source of entropy for various purposes, such as
 generating random keys or nonces.</p>
@@ -454,6 +455,144 @@ the key, protected or not, from memory.</p>
 <span class="w">    </span><span class="p">);</span>
 </pre></div>
 </div>
+</section>
+<section id="hex-string-conversion-functions">
+<h3>Hex String Conversion Functions<a class="headerlink" href="#hex-string-conversion-functions" title="Link to this heading"></a></h3>
+<p>The hexadecimal conversion functions quickly convert
+a GUID or a byte array into a null-terminated hex string
+representation, either ASCII or UNICODE.</p>
+<p>The GUID conversion functions have two variants, with
+or without enclosing braces.</p>
+<p>The hexadecimal letters ‘a’ to ‘f’ are always lowercase,
+and the GUID conversion functions handle the peculiar
+ordering and dash separators used in text-form GUIDs.</p>
+<p>Their output is identical to the output produced by the
+StringFromGUID() and StringFromCLSID() functions from
+the Windows API except the lower casing and optional braces.</p>
+<p>The casing debate is settled by <a class="reference external" href="https://www.itu.int/en/ITU-T/asn1/Pages/UUID/uuids.aspx">ITU-T X.667</a> and <a class="reference external" href="https://www.rfc-editor.org/rfc/rfc4122">RFC 4122</a>
+which stipulate that UUIDs/GUIDs must be lowercase, although
+all processors must accept uppercase as input. The lowercase
+convention is prevalent in Unix/Linux circles as the output
+produced by the <a class="reference external" href="https://www.unix.com/man_page/redhat/1/uuidgen/">uuidgen</a> utility.</p>
+<p>If you ever compare GUIDs in text form it is therefore
+advisable to use a case-insensitive string comparison
+function (rather than blindly converting strings to
+either upper or lower case before comparison) to
+conform with the “anycase” input requirement.</p>
+<p>The application must supply an appropriately sized
+buffer to receive the strings. The LwMQ SDK headers
+contain exact details regarding the buffer sizes.</p>
+<section id="fast-guid-uuid-to-string-conversion">
+<h4>Fast GUID/UUID To String Conversion<a class="headerlink" href="#fast-guid-uuid-to-string-conversion" title="Link to this heading"></a></h4>
+<p>Quickly produce the dashed “registry format” with or without surrounding braces.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The caller must supply a buffer large enough to hold the result.</p>
+</div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI_VOID</span>
+<span class="nf">LmqGuidToStringA</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">REFGUID</span><span class="w"> </span><span class="n">Guid</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCHAR</span><span class="w"> </span><span class="n">Out</span><span class="w"> </span><span class="c1">// 37 ASCII chars</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI_VOID</span>
+<span class="nf">LmqGuidToStringW</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">REFGUID</span><span class="w"> </span><span class="n">Guid</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PWCHAR</span><span class="w"> </span><span class="n">Out</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="mi">37</span><span class="w"> </span><span class="n">UNICODE</span><span class="w"> </span><span class="n">chars</span><span class="w"> </span><span class="p">(</span><span class="mi">74</span><span class="w"> </span><span class="n">bytes</span><span class="p">)</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI_VOID</span>
+<span class="nf">LmqGuidToBracedStringA</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">REFGUID</span><span class="w"> </span><span class="n">Guid</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCHAR</span><span class="w"> </span><span class="n">Out</span><span class="w"> </span><span class="c1">// 39 ASCII chars</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI_VOID</span>
+<span class="nf">LmqGuidToBracedStringW</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">REFGUID</span><span class="w"> </span><span class="n">Guid</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PWCHAR</span><span class="w"> </span><span class="n">Out</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="mi">39</span><span class="w"> </span><span class="n">UNICODE</span><span class="w"> </span><span class="n">chars</span><span class="w"> </span><span class="p">(</span><span class="mi">78</span><span class="w"> </span><span class="n">bytes</span><span class="p">)</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="cp">#ifdef UNICODE</span>
+<span class="cp">#define LmqGuidToString LmqGuidToStringW</span>
+<span class="cp">#define LmqGuidToBracedString LmqGuidToBracedStringW</span>
+<span class="cp">#else</span>
+<span class="cp">#define LmqGuidToString LmqGuidToStringA</span>
+<span class="cp">#define LmqGuidToBracedString LmqGuidToBracedStringA</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</section>
+<section id="fast-generic-hex-conversion">
+<h4>Fast Generic Hex Conversion<a class="headerlink" href="#fast-generic-hex-conversion" title="Link to this heading"></a></h4>
+<p>Quickly convert byte extents of any length to hex representation,
+useful for printing hashes, CRCs, keys, and other binary data
+in human-readable hexadecimal representation.</p>
+<p>The hex conversion functions are not suitable to convert
+little-endian integers (uint16, uint32, uint64) to their
+hex representation as their byte ordering requires special
+consideration.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The caller must supply a buffer large enough to hold the result.</p>
+</div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPIIMP_VOID</span>
+<span class="nf">LmqBytesToHexStringA</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Bytes</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">Count</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCHAR</span><span class="w"> </span><span class="n">Out</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="p">((</span><span class="n">Count</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="n">ASCII</span><span class="w"> </span><span class="n">chars</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPIIMP_VOID</span>
+<span class="nf">LmqBytesToHexStringW</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Bytes</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">Count</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PWCHAR</span><span class="w"> </span><span class="n">Out</span><span class="o">//</span><span class="w"> </span><span class="p">((</span><span class="n">Count</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="n">UNICODE</span><span class="w"> </span><span class="n">chars</span><span class="w"> </span><span class="p">(((</span><span class="n">Count</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">bytes</span><span class="p">)</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="cp">#ifdef UNICODE</span>
+<span class="cp">#define LmqBytesToHexString LmqBytesToHexStringW</span>
+<span class="cp">#else</span>
+<span class="cp">#define LmqBytesToHexString LmqBytesToHexStringA</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can make safe versions of those functions yourself,
+for example, knowing the number of characters written
+by the GUID conversions functions is fixed, you could
+easlily make a safe wrapper, e.g.:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">HRESULT</span>
+<span class="nf">SafeGuidToString</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">REFGUID</span><span class="w"> </span><span class="n">Guid</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PTCHAR</span><span class="w"> </span><span class="n">Out</span><span class="p">,</span>
+<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">BufferSizeCch</span>
+<span class="w">    </span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">//</span>
+<span class="w">    </span><span class="c1">// The functions always write 37 characters.</span>
+<span class="w">    </span><span class="c1">//</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">BufferSizeCch</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="p">(</span><span class="mi">37</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">TCHAR</span><span class="p">)))</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">RETURN_WIN32</span><span class="p">(</span><span class="n">ERROR_INSUFFICIENT_BUFFER</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">LmqGuidToString</span><span class="p">(</span><span class="n">Guid</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">Out</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">S_OK</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Alternatively, you could make safe macros with an assert in debug builds:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#define SafeGuidToString(Guid, Out, Cch) do { assert(Cch &gt;= (37 * sizeof(TCHAR))) LmqGuidToString(Guid, Out); } while(0,0)</span>
+</pre></div>
+</div>
+<p>As a side note, Cch means “count of characters,” as opposed to Cb, “count of bytes.”</p>
+</div>
+</section>
 </section>
 </section>
 </section>

@@ -188,8 +188,8 @@ such as `CryptoAPI`_, Crypto Next Generation (`CNG`_), or `OpenSSL`_ externally.
 .. _CNG: https://docs.microsoft.com/en-us/windows/win32/seccng/cng-portal
 .. _OpenSSL: https://www.openssl.org/
 
-One-shot HMAC Functions
-^^^^^^^^^^^^^^^^^^^^^^^
+Fast One-shot HMAC Functions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This set of functions is meant for cases where only a few HMACs need to be computed
 or verified, and the caller does not mind paying the cost of key setup every time.
@@ -216,8 +216,8 @@ This simplicity comes at some preformance cost.
         PCLMQ_HMAC HMAC
         );
 
-HMAC Functions
-^^^^^^^^^^^^^^
+Fast HMAC Functions
+^^^^^^^^^^^^^^^^^^^
 
 This set of functions is meant for cases where many HMACs need to be computed
 or verified with the same key, and the caller wants to pay the cost of key
@@ -346,8 +346,8 @@ other purposes, and can also be protected/unprotected in memory using
         PLMQ_KEY Key
         );
 
-Entropy Functions
------------------
+Entropy Generation Functions
+----------------------------
 
 This function fills the provided ``LMQ_ENTROPY`` structure with random data
 that can be used as a source of entropy for various purposes, such as
@@ -410,16 +410,120 @@ Hex String Conversion Functions
 -------------------------------
 
 The hexadecimal conversion functions quickly convert
-a GUID or a byte array into a null-terminated string
+a GUID or a byte array into a null-terminated hex string
 representation, either ASCII or UNICODE.
 
 The GUID conversion functions have two variants, with
-or without enclosing braces. The hexadecimal letters are
-always lowercase. 
+or without enclosing braces.
+
+The hexadecimal letters 'a' to 'f' are always lowercase,
+and the GUID conversion functions handle the peculiar
+ordering and dash separators used in text-form GUIDs.
+
+Their output is identical to the output produced by the
+StringFromGUID() and StringFromCLSID() functions from
+the Windows API except the lower casing and optional braces.
+
+The casing debate is settled by `ITU-T X.667`_ and `RFC 4122`_
+which stipulate that UUIDs/GUIDs must be lowercase, although
+all processors must accept uppercase as input. The lowercase
+convention is prevalent in Unix/Linux circles as the output
+produced by the `uuidgen`_ utility.
+
+.. _ITU-T X.667: https://www.itu.int/en/ITU-T/asn1/Pages/UUID/uuids.aspx
+.. _RFC 4122: https://www.rfc-editor.org/rfc/rfc4122
+.. _uuidgen: https://www.unix.com/man_page/redhat/1/uuidgen/
+
+If you ever compare GUIDs in text form it is therefore
+advisable to use a case-insensitive string comparison
+function (rather than blindly converting strings to
+either upper or lower case before comparison) to
+conform with the "anycase" input requirement.
 
 The application must supply an appropriately sized
-buffer to receive the strings. The SDK header files
+buffer to receive the strings. The LwMQ SDK headers
 contain exact details regarding the buffer sizes.
+
+Fast GUID/UUID To String Conversion
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Quickly produce the dashed "registry format" with or without surrounding braces.
+
+.. important::
+
+    The caller must supply a buffer large enough to hold the result.
+
+.. code:: cpp
+
+    LMQAPI_VOID
+    LmqGuidToStringA (
+        REFGUID Guid,
+        PCHAR Out // 37 ASCII chars
+        );
+
+    LMQAPI_VOID
+    LmqGuidToStringW (
+        REFGUID Guid,
+        PWCHAR Out // 37 UNICODE chars (74 bytes)
+        );
+
+    LMQAPI_VOID
+    LmqGuidToBracedStringA (
+        REFGUID Guid,
+        PCHAR Out // 39 ASCII chars
+        );
+
+    LMQAPI_VOID
+    LmqGuidToBracedStringW (
+        REFGUID Guid,
+        PWCHAR Out // 39 UNICODE chars (78 bytes)
+        );
+
+    #ifdef UNICODE
+    #define LmqGuidToString LmqGuidToStringW
+    #define LmqGuidToBracedString LmqGuidToBracedStringW
+    #else
+    #define LmqGuidToString LmqGuidToStringA
+    #define LmqGuidToBracedString LmqGuidToBracedStringA
+    #endif
+
+Fast Generic Hex Conversion
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Quickly convert byte extents of any length to hex representation,
+useful for printing hashes, CRCs, keys, and other binary data
+in human-readable hexadecimal representation.
+
+The hex conversion functions are not suitable to convert
+little-endian integers (uint16, uint32, uint64) to their
+hex representation as their byte ordering requires special
+consideration.
+
+.. important::
+
+    The caller must supply a buffer large enough to hold the result.
+
+.. code:: cpp
+
+    LMQAPIIMP_VOID
+    LmqBytesToHexStringA (
+        const BYTE* Bytes,
+        const SIZE_T Count,
+        PCHAR Out // ((Count * 2) + 1) ASCII chars
+        );
+
+    LMQAPIIMP_VOID
+    LmqBytesToHexStringW (
+        const BYTE* Bytes,
+        const SIZE_T Count,
+        PWCHAR Out// ((Count * 2) + 1) UNICODE chars (((Count * 2) + 1) * 2 bytes)
+        );
+
+    #ifdef UNICODE
+    #define LmqBytesToHexString LmqBytesToHexStringW
+    #else
+    #define LmqBytesToHexString LmqBytesToHexStringA
+    #endif
 
 .. note::
 
@@ -428,80 +532,34 @@ contain exact details regarding the buffer sizes.
     by the GUID conversions functions is fixed, you could
     easlily make a safe wrapper, e.g.:
 
-    HRESULT
-    SafeGuidToString (
-        REFGUID Guid,
-        PTCHAR Out,
-        SIZE_T BufferSizeCch
-        ) noexcept
-    {
-        //
-        // The functions always write 37 characters.
-        //
+    .. code:: cpp
 
-        if (BufferSizeCch < (37 * sizeof(TCHAR)))
+        HRESULT
+        SafeGuidToString (
+            REFGUID Guid,
+            PTCHAR Out,
+            SIZE_T BufferSizeCch
+            )
         {
-            RETURN_WIN32(ERROR_INSUFFICIENT_BUFFER);
+            //
+            // The functions always write 37 characters.
+            //
+
+            if (BufferSizeCch < (37 * sizeof(TCHAR)))
+            {
+                RETURN_WIN32(ERROR_INSUFFICIENT_BUFFER);
+            }
+
+            LmqGuidToString(Guid,
+                            Out);
+
+            return S_OK;
         }
-
-        LmqGuidToString(Guid,
-                        Out);
-
-        return S_OK;
-    }
 
     Alternatively, you could make safe macros with an assert in debug builds:
 
-    #define SafeGuidToString(Guid, Out, Cch) do { assert(Cch >= (37 * sizeof(TCHAR))) LmqGuidToString(Guid, Out); } while(0,0)
+    .. code:: cpp
 
-    As a side note, Cch means "count of characters," as opposed to Cb with means "count of bytes."
+        #define SafeGuidToString(Guid, Out, Cch) do { assert(Cch >= (37 * sizeof(TCHAR))) LmqGuidToString(Guid, Out); } while(0,0)
 
-.. code:: cpp
-
-    LMQAPI_VOID
-    LmqGuidToStringA (
-        REFGUID Guid,
-        PCHAR Out // 37 ASCII chars
-        ) noexcept;
-
-    LMQAPI_VOID
-    LmqGuidToStringW (
-        REFGUID Guid,
-        PWCHAR Out // 37 UNICODE chars (74 bytes)
-        ) noexcept;
-
-    LMQAPI_VOID
-    LmqGuidToBracedStringA (
-        REFGUID Guid,
-        PCHAR Out // 39 ASCII chars
-        ) noexcept;
-
-    LMQAPI_VOID
-    LmqGuidToBracedStringW (
-        REFGUID Guid,
-        PWCHAR Out // 39 UNICODE chars (78 bytes)
-        ) noexcept;
-
-    LMQAPIIMP_VOID
-    LmqBytesToHexStringA (
-        const BYTE* Bytes,
-        const SIZE_T Count,
-        PCHAR Out // ((Count * 2) + 1) ASCII chars
-        ) noexcept;
-
-    LMQAPIIMP_VOID
-    LmqBytesToHexStringW (
-        const BYTE* Bytes,
-        const SIZE_T Count,
-        PWCHAR Out// ((Count * 2) + 1) UNICODE chars (((Count * 2) + 1) * 2 bytes)
-        ) noexcept;
-
-    #ifdef UNICODE
-    #define LmqGuidToString LmqGuidToStringW
-    #define LmqGuidToBracedString LmqGuidToBracedStringW
-    #define LmqBytesToHexString LmqBytesToHexStringW
-    #else
-    #define LmqGuidToString LmqGuidToStringA
-    #define LmqGuidToBracedString LmqGuidToBracedStringA
-    #define LmqBytesToHexString LmqBytesToHexStringA
-    #endif
+    As a side note, Cch means "count of characters," as opposed to Cb, "count of bytes."
