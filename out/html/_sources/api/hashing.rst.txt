@@ -434,11 +434,8 @@ produced by the `uuidgen`_ utility.
 .. _RFC 4122: https://www.rfc-editor.org/rfc/rfc4122
 .. _uuidgen: https://www.unix.com/man_page/redhat/1/uuidgen/
 
-If you ever compare GUIDs in text form it is therefore
-advisable to use a case-insensitive string comparison
-function (rather than blindly converting strings to
-either upper or lower case before comparison) to
-conform with the "anycase" input requirement.
+If you ever need to compare *well-formed* GUIDs in text form
+then consider LmqAreEqualStringGuids() as described below.
 
 The application must supply an appropriately sized
 buffer to receive the strings. The LwMQ SDK headers
@@ -479,12 +476,38 @@ Quickly produce the dashed "registry format" with or without surrounding braces.
         PWCHAR Out // 39 UNICODE chars (78 bytes)
         );
 
+    //
+    // Brace-insensitive and case-insensitive string
+    // GUID equality comparison functions. These are
+    // "fixed-function" functions that assume the
+    // strings are well-formed GUID strings of proper
+    // length. The functions don't check for length
+    // or zero termination but simply skip any leading
+    // opening brace, then perform a case-insensitive
+    // comparison on the 36 characters that follow without
+    // much regards for anything other than equality.
+    //        
+
+    LMQAPI_(BOOL)
+    LmqAreEqualStringGuidsA (
+        const CHAR* StringGuid1,
+        const CHAR* StringGuid2
+        );
+
+    LMQAPI_(BOOL)
+    LmqAreEqualStringGuidsW (
+        const WCHAR* StringGuid1,
+        const WCHAR* StringGuid2
+        );
+
     #ifdef UNICODE
     #define LmqGuidToString LmqGuidToStringW
     #define LmqGuidToBracedString LmqGuidToBracedStringW
+    #define LmqAreEqualStringGuids LmqAreEqualStringGuidsW
     #else
     #define LmqGuidToString LmqGuidToStringA
     #define LmqGuidToBracedString LmqGuidToBracedStringA
+    #define LmqAreEqualStringGuids LmqAreEqualStringGuidsA
     #endif
 
 Fast Generic Hex Conversion

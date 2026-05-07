@@ -474,11 +474,8 @@ which stipulate that UUIDs/GUIDs must be lowercase, although
 all processors must accept uppercase as input. The lowercase
 convention is prevalent in Unix/Linux circles as the output
 produced by the <a class="reference external" href="https://www.unix.com/man_page/redhat/1/uuidgen/">uuidgen</a> utility.</p>
-<p>If you ever compare GUIDs in text form it is therefore
-advisable to use a case-insensitive string comparison
-function (rather than blindly converting strings to
-either upper or lower case before comparison) to
-conform with the “anycase” input requirement.</p>
+<p>If you ever need to compare <em>well-formed</em> GUIDs in text form
+then consider LmqAreEqualStringGuids() as described below.</p>
 <p>The application must supply an appropriately sized
 buffer to receive the strings. The LwMQ SDK headers
 contain exact details regarding the buffer sizes.</p>
@@ -513,12 +510,38 @@ contain exact details regarding the buffer sizes.</p>
 <span class="w">    </span><span class="n">PWCHAR</span><span class="w"> </span><span class="n">Out</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="mi">39</span><span class="w"> </span><span class="n">UNICODE</span><span class="w"> </span><span class="n">chars</span><span class="w"> </span><span class="p">(</span><span class="mi">78</span><span class="w"> </span><span class="n">bytes</span><span class="p">)</span>
 <span class="w">    </span><span class="p">);</span>
 
+<span class="c1">//</span>
+<span class="c1">// Brace-insensitive and case-insensitive string</span>
+<span class="c1">// GUID equality comparison functions. These are</span>
+<span class="c1">// &quot;fixed-function&quot; functions that assume the</span>
+<span class="c1">// strings are well-formed GUID strings of proper</span>
+<span class="c1">// length. The functions don&#39;t check for length</span>
+<span class="c1">// or zero termination but simply skip any leading</span>
+<span class="c1">// opening brace, then perform a case-insensitive</span>
+<span class="c1">// comparison on the 36 characters that follow without</span>
+<span class="c1">// much regards for anything other than equality.</span>
+<span class="c1">//</span>
+
+<span class="n">LMQAPI_</span><span class="p">(</span><span class="n">BOOL</span><span class="p">)</span>
+<span class="n">LmqAreEqualStringGuidsA</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">CHAR</span><span class="o">*</span><span class="w"> </span><span class="n">StringGuid1</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">CHAR</span><span class="o">*</span><span class="w"> </span><span class="n">StringGuid2</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI_</span><span class="p">(</span><span class="n">BOOL</span><span class="p">)</span>
+<span class="n">LmqAreEqualStringGuidsW</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">WCHAR</span><span class="o">*</span><span class="w"> </span><span class="n">StringGuid1</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">WCHAR</span><span class="o">*</span><span class="w"> </span><span class="n">StringGuid2</span>
+<span class="w">    </span><span class="p">);</span>
+
 <span class="cp">#ifdef UNICODE</span>
 <span class="cp">#define LmqGuidToString LmqGuidToStringW</span>
 <span class="cp">#define LmqGuidToBracedString LmqGuidToBracedStringW</span>
+<span class="cp">#define LmqAreEqualStringGuids LmqAreEqualStringGuidsW</span>
 <span class="cp">#else</span>
 <span class="cp">#define LmqGuidToString LmqGuidToStringA</span>
 <span class="cp">#define LmqGuidToBracedString LmqGuidToBracedStringA</span>
+<span class="cp">#define LmqAreEqualStringGuids LmqAreEqualStringGuidsA</span>
 <span class="cp">#endif</span>
 </pre></div>
 </div>
