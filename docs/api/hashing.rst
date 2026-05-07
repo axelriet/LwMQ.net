@@ -434,11 +434,8 @@ produced by the `uuidgen`_ utility.
 .. _RFC 4122: https://www.rfc-editor.org/rfc/rfc4122
 .. _uuidgen: https://www.unix.com/man_page/redhat/1/uuidgen/
 
-If you ever compare GUIDs in text form it is therefore
-advisable to use a case-insensitive string comparison
-function (rather than blindly converting strings to
-either upper or lower case before comparison) to
-conform with the "anycase" input requirement.
+If you ever need to compare *well-formed* GUIDs in text form
+then consider LmqAreEqualStringGuids() as described below.
 
 The application must supply an appropriately sized
 buffer to receive the strings. The LwMQ SDK headers
@@ -488,7 +485,7 @@ Quickly produce the dashed "registry format" with or without surrounding braces.
     // or zero termination but simply skip any leading
     // opening brace, then perform a case-insensitive
     // comparison on the 36 characters that follow without
-    // much regards for the characters themselves.
+    // much regards for anything other than equality.
     //        
 
     LMQAPI_(BOOL)
