@@ -467,18 +467,21 @@ or without enclosing braces.</p>
 and the GUID conversion functions handle the peculiar
 ordering and dash separators used in text-form GUIDs.</p>
 <p>Their output is identical to the output produced by the
-StringFromGUID() and StringFromCLSID() functions from
+StringFromGUID2() and StringFromCLSID() functions from
 the Windows API except the lower casing and optional braces.</p>
 <p>The casing debate is settled by <a class="reference external" href="https://www.itu.int/en/ITU-T/asn1/Pages/UUID/uuids.aspx">ITU-T X.667</a> and <a class="reference external" href="https://www.rfc-editor.org/rfc/rfc4122">RFC 4122</a>
 which stipulate that UUIDs/GUIDs must be lowercase, although
 all processors must accept uppercase as input. The lowercase
 convention is prevalent in Unix/Linux circles as the output
 produced by the <a class="reference external" href="https://www.unix.com/man_page/redhat/1/uuidgen/">uuidgen</a> utility.</p>
-<p>If you ever need to compare <em>well-formed</em> GUIDs in text form
-then consider LmqAreEqualStringGuids() as described below.</p>
 <p>The application must supply an appropriately sized
 buffer to receive the strings. The LwMQ SDK headers
 contain exact details regarding the buffer sizes.</p>
+<p>The GUID-to-string functions are approximately 2x faster
+than StringFromGUID2() and 7x faster than StringFromCLSID(),
+which allocates memory that must be freed.</p>
+<p>If you ever need to compare <em>well-formed</em> GUIDs in text form
+then consider LmqAreEqualStringGuids() as described below.</p>
 <section id="fast-guid-uuid-to-string-conversion">
 <h4>Fast GUID/UUID To String Conversion<a class="headerlink" href="#fast-guid-uuid-to-string-conversion" title="Link to this heading"></a></h4>
 <p>Quickly produce the dashed “registry format” with or without surrounding braces.</p>
@@ -520,6 +523,10 @@ contain exact details regarding the buffer sizes.</p>
 <span class="c1">// opening brace, then perform a case-insensitive</span>
 <span class="c1">// comparison on the 36 characters that follow without</span>
 <span class="c1">// much regards for anything other than equality.</span>
+<span class="c1">//</span>
+<span class="c1">// These functions are 2-10x faster than _wcsicmp()</span>
+<span class="c1">// when comparing string GUIDs, depending on where</span>
+<span class="c1">// the first mismatch is in the UNICODE string.</span>
 <span class="c1">//</span>
 
 <span class="n">LMQAPI_</span><span class="p">(</span><span class="n">BOOL</span><span class="p">)</span>

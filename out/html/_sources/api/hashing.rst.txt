@@ -421,7 +421,7 @@ and the GUID conversion functions handle the peculiar
 ordering and dash separators used in text-form GUIDs.
 
 Their output is identical to the output produced by the
-StringFromGUID() and StringFromCLSID() functions from
+StringFromGUID2() and StringFromCLSID() functions from
 the Windows API except the lower casing and optional braces.
 
 The casing debate is settled by `ITU-T X.667`_ and `RFC 4122`_
@@ -434,12 +434,16 @@ produced by the `uuidgen`_ utility.
 .. _RFC 4122: https://www.rfc-editor.org/rfc/rfc4122
 .. _uuidgen: https://www.unix.com/man_page/redhat/1/uuidgen/
 
-If you ever need to compare *well-formed* GUIDs in text form
-then consider LmqAreEqualStringGuids() as described below.
-
 The application must supply an appropriately sized
 buffer to receive the strings. The LwMQ SDK headers
 contain exact details regarding the buffer sizes.
+
+The GUID-to-string functions are approximately 2x faster
+than StringFromGUID2() and 7x faster than StringFromCLSID(),
+which allocates memory that must be freed. 
+
+If you ever need to compare *well-formed* GUIDs in text form
+then consider LmqAreEqualStringGuids() as described below.
 
 Fast GUID/UUID To String Conversion
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -486,7 +490,11 @@ Quickly produce the dashed "registry format" with or without surrounding braces.
     // opening brace, then perform a case-insensitive
     // comparison on the 36 characters that follow without
     // much regards for anything other than equality.
-    //        
+    //
+    // These functions are 2-10x faster than _wcsicmp()
+    // when comparing string GUIDs, depending on where
+    // the first mismatch is in the UNICODE string.
+    //
 
     LMQAPI_(BOOL)
     LmqAreEqualStringGuidsA (
