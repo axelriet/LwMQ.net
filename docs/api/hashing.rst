@@ -479,12 +479,38 @@ Quickly produce the dashed "registry format" with or without surrounding braces.
         PWCHAR Out // 39 UNICODE chars (78 bytes)
         );
 
+    //
+    // Brace-insensitive and case-insensitive string
+    // GUID equality comparison functions. These are
+    // "fixed-function" functions that assume the
+    // strings are well-formed GUID strings of proper
+    // length. The functions don't check for length
+    // or zero termination but simply skip any leading
+    // opening brace, then perform a case-insensitive
+    // comparison on the 36 characters that follow without
+    // much regards for the characters themselves.
+    //        
+
+    LMQAPI_(BOOL)
+    LmqAreEqualStringGuidsA (
+        const CHAR* StringGuid1,
+        const CHAR* StringGuid2
+        );
+
+    LMQAPI_(BOOL)
+    LmqAreEqualStringGuidsW (
+        const WCHAR* StringGuid1,
+        const WCHAR* StringGuid2
+        );
+
     #ifdef UNICODE
     #define LmqGuidToString LmqGuidToStringW
     #define LmqGuidToBracedString LmqGuidToBracedStringW
+    #define LmqAreEqualStringGuids LmqAreEqualStringGuidsW
     #else
     #define LmqGuidToString LmqGuidToStringA
     #define LmqGuidToBracedString LmqGuidToBracedStringA
+    #define LmqAreEqualStringGuids LmqAreEqualStringGuidsA
     #endif
 
 Fast Generic Hex Conversion
