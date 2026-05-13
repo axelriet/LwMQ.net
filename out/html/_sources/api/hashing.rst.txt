@@ -6,6 +6,10 @@ LwMQ provides a set of fast hashing CRC, HMAC, and key generation
 functions that can be used for various purposes such as message
 integrity checks, record identity, and more.
 
+LwMQ also provides fast functions to convert GUIDs/UUIDs to 
+standard string format with or without enclosing braces, as
+well as a fast equality comparison for those strings.
+
 Remember that every hash function is subject to collisions, and the
 hashing functions provided by LwMQ are not cryptographic. They are
 designed for speed and should not be used for security-sensitive
