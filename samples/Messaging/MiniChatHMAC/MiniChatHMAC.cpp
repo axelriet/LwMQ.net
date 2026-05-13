@@ -108,7 +108,7 @@ int main()
                           64 * 1024,
                           4,
                           4,
-                          LMQ_TRANSPORT_CREATIONFLAGS_SENDRECEIVE,
+                          LMQ_TRANSPORTCREATIONFLAGS_SENDRECEIVE,
                           nullptr));
 
     LMQ_SENDQUEUE SendQueue;

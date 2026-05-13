@@ -13,11 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Advanced", "Advanced", "{63
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RawChannels", "Messaging\Advanced\RawChannels\RawChannels.vcxproj", "{F230E476-EEBD-44BD-816D-269194C20DF0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "inc", "inc", "{CC913165-0B24-4AB6-A007-5B15250D88B7}"
-	ProjectSection(SolutionItems) = preProject
-		inc\api-lwmq-samples-common.h = inc\api-lwmq-samples-common.h
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "User-Contributions", "User-Contributions", "{5A1F1DEC-ED88-4E11-9AD2-1450900C7E7C}"
 	ProjectSection(SolutionItems) = preProject
 		User-Contributions\README.md = User-Contributions\README.md
@@ -41,6 +36,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CompressionBenchmark", "Com
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{788EFF81-5D3B-4DDD-A33B-84B60C9CC628}"
 	ProjectSection(SolutionItems) = preProject
+		Assets\api-lwmq-samples-common.h = Assets\api-lwmq-samples-common.h
 		Assets\PayloadText.inc = Assets\PayloadText.inc
 	EndProjectSection
 EndProject
