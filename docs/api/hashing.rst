@@ -1,8 +1,8 @@
-****************
-LwMQ Utility API
-****************
+******************************
+LwMQ Hashing and Auxillary API
+******************************
 
-LwMQ provides a set of fast utility functions that can be used
+LwMQ provides a set of fast auxillary functions that can be used
 for various purposes such as message integrity checks, record
 identity, and more.
 
