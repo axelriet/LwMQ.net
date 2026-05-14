@@ -34,7 +34,7 @@ Environment:
 
 #include <api-lwmq-samples-common.h>
 
-#include "..\..\Assets\PayloadText.inc"
+#include <PayloadText.inc>
 
 void
 PrintTime (
@@ -64,9 +64,17 @@ int main()
     
     UINT16 Crc16{};
 
+    //
+    // Warmup run.
+    //
+
     CHECK(LmqComputeCrc16(&PayloadText[0],
                           sizeof(PayloadText),
                           &Crc16));
+
+    //
+    // Timed run.
+    //
 
     StartNs = LmqGetTickCountNs();
 
@@ -83,9 +91,17 @@ int main()
     
     UINT32 Crc32{};
 
+    //
+    // Warmup run.
+    //
+
     CHECK(LmqComputeCrc32(&PayloadText[0],
                           sizeof(PayloadText),
                           &Crc32));
+
+    //
+    // Timed run.
+    //
 
     StartNs = LmqGetTickCountNs();
 
@@ -102,9 +118,17 @@ int main()
     
     UINT64 Crc64{};
 
+    //
+    // Warmup run.
+    //
+
     CHECK(LmqComputeCrc64(&PayloadText[0],
                           sizeof(PayloadText),
                           &Crc64));
+
+    //
+    // Timed run.
+    //
 
     StartNs = LmqGetTickCountNs();
 
@@ -121,9 +145,17 @@ int main()
     
     UINT64 Hash64{};
 
+    //
+    // Warmup run.
+    //
+
     CHECK(LmqHashByteArray64(&PayloadText[0],
                              sizeof(PayloadText),
                              &Hash64));
+
+    //
+    // Timed run.
+    //
 
     StartNs = LmqGetTickCountNs();
 
@@ -141,9 +173,17 @@ int main()
     
     LMQ_HASH Hash128{};
 
+    //
+    // Warmup run.
+    //
+
     CHECK(LmqHashByteArray128(&PayloadText[0],
                               sizeof(PayloadText),
                               &Hash128));
+
+    //
+    // Timed run.
+    //
 
     StartNs = LmqGetTickCountNs();
 
@@ -163,11 +203,19 @@ int main()
 
     CHECK(LmqMakeRfc4122Key(&Key));
 
+    //
+    // Warmup run.
+    //
+
     CHECK(LmqComputeHMAC(&PayloadText[0],
                          sizeof(PayloadText),
                          &Key,
                          FALSE,
                          &HMAC));
+
+    //
+    // Timed run.
+    //
 
     StartNs = LmqGetTickCountNs();
 
@@ -185,6 +233,10 @@ int main()
                         &Key,
                         FALSE,
                         &HMAC));
+
+    //
+    // Timed run.
+    //
 
     StartNs = LmqGetTickCountNs();
 
