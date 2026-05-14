@@ -3,7 +3,7 @@ LwMQ File Functions
 *******************
 
 The file API consists of only one function at this time, ``LmqCleanupFiles()``,
-which is a utility function that can be used to delete files matching given
+which is a utility function that can be used to delete files matching a given
 file specifications within a given path, with various options for controlling
 the behavior of the cleanup operation.
 

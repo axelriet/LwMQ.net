@@ -9,13 +9,14 @@ the messaging features, or independently.
 The implementation uses fast processor-specific routines for
 optimal performance on modern hardware and should match or
 outperform most compression libraries as far as compression
-and decompression speed.
+and decompression speed with a reasonable compression ratio
+given the chosen compression scheme.
 
 The LZ4 compression scheme offers fast compression and ultrafast
 decompression with reasonable compression ratio for most
 compressible payloads, while the Deflate compression scheme is
 more thorough and provides better compression at the expense of
-speed.
+speed, in particular decompression speed compared to LZ4.
 
 The Deflate implementation in LwMQ still favors speed over
 compression ratio. Expect the ratio to be approximately
@@ -25,7 +26,7 @@ externally.
 
 The API offers a one-shot BLOB mode that compresses a buffer into
 a blob that is allocated by the API, making usage straightforward,
-as well as a more traditional but very easy to use buffer-based
+as well as the more traditional but very easy to use buffer-based
 compression API.
 
 C and C++ Header File

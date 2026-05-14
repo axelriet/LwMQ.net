@@ -113,7 +113,8 @@ functions that can be used for various purposes such as message
 integrity checks, record identity, and more.</p>
 <p>LwMQ also provides fast functions to convert GUIDs/UUIDs to
 standard string format with or without enclosing braces, as
-well as a fast equality comparison for those strings.</p>
+well as a fast equality comparison for those strings, and
+fast Base64 conversion functions.</p>
 <p>Remember that every hash function is subject to collisions, and the
 hashing functions provided by LwMQ are not cryptographic. They are
 designed for speed and should not be used for security-sensitive
@@ -569,14 +570,14 @@ consideration.</p>
 <p class="admonition-title">Important</p>
 <p>The caller must supply a buffer large enough to hold the result.</p>
 </div>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPIIMP_VOID</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI_VOID</span>
 <span class="nf">LmqBytesToHexStringA</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Bytes</span><span class="p">,</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">Count</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PCHAR</span><span class="w"> </span><span class="n">Out</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="p">((</span><span class="n">Count</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="n">ASCII</span><span class="w"> </span><span class="n">chars</span>
 <span class="w">    </span><span class="p">);</span>
 
-<span class="n">LMQAPIIMP_VOID</span>
+<span class="n">LMQAPI_VOID</span>
 <span class="nf">LmqBytesToHexStringW</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Bytes</span><span class="p">,</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">Count</span><span class="p">,</span>
@@ -624,6 +625,36 @@ easlily make a safe wrapper, e.g.:</p>
 </pre></div>
 </div>
 <p>As a side note, Cch means “count of characters,” as opposed to Cb, “count of bytes.”</p>
+</div>
+</section>
+<section id="base64-conversion">
+<h4>Base64 Conversion<a class="headerlink" href="#base64-conversion" title="Link to this heading"></a></h4>
+<p>Quickly convert byte extents of any length to Base64 and back.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The Base64 representation is not zero-terminated. If you need
+a C-string, allocate one more byte and add a null terminator.</p>
+<p>The null terminator should not be counted in the encoded size.</p>
+</div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
+<span class="nf">LmqBase64Encode</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Bytes</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">Count</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCHAR</span><span class="w"> </span><span class="n">Encoded</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PSIZE_T</span><span class="w"> </span><span class="n">EncodedSize</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqBase64Decode</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">CHAR</span><span class="o">*</span><span class="w"> </span><span class="n">Encoded</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">EncodedSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PBYTE</span><span class="w"> </span><span class="n">Bytes</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PSIZE_T</span><span class="w"> </span><span class="n">Count</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="cp">#define LmqBase64EncodedBufferSizeFromInputSize(__InputSize__)</span>
+<span class="cp">#define LmqBase64MaxDecodedBufferSizeFromEncodedSize(__EncodedSize__)</span>
+</pre></div>
 </div>
 </section>
 </section>
