@@ -102,13 +102,14 @@ switch to 64 or 128 bit hashes for added peace of mind at the expense of perform
 or HMACs if you want to authentify the sender (by the fact they know a secret key) in
 addition to verifying the message integrity through a 128-bit hash.
 
-A HMAC is nothing more than an encrypted hash: if they don't know the key, it will
-be super-hard for them to generate the correct hash for a particular payload.
+HMACs are nothing more than encrypted hashes: if they don't know the secret key,
+it will be super-hard for them to generate the correct encrypted hash for a
+particular payload.
 
-On de receiving side, knowing the payload, the HMAC, and the pre-shared secret
+On the receiving side, knowing the payload, the HMAC, and the pre-shared secret
 key, it is easy so see that they either didn't know the key, or that the message
 content was altered during transmission, as they cannot change the content and
-fix the hash without also knowing the secret key.
+fix the hash without also knowing the key.
 
 Some security architects advocate that authentication or encryption must be
 super-strong or not be used at all. Here at LwMQ we think that a little security
