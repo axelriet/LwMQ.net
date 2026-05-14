@@ -82,15 +82,19 @@ Types
 Fast CRC Functions
 ------------------
 
-The Crc16 function produces a T10-DIF CRC. The Crc32 function produces
-a CRC-32 ISO/HDLC. The Crc64 function produces a CRC-64/XZ (CRC-64/GO-ECMA).
+- The Crc16 function produces a T10-DIF CRC.
+- The Crc32 function produces a CRC-32 ISO/HDLC CRC.
+- The Crc64 function produces a CRC-64/XZ (CRC-64/GO-ECMA) CRC.
 
 The resulting CRCs are meant to be used for message data corruption/validation
 checks. Each CRC correspond to some CRC standard but there are so many we had
 to pick some. For generic CRC's not provided here, you can use any external
 CRC library.
 
-Picking a CRC size depends on your risk aversion. See https://en.wikipedia.org/wiki/Cyclic_redundancy_check for the theory.
+Picking a CRC size depends on your risk aversion and mow much space you can devote
+to message integrity verification. See `CRC (Wikipedia)`_ for the theory.
+
+.. _CRC (Wikipedia): https://en.wikipedia.org/wiki/Cyclic_redundancy_check
 
 As a rule of thumb, use Crc16 for quick integrity checks on small messages (up to a
 few KBs) and Crc32 otherwise (up to several MBs) then Crc64 for huge messages, or
