@@ -1,10 +1,21 @@
-*************************************
-LwMQ Hashing, CRC, HMAC, and Key APIs
-*************************************
+****************
+LwMQ Utility API
+****************
 
-LwMQ provides a set of fast hashing CRC, HMAC, and key generation
-functions that can be used for various purposes such as message
-integrity checks, record identity, and more.
+LwMQ provides a set of fast utility functions that can be used
+for various purposes such as message integrity checks, record
+identity, and more.
+
+Utility functions include:
+
+- CRC functions.
+- Hashing functions.
+- HMAC generation and verification functions.
+- Key creation and protection functions.
+- Entropy generation function.
+- GUID/UUID to string conversion functions.
+- Bytes to hex string conversion functions.
+- Base64 conversion functions.
 
 LwMQ also provides fast functions to convert GUIDs/UUIDs to 
 standard string format with or without enclosing braces, as
@@ -151,7 +162,7 @@ many bytes match between the two hashes.
         PLMQ_HASH Hash
         );
 
-    LMQAPI_(BOOL)
+    LMQAPI_BOOL
     LmqAreEqualHashes (
         PCLMQ_HASH Hash1,
         PCLMQ_HASH Hash2
@@ -165,8 +176,8 @@ many bytes match between the two hashes.
 
     bool operator!=(const LMQ_HASH& Hash1, const LMQ_HASH& Hash2);
 
-HMAC Functions
---------------
+Fast HMAC Functions
+-------------------
 
 The encryption and hashing algorithms used to compute HMACs in LwMQ are meant
 to be fast as their primary design goal. The cipher used is a weakened (lower
@@ -221,8 +232,8 @@ This simplicity comes at some preformance cost.
         PCLMQ_HMAC HMAC
         );
 
-Fast HMAC Functions
-^^^^^^^^^^^^^^^^^^^
+Fast Buffer HMAC Functions
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This set of functions is meant for cases where many HMACs need to be computed
 or verified with the same key, and the caller wants to pay the cost of key
@@ -281,8 +292,8 @@ as in this case the context will not be encrypted.
         PLMQ_HMAC_CONTEXT Context
         );
 
-HMAC Equality Functions
-^^^^^^^^^^^^^^^^^^^^^^^
+HMAC Equality Function and Operators
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This function provides a fast way to compare HMACs, which can be used
 to verify that a computed HMAC matches an expected value.
@@ -292,7 +303,7 @@ same amount of time regardless of how many bytes match between the two HMACs.
 
 .. code:: cpp
 
-    LMQAPI_(BOOL)
+    LMQAPI_BOOL
     LmqAreEqualHMACs (
         PCLMQ_HMAC HMAC1,
         PCLMQ_HMAC HMAC2
@@ -306,8 +317,8 @@ same amount of time regardless of how many bytes match between the two HMACs.
 
     bool operator!=(const LMQ_HMAC& HMAC1, const LMQ_HMAC& HMAC2)
 
-Keys Functions
---------------
+Fast Key Creation Functions
+---------------------------
 
 The key generation functions allow you to create ``LMQ_KEY`` structures
 from ASCII and Unicode strings, or byte arrays, and to generate RFC
@@ -351,29 +362,8 @@ other purposes, and can also be protected/unprotected in memory using
         PLMQ_KEY Key
         );
 
-Entropy Generation Functions
-----------------------------
-
-This function fills the provided ``LMQ_ENTROPY`` structure with random data
-that can be used as a source of entropy for various purposes, such as
-generating random keys or nonces.
-
-The quality of the entropy provided by this function depends on the
-underlying implementation and the platform's capabilities.
-
-It is designed to be fast and suitable for general use cases, but it may not
-be suitable for cryptographic purposes where high-quality randomness is
-required.
-
-.. code:: cpp
-
-    LMQAPI
-    LmqMakeEntropy (
-        PLMQ_ENTROPY Entropy
-        );
-
-Key Protection Functions
-------------------------
+Fast Key Protection Functions
+-----------------------------
 
 Those functions allow you to protect and unprotect keys in memory for use
 within a particular process instance's lifetime, which can help mitigate
@@ -410,16 +400,39 @@ the key, protected or not, from memory.
         PLMQ_KEY Key
         );
 
+Entropy Generation Function
+---------------------------
 
-Hex String Conversion Functions
--------------------------------
+This function fills the provided ``LMQ_ENTROPY`` structure with random data
+that can be used as a source of entropy for various purposes, such as
+generating random keys or nonces.
+
+The quality of the entropy provided by this function depends on the
+underlying implementation and the platform's capabilities.
+
+It is designed to be fast and suitable for general use cases, but it may not
+be suitable for cryptographic purposes where high-quality randomness is
+required.
+
+.. code:: cpp
+
+    LMQAPI
+    LmqMakeEntropy (
+        PLMQ_ENTROPY Entropy
+        );
+
+Fast GUID/UUID To String Conversion Functions
+---------------------------------------------
 
 The hexadecimal conversion functions quickly convert
-a GUID or a byte array into a null-terminated hex string
-representation, either ASCII or UNICODE.
+a GUID into a null-terminated hex string representation,
+either ASCII or UNICODE, with or without enclosing braces.
 
-The GUID conversion functions have two variants, with
-or without enclosing braces.
+The functions produce the RFC4122/RFC9562 dashed string
+format or the brace-enclosed Windows Registry format:
+
+- xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+- {xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}
 
 The hexadecimal letters 'a' to 'f' are always lowercase,
 and the GUID conversion functions handle the peculiar
@@ -449,11 +462,6 @@ which allocates memory that must be freed.
 
 If you ever need to compare *well-formed* GUIDs in text form
 then consider LmqAreEqualStringGuids() as described below.
-
-Fast GUID/UUID To String Conversion
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Quickly produce the dashed "registry format" with or without surrounding braces.
 
 .. important::
 
@@ -501,13 +509,13 @@ Quickly produce the dashed "registry format" with or without surrounding braces.
     // the first mismatch is in the UNICODE string.
     //
 
-    LMQAPI_(BOOL)
+    LMQAPI_BOOL
     LmqAreEqualStringGuidsA (
         const CHAR* StringGuid1,
         const CHAR* StringGuid2
         );
 
-    LMQAPI_(BOOL)
+    LMQAPI_BOOL
     LmqAreEqualStringGuidsW (
         const WCHAR* StringGuid1,
         const WCHAR* StringGuid2
@@ -523,8 +531,8 @@ Quickly produce the dashed "registry format" with or without surrounding braces.
     #define LmqAreEqualStringGuids LmqAreEqualStringGuidsA
     #endif
 
-Fast Generic Hex Conversion
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Fast Generic Hex Conversion Functions
+-------------------------------------
 
 Quickly convert byte extents of any length to hex representation,
 useful for printing hashes, CRCs, keys, and other binary data
@@ -596,23 +604,27 @@ consideration.
 
     .. code:: cpp
 
-        #define SafeGuidToString(Guid, Out, Cch) do { assert(Cch >= (37 * sizeof(TCHAR))) LmqGuidToString(Guid, Out); } while(0,0)
+        #define SafeGuidToString(Guid, Out, Cch) \
+                    do { assert(Cch >= (37 * sizeof(TCHAR))) \
+                         LmqGuidToString(Guid, Out); } while(0,0)
 
     As a side note, Cch means "count of characters," as opposed to Cb, "count of bytes."
 
-
-
-Base64 Conversion
-^^^^^^^^^^^^^^^^^
+Fast Base64 Conversion Functions
+--------------------------------
 
 Quickly convert byte extents of any length to Base64 and back.
 
 .. important::
 
-    The Base64 representation is not zero-terminated. If you need
-    a C-string, allocate one more byte and add a null terminator.
+    The Base64 representations are NOT zero-terminated.
+    
+    If you need a C-string, allocate one more byte and add a
+    null terminator manually after the function returns the exact
+    encoded size.
 
-    The null terminator should not be counted in the encoded size.
+    Any added null terminator must NOT be counted in the encoded size
+    passed to the decoder.
 
 .. code:: cpp
 
@@ -632,5 +644,10 @@ Quickly convert byte extents of any length to Base64 and back.
         PSIZE_T Count
         );
 
+    //
+    // Helper macros for buffer size computations
+    //
+
     #define LmqBase64EncodedBufferSizeFromInputSize(__InputSize__)
+
     #define LmqBase64MaxDecodedBufferSizeFromEncodedSize(__EncodedSize__)

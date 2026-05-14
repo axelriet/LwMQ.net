@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LwMQ Hashing, CRC, HMAC, and Key APIs &mdash; LwMQ 1.0 documentation</title>
+  <title>LwMQ Utility API &mdash; LwMQ 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -55,7 +55,7 @@
 <li class="toctree-l2"><a class="reference internal" href="messaging.html">LwMQ Messaging API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="caching.html">LwMQ Caching API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="segmented-cache.html">LwMQ Segmented Cache API</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">LwMQ Hashing, CRC, HMAC, and Key APIs</a><ul>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">LwMQ Utility API</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#c-and-c-header-file">C and C++ Header File</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#binaries">Binaries</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#dependencies">Dependencies</a></li>
@@ -63,11 +63,13 @@
 <li class="toctree-l4"><a class="reference internal" href="#types">Types</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#fast-crc-functions">Fast CRC Functions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#fast-hashing-functions">Fast Hashing Functions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#hmac-functions">HMAC Functions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#keys-functions">Keys Functions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#entropy-generation-functions">Entropy Generation Functions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#key-protection-functions">Key Protection Functions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#hex-string-conversion-functions">Hex String Conversion Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fast-hmac-functions">Fast HMAC Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fast-key-creation-functions">Fast Key Creation Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fast-key-protection-functions">Fast Key Protection Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#entropy-generation-function">Entropy Generation Function</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fast-guid-uuid-to-string-conversion-functions">Fast GUID/UUID To String Conversion Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fast-generic-hex-conversion-functions">Fast Generic Hex Conversion Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fast-base64-conversion-functions">Fast Base64 Conversion Functions</a></li>
 </ul>
 </li>
 </ul>
@@ -96,7 +98,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="index.html">LwMQ API Reference</a></li>
-      <li class="breadcrumb-item active">LwMQ Hashing, CRC, HMAC, and Key APIs</li>
+      <li class="breadcrumb-item active">LwMQ Utility API</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/api/hashing.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -106,11 +108,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="lwmq-hashing-crc-hmac-and-key-apis">
-<h1>LwMQ Hashing, CRC, HMAC, and Key APIs<a class="headerlink" href="#lwmq-hashing-crc-hmac-and-key-apis" title="Link to this heading"></a></h1>
-<p>LwMQ provides a set of fast hashing CRC, HMAC, and key generation
-functions that can be used for various purposes such as message
-integrity checks, record identity, and more.</p>
+  <section id="lwmq-utility-api">
+<h1>LwMQ Utility API<a class="headerlink" href="#lwmq-utility-api" title="Link to this heading"></a></h1>
+<p>LwMQ provides a set of fast utility functions that can be used
+for various purposes such as message integrity checks, record
+identity, and more.</p>
+<p>Utility functions include:</p>
+<ul class="simple">
+<li><p>CRC functions.</p></li>
+<li><p>Hashing functions.</p></li>
+<li><p>HMAC generation and verification functions.</p></li>
+<li><p>Key creation and protection functions.</p></li>
+<li><p>Entropy generation function.</p></li>
+<li><p>GUID/UUID to string conversion functions.</p></li>
+<li><p>Bytes to hex string conversion functions.</p></li>
+<li><p>Base64 conversion functions.</p></li>
+</ul>
 <p>LwMQ also provides fast functions to convert GUIDs/UUIDs to
 standard string format with or without enclosing braces, as
 well as a fast equality comparison for those strings, and
@@ -232,8 +245,8 @@ many bytes match between the two hashes.</p>
 <span class="w">    </span><span class="n">PLMQ_HASH</span><span class="w"> </span><span class="n">Hash</span>
 <span class="w">    </span><span class="p">);</span>
 
-<span class="n">LMQAPI_</span><span class="p">(</span><span class="n">BOOL</span><span class="p">)</span>
-<span class="n">LmqAreEqualHashes</span><span class="w"> </span><span class="p">(</span>
+<span class="n">LMQAPI_BOOL</span>
+<span class="nf">LmqAreEqualHashes</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">PCLMQ_HASH</span><span class="w"> </span><span class="n">Hash1</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PCLMQ_HASH</span><span class="w"> </span><span class="n">Hash2</span>
 <span class="w">    </span><span class="p">);</span>
@@ -248,8 +261,8 @@ many bytes match between the two hashes.</p>
 </pre></div>
 </div>
 </section>
-<section id="hmac-functions">
-<h3>HMAC Functions<a class="headerlink" href="#hmac-functions" title="Link to this heading"></a></h3>
+<section id="fast-hmac-functions">
+<h3>Fast HMAC Functions<a class="headerlink" href="#fast-hmac-functions" title="Link to this heading"></a></h3>
 <p>The encryption and hashing algorithms used to compute HMACs in LwMQ are meant
 to be fast as their primary design goal. The cipher used is a weakened (lower
 round count) version of an otherwise secure algorithm tuned for excellent
@@ -292,8 +305,8 @@ or verified, and the caller does not mind paying the cost of key setup every tim
 </pre></div>
 </div>
 </section>
-<section id="fast-hmac-functions">
-<h4>Fast HMAC Functions<a class="headerlink" href="#fast-hmac-functions" title="Link to this heading"></a></h4>
+<section id="fast-buffer-hmac-functions">
+<h4>Fast Buffer HMAC Functions<a class="headerlink" href="#fast-buffer-hmac-functions" title="Link to this heading"></a></h4>
 <p>This set of functions is meant for cases where many HMACs need to be computed
 or verified with the same key, and the caller wants to pay the cost of key
 setup only once.</p>
@@ -345,14 +358,14 @@ as in this case the context will not be encrypted.</p>
 </pre></div>
 </div>
 </section>
-<section id="hmac-equality-functions">
-<h4>HMAC Equality Functions<a class="headerlink" href="#hmac-equality-functions" title="Link to this heading"></a></h4>
+<section id="hmac-equality-function-and-operators">
+<h4>HMAC Equality Function and Operators<a class="headerlink" href="#hmac-equality-function-and-operators" title="Link to this heading"></a></h4>
 <p>This function provides a fast way to compare HMACs, which can be used
 to verify that a computed HMAC matches an expected value.</p>
 <p>The function is designed to be resistant to timing attacks by taking the
 same amount of time regardless of how many bytes match between the two HMACs.</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI_</span><span class="p">(</span><span class="n">BOOL</span><span class="p">)</span>
-<span class="n">LmqAreEqualHMACs</span><span class="w"> </span><span class="p">(</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI_BOOL</span>
+<span class="nf">LmqAreEqualHMACs</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">PCLMQ_HMAC</span><span class="w"> </span><span class="n">HMAC1</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PCLMQ_HMAC</span><span class="w"> </span><span class="n">HMAC2</span>
 <span class="w">    </span><span class="p">);</span>
@@ -368,8 +381,8 @@ same amount of time regardless of how many bytes match between the two HMACs.</p
 </div>
 </section>
 </section>
-<section id="keys-functions">
-<h3>Keys Functions<a class="headerlink" href="#keys-functions" title="Link to this heading"></a></h3>
+<section id="fast-key-creation-functions">
+<h3>Fast Key Creation Functions<a class="headerlink" href="#fast-key-creation-functions" title="Link to this heading"></a></h3>
 <p>The key generation functions allow you to create <code class="docutils literal notranslate"><span class="pre">LMQ_KEY</span></code> structures
 from ASCII and Unicode strings, or byte arrays, and to generate RFC
 4122 Type 4 random keys.</p>
@@ -410,25 +423,8 @@ other purposes, and can also be protected/unprotected in memory using
 </pre></div>
 </div>
 </section>
-<section id="entropy-generation-functions">
-<h3>Entropy Generation Functions<a class="headerlink" href="#entropy-generation-functions" title="Link to this heading"></a></h3>
-<p>This function fills the provided <code class="docutils literal notranslate"><span class="pre">LMQ_ENTROPY</span></code> structure with random data
-that can be used as a source of entropy for various purposes, such as
-generating random keys or nonces.</p>
-<p>The quality of the entropy provided by this function depends on the
-underlying implementation and the platform’s capabilities.</p>
-<p>It is designed to be fast and suitable for general use cases, but it may not
-be suitable for cryptographic purposes where high-quality randomness is
-required.</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
-<span class="nf">LmqMakeEntropy</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">PLMQ_ENTROPY</span><span class="w"> </span><span class="n">Entropy</span>
-<span class="w">    </span><span class="p">);</span>
-</pre></div>
-</div>
-</section>
-<section id="key-protection-functions">
-<h3>Key Protection Functions<a class="headerlink" href="#key-protection-functions" title="Link to this heading"></a></h3>
+<section id="fast-key-protection-functions">
+<h3>Fast Key Protection Functions<a class="headerlink" href="#fast-key-protection-functions" title="Link to this heading"></a></h3>
 <p>Those functions allow you to protect and unprotect keys in memory for use
 within a particular process instance’s lifetime, which can help mitigate
 the risk of key exposure through memory dumps.</p>
@@ -460,13 +456,34 @@ the key, protected or not, from memory.</p>
 </pre></div>
 </div>
 </section>
-<section id="hex-string-conversion-functions">
-<h3>Hex String Conversion Functions<a class="headerlink" href="#hex-string-conversion-functions" title="Link to this heading"></a></h3>
+<section id="entropy-generation-function">
+<h3>Entropy Generation Function<a class="headerlink" href="#entropy-generation-function" title="Link to this heading"></a></h3>
+<p>This function fills the provided <code class="docutils literal notranslate"><span class="pre">LMQ_ENTROPY</span></code> structure with random data
+that can be used as a source of entropy for various purposes, such as
+generating random keys or nonces.</p>
+<p>The quality of the entropy provided by this function depends on the
+underlying implementation and the platform’s capabilities.</p>
+<p>It is designed to be fast and suitable for general use cases, but it may not
+be suitable for cryptographic purposes where high-quality randomness is
+required.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
+<span class="nf">LmqMakeEntropy</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PLMQ_ENTROPY</span><span class="w"> </span><span class="n">Entropy</span>
+<span class="w">    </span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="fast-guid-uuid-to-string-conversion-functions">
+<h3>Fast GUID/UUID To String Conversion Functions<a class="headerlink" href="#fast-guid-uuid-to-string-conversion-functions" title="Link to this heading"></a></h3>
 <p>The hexadecimal conversion functions quickly convert
-a GUID or a byte array into a null-terminated hex string
-representation, either ASCII or UNICODE.</p>
-<p>The GUID conversion functions have two variants, with
-or without enclosing braces.</p>
+a GUID into a null-terminated hex string representation,
+either ASCII or UNICODE, with or without enclosing braces.</p>
+<p>The functions produce the RFC4122/RFC9562 dashed string
+format or the brace-enclosed Windows Registry format:</p>
+<ul class="simple">
+<li><p>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</p></li>
+<li><p>{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}</p></li>
+</ul>
 <p>The hexadecimal letters ‘a’ to ‘f’ are always lowercase,
 and the GUID conversion functions handle the peculiar
 ordering and dash separators used in text-form GUIDs.</p>
@@ -486,9 +503,6 @@ than StringFromGUID2() and 7x faster than StringFromCLSID(),
 which allocates memory that must be freed.</p>
 <p>If you ever need to compare <em>well-formed</em> GUIDs in text form
 then consider LmqAreEqualStringGuids() as described below.</p>
-<section id="fast-guid-uuid-to-string-conversion">
-<h4>Fast GUID/UUID To String Conversion<a class="headerlink" href="#fast-guid-uuid-to-string-conversion" title="Link to this heading"></a></h4>
-<p>Quickly produce the dashed “registry format” with or without surrounding braces.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>The caller must supply a buffer large enough to hold the result.</p>
@@ -533,14 +547,14 @@ then consider LmqAreEqualStringGuids() as described below.</p>
 <span class="c1">// the first mismatch is in the UNICODE string.</span>
 <span class="c1">//</span>
 
-<span class="n">LMQAPI_</span><span class="p">(</span><span class="n">BOOL</span><span class="p">)</span>
-<span class="n">LmqAreEqualStringGuidsA</span><span class="w"> </span><span class="p">(</span>
+<span class="n">LMQAPI_BOOL</span>
+<span class="nf">LmqAreEqualStringGuidsA</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">CHAR</span><span class="o">*</span><span class="w"> </span><span class="n">StringGuid1</span><span class="p">,</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">CHAR</span><span class="o">*</span><span class="w"> </span><span class="n">StringGuid2</span>
 <span class="w">    </span><span class="p">);</span>
 
-<span class="n">LMQAPI_</span><span class="p">(</span><span class="n">BOOL</span><span class="p">)</span>
-<span class="n">LmqAreEqualStringGuidsW</span><span class="w"> </span><span class="p">(</span>
+<span class="n">LMQAPI_BOOL</span>
+<span class="nf">LmqAreEqualStringGuidsW</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">WCHAR</span><span class="o">*</span><span class="w"> </span><span class="n">StringGuid1</span><span class="p">,</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">WCHAR</span><span class="o">*</span><span class="w"> </span><span class="n">StringGuid2</span>
 <span class="w">    </span><span class="p">);</span>
@@ -557,8 +571,8 @@ then consider LmqAreEqualStringGuids() as described below.</p>
 </pre></div>
 </div>
 </section>
-<section id="fast-generic-hex-conversion">
-<h4>Fast Generic Hex Conversion<a class="headerlink" href="#fast-generic-hex-conversion" title="Link to this heading"></a></h4>
+<section id="fast-generic-hex-conversion-functions">
+<h3>Fast Generic Hex Conversion Functions<a class="headerlink" href="#fast-generic-hex-conversion-functions" title="Link to this heading"></a></h3>
 <p>Quickly convert byte extents of any length to hex representation,
 useful for printing hashes, CRCs, keys, and other binary data
 in human-readable hexadecimal representation.</p>
@@ -621,20 +635,25 @@ easlily make a safe wrapper, e.g.:</p>
 </pre></div>
 </div>
 <p>Alternatively, you could make safe macros with an assert in debug builds:</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#define SafeGuidToString(Guid, Out, Cch) do { assert(Cch &gt;= (37 * sizeof(TCHAR))) LmqGuidToString(Guid, Out); } while(0,0)</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#define SafeGuidToString(Guid, Out, Cch) \</span>
+<span class="cp">            do { assert(Cch &gt;= (37 * sizeof(TCHAR))) \</span>
+<span class="cp">                 LmqGuidToString(Guid, Out); } while(0,0)</span>
 </pre></div>
 </div>
 <p>As a side note, Cch means “count of characters,” as opposed to Cb, “count of bytes.”</p>
 </div>
 </section>
-<section id="base64-conversion">
-<h4>Base64 Conversion<a class="headerlink" href="#base64-conversion" title="Link to this heading"></a></h4>
+<section id="fast-base64-conversion-functions">
+<h3>Fast Base64 Conversion Functions<a class="headerlink" href="#fast-base64-conversion-functions" title="Link to this heading"></a></h3>
 <p>Quickly convert byte extents of any length to Base64 and back.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>The Base64 representation is not zero-terminated. If you need
-a C-string, allocate one more byte and add a null terminator.</p>
-<p>The null terminator should not be counted in the encoded size.</p>
+<p>The Base64 representations are NOT zero-terminated.</p>
+<p>If you need a C-string, allocate one more byte and add a
+null terminator manually after the function returns the exact
+encoded size.</p>
+<p>Any added null terminator must NOT be counted in the encoded size
+passed to the decoder.</p>
 </div>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
 <span class="nf">LmqBase64Encode</span><span class="w"> </span><span class="p">(</span>
@@ -652,11 +671,15 @@ a C-string, allocate one more byte and add a null terminator.</p>
 <span class="w">    </span><span class="n">PSIZE_T</span><span class="w"> </span><span class="n">Count</span>
 <span class="w">    </span><span class="p">);</span>
 
+<span class="c1">//</span>
+<span class="c1">// Helper macros for buffer size computations</span>
+<span class="c1">//</span>
+
 <span class="cp">#define LmqBase64EncodedBufferSizeFromInputSize(__InputSize__)</span>
+
 <span class="cp">#define LmqBase64MaxDecodedBufferSizeFromEncodedSize(__EncodedSize__)</span>
 </pre></div>
 </div>
-</section>
 </section>
 </section>
 </section>
