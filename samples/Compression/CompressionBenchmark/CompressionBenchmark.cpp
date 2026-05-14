@@ -34,7 +34,8 @@ Environment:
 
 #include <api-lwmq-samples-common.h>
 
-#include "..\..\Assets\PayloadText.inc"
+#include <ntrtl.inc>
+#include <PayloadText.inc>
 
 void
 PrintTimeAndSize (
@@ -72,8 +73,8 @@ int main()
 
     constexpr SIZE_T BufferSize{ sizeof(PayloadText) + 1024 };
 
-    __pragma(warning(suppress: 26414)) auto CompressedBuffer = std::make_unique<BYTE[]>(BufferSize);
-    __pragma(warning(suppress: 26414)) auto UncompressedBuffer = std::make_unique<BYTE[]>(BufferSize);
+    auto CompressedBuffer = std::make_unique<BYTE[]>(BufferSize);
+    auto UncompressedBuffer = std::make_unique<BYTE[]>(BufferSize);
 
     if (!CompressedBuffer || !UncompressedBuffer)
     {
@@ -193,11 +194,18 @@ int main()
 
     CHECK(LmqFreeCompressedData(&CompressedBlob));
 
+    printf("\n----------------------------------------------------------------\n");
+
     //
     // Buffer compression (LZ4) -----------------------------------------------
     //
 
     printf("\nDemo 3: CompressedBuffer compression/decompression (LwMQ LZ4)\n");
+
+    LMQ_COMPRESSIONWORKSPACE CompressionWorkspace;
+
+    CHECK(LmqAllocateCompressionWorkspace(LMQ_COMPRESSION_LZ4,
+                                          &CompressionWorkspace));
 
     //
     // Warmup run.
@@ -209,7 +217,7 @@ int main()
                             BufferSize,
                             LMQ_COMPRESSION_LZ4,
                             &CompressedSize,
-                            nullptr));
+                            CompressionWorkspace));
 
     CHECK(LmqDecompressBuffer(UncompressedBuffer.get(),
                               BufferSize,
@@ -230,7 +238,7 @@ int main()
                             BufferSize,
                             LMQ_COMPRESSION_LZ4,
                             &CompressedSize,
-                            nullptr));
+                            CompressionWorkspace));
 
     PrintTimeAndSize("Compression",
                      LmqTimeElapsedNsSince(StartNs),
@@ -248,6 +256,8 @@ int main()
     PrintTimeAndSize("Decompression",
                      LmqTimeElapsedNsSince(StartNs),
                      UncompressedSize);
+
+    CHECK(LmqFreeCompressionWorkspace(&CompressionWorkspace));
 
     //
     // Buffer compression (Deflate) -------------------------------------------
@@ -255,6 +265,9 @@ int main()
 
     printf("\nDemo 4: CompressedBuffer compression/decompression (LwMQ Deflate)\n");
 
+    CHECK(LmqAllocateCompressionWorkspace(LMQ_COMPRESSION_DEFLATE,
+                                          &CompressionWorkspace));
+
     //
     // Warmup run.
     //
@@ -265,7 +278,7 @@ int main()
                             BufferSize,
                             LMQ_COMPRESSION_DEFLATE,
                             &CompressedSize,
-                            nullptr));
+                            CompressionWorkspace));
 
     CHECK(LmqDecompressBuffer(UncompressedBuffer.get(),
                               BufferSize,
@@ -286,7 +299,7 @@ int main()
                             BufferSize,
                             LMQ_COMPRESSION_DEFLATE,
                             &CompressedSize,
-                            nullptr));
+                            CompressionWorkspace));
 
     PrintTimeAndSize("Compression",
                      LmqTimeElapsedNsSince(StartNs),
@@ -305,13 +318,101 @@ int main()
                      LmqTimeElapsedNsSince(StartNs),
                      UncompressedSize);
 
+    CHECK(LmqFreeCompressionWorkspace(&CompressionWorkspace));
+
+    //
+    // Buffer compression (Windows RTL Deflate) -------------------------------
+    //
+
+    printf("\nDemo 5: CompressedBuffer compression/decompression (Windows RTL Deflate)\n");
+
+    const USHORT CompressionFormat = COMPRESSION_ENGINE_STANDARD | COMPRESSION_FORMAT_DEFLATE;
+
+    ULONG CompressionBufferWorkspaceSize{};
+    ULONG CompressionFragmentWorkspaceSize{};
+
+    CHECK(RtlGetCompressionWorkSpaceSize(CompressionFormat,
+                                         &CompressionBufferWorkspaceSize,
+                                         &CompressionFragmentWorkspaceSize));
+
+    auto Workspace = std::make_unique<BYTE[]>(CompressionBufferWorkspaceSize);
+    auto FragmentWorkspace = std::make_unique<BYTE[]>(CompressionFragmentWorkspaceSize);
+
+    #pragma warning(push)
+    #pragma warning(disable: 4244) // conversion from 'SIZE_T' to 'ULONG'
+
+    CompressedSize = 0;
+    UncompressedSize = 0;
+
+    //
+    // Warmup run.
+    //
+
+    CHECK(RtlCompressBuffer(CompressionFormat,
+                            reinterpret_cast<PUCHAR>(const_cast<CHAR*>(&PayloadText[0])),
+                            sizeof(PayloadText),
+                            CompressedBuffer.get(),
+                            BufferSize,
+                            256 * 1024,
+                            reinterpret_cast<PULONG>(&CompressedSize),
+                            Workspace.get()));
+
+    CHECK(RtlDecompressBufferEx(CompressionFormat,
+                                UncompressedBuffer.get(),
+                                BufferSize,
+                                CompressedBuffer.get(),
+                                CompressedSize,
+                                reinterpret_cast<PULONG>(&UncompressedSize),
+                                FragmentWorkspace.get()));
+
+    //
+    // Timed run.
+    //
+
+    StartNs = LmqGetTickCountNs();
+
+    CHECK(RtlCompressBuffer(CompressionFormat,
+                            reinterpret_cast<PUCHAR>(const_cast<CHAR*>(&PayloadText[0])),
+                            sizeof(PayloadText),
+                            CompressedBuffer.get(),
+                            BufferSize,
+                            256 * 1024,
+                            reinterpret_cast<PULONG>(&CompressedSize),
+                            Workspace.get()));
+
+    PrintTimeAndSize("Compression",
+                     LmqTimeElapsedNsSince(StartNs),
+                     CompressedSize);
+
+    StartNs = LmqGetTickCountNs();
+
+    CHECK(RtlDecompressBufferEx(CompressionFormat,
+                                UncompressedBuffer.get(),
+                                BufferSize,
+                                CompressedBuffer.get(),
+                                CompressedSize,
+                                reinterpret_cast<PULONG>(&UncompressedSize),
+                                FragmentWorkspace.get()));
+
+    PrintTimeAndSize("Decompression",
+                     LmqTimeElapsedNsSince(StartNs),
+                     UncompressedSize);
+
+    Workspace.reset();
+    FragmentWorkspace.reset();
+
+    Workspace.reset();
+    FragmentWorkspace.reset();
+
+    #pragma warning(pop)
+
 #if 0
 
     //
     // ------------------------------------------------------------------------
     //
 
-    printf("\nDemo 5: Your compression/decompression\n");
+    printf("\nDemo N: Your compression/decompression\n");
 
     StartNs = LmqGetTickCountNs();
 
@@ -334,6 +435,9 @@ int main()
                      UncompressedSize);
 
 #endif
+
+    CompressedBuffer.reset();
+    UncompressedBuffer.reset();
 
     return 0;
 }

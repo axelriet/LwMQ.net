@@ -37,6 +37,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{788EFF81-5D3B-4DDD-A33B-84B60C9CC628}"
 	ProjectSection(SolutionItems) = preProject
 		Assets\api-lwmq-samples-common.h = Assets\api-lwmq-samples-common.h
+		Assets\ntrtl.inc = Assets\ntrtl.inc
 		Assets\PayloadText.inc = Assets\PayloadText.inc
 	EndProjectSection
 EndProject
