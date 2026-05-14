@@ -179,13 +179,17 @@ with during transmission.</p>
 </section>
 <section id="fast-crc-functions">
 <h3>Fast CRC Functions<a class="headerlink" href="#fast-crc-functions" title="Link to this heading"></a></h3>
-<p>The Crc16 function produces a T10-DIF CRC. The Crc32 function produces
-a CRC-32 ISO/HDLC. The Crc64 function produces a CRC-64/XZ (CRC-64/GO-ECMA).</p>
+<ul class="simple">
+<li><p>The Crc16 function produces a T10-DIF CRC.</p></li>
+<li><p>The Crc32 function produces a CRC-32 ISO/HDLC CRC.</p></li>
+<li><p>The Crc64 function produces a CRC-64/XZ (CRC-64/GO-ECMA) CRC.</p></li>
+</ul>
 <p>The resulting CRCs are meant to be used for message data corruption/validation
 checks. Each CRC correspond to some CRC standard but there are so many we had
 to pick some. For generic CRC’s not provided here, you can use any external
 CRC library.</p>
-<p>Picking a CRC size depends on your risk aversion. See <a class="reference external" href="https://en.wikipedia.org/wiki/Cyclic_redundancy_check">https://en.wikipedia.org/wiki/Cyclic_redundancy_check</a> for the theory.</p>
+<p>Picking a CRC size depends on your risk aversion and mow much space you can devote
+to message integrity verification. See <a class="reference external" href="https://en.wikipedia.org/wiki/Cyclic_redundancy_check">CRC (Wikipedia)</a> for the theory.</p>
 <p>As a rule of thumb, use Crc16 for quick integrity checks on small messages (up to a
 few KBs) and Crc32 otherwise (up to several MBs) then Crc64 for huge messages, or
 switch to 64 or 128 bit hashes for added peace of mind at the expense of performances,
