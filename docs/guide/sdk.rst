@@ -2,7 +2,7 @@
 LwMQ SDK
 ########
 
-The LwMQ SDK contains the files necessary for developement.
+The LwMQ SDK contains the files necessary for development.
 
 Installation Folder
 ===================
@@ -39,7 +39,7 @@ The LwMQ SDK installer creates the following environment variables:
    instance to see the new environment variables after the
    SDK installation.
    
-   The enviroment variables are referenced from the build
+   The environment variables are referenced from the build
    files to find the 'include' and 'lib' subfolders.
 
 Subfolders
@@ -75,7 +75,7 @@ The LwMQ SDK ships with the comprehensive unit-test suite and scenario tests
 to validate the functionality of the SDK on developer's and build machines.
 
 Our internal test suite comprises more tests, notably long-running stress tests
-and debug-only tests that calle API functions that arent part of the public API.
+and debug-only tests that calls API functions that aren't part of the public API.
 
 Remember to point your debugger to the SDK's PDB folder (``%LMQ_SDK_SYMBOLS%``)
 which contains PDBs matching the redistributable binaries.

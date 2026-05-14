@@ -1,8 +1,8 @@
 ******************************
-LwMQ Hashing and Auxillary API
+LwMQ Hashing and Auxiliary API
 ******************************
 
-LwMQ provides a set of fast auxillary functions that can be used
+LwMQ provides a set of fast auxiliary functions that can be used
 for various purposes such as message integrity checks, record
 identity, and more.
 
@@ -31,7 +31,7 @@ and HMACs at a reasonable performance cost.
 
 .. important::
 
-    We want to emphasise once more that the HMAC and hashing functions
+    We want to emphasize once more that the HMAC and hashing functions
     provided with LwMQ are meant to offer a *fast* and reasonable way
     to include message integrity and authenticity at minimal performance
     cost.
@@ -91,7 +91,7 @@ checks. Each CRC correspond to some CRC standard but there are so many we had
 to pick some. For generic CRC's not provided here, you can use any external
 CRC library.
 
-Picking a CRC size depends on your risk aversion and mow much space you can devote
+Picking a CRC size depends on your risk aversion and how much space you can devote
 to message integrity verification. See `CRC (Wikipedia)`_ for the theory.
 
 .. _CRC (Wikipedia): https://en.wikipedia.org/wiki/Cyclic_redundancy_check
@@ -99,7 +99,7 @@ to message integrity verification. See `CRC (Wikipedia)`_ for the theory.
 As a rule of thumb, use Crc16 for quick integrity checks on small messages (up to a
 few KBs) and Crc32 otherwise (up to several MBs) then Crc64 for huge messages, or
 switch to 64 or 128 bit hashes for added peace of mind at the expense of performances,
-or HMACs if you want to authentify the sender (by the fact they know a secret key) in
+or HMACs if you want to authenticate the sender (by the fact they know a secret key) in
 addition to verifying the message integrity through a 128-bit hash.
 
 HMACs are nothing more than encrypted hashes: if they don't know the secret key,
@@ -190,7 +190,7 @@ round count) version of an otherwise secure algorithm tuned for excellent
 performance on modern processors.
 
 The intent is to provide a way for security architects to include hash-based
-message authentication codes (HMAC) in their LwMQ messaging payload with reasonabe
+message authentication codes (HMAC) in their LwMQ messaging payload with reasonable
 impact on performance, knowing the data links are supposed to be relatively secure
 within the realms of applicability of LwMQ.
 
@@ -215,7 +215,7 @@ Fast One-shot HMAC Functions
 This set of functions is meant for cases where only a few HMACs need to be computed
 or verified, and the caller does not mind paying the cost of key setup every time.
 
-This simplicity comes at some preformance cost.
+This simplicity comes at some performance cost.
 
 .. code:: cpp
 
@@ -255,7 +255,7 @@ and properly erase it when no longer needed.
 
 Additionally, the context is encrypted when using a protected key. This helps
 protect against memory dumps saving the decryption context intact by reducing
-the time where the context is unencypted in memory.
+the time where the context is unencrypted in memory.
 
 The function uses a copy of the context and decrypts it, then safely disposes
 of the copy when no longer needed. Note, however, that encryption/decryption
@@ -579,7 +579,7 @@ consideration.
     You can make safe versions of those functions yourself,
     for example, knowing the number of characters written
     by the GUID conversions functions is fixed, you could
-    easlily make a safe wrapper, e.g.:
+    easily make a safe wrapper, e.g.:
 
     .. code:: cpp
 

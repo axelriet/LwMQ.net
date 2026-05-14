@@ -106,7 +106,7 @@ LwMQ are available on the <a class="reference external" href="https://github.com
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">axelriet</span><span class="o">/</span><span class="n">LwMQ</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">git</span>
 </pre></div>
 </div>
-<p>This commmand clones the GitHub repository in a subfolder named <code class="docutils literal notranslate"><span class="pre">LwMQ.net</span></code></p>
+<p>This command clones the GitHub repository in a subfolder named <code class="docutils literal notranslate"><span class="pre">LwMQ.net</span></code></p>
 </section>
 <section id="building-the-samples">
 <h2>Building the samples<a class="headerlink" href="#building-the-samples" title="Link to this heading"></a></h2>
@@ -181,7 +181,7 @@ contributing it back to the samples repository on GitHub.</p>
 <p class="admonition-title">Important</p>
 <p>The samples are designed to be simple and easy to understand, and may not follow best practices for production code. They are intended for educational purposes only.</p>
 <p>If you run into <em>any</em> issue while working with LwMQ, always run your code in a debugger, for example the Visual Studio debugger, WinDbg, or WinDbgX.</p>
-<p>If you suspect a crash when running outside a debugger, install WinDbg as the default post-mortem crash debugger by running <code class="docutils literal notranslate"><span class="pre">Windbg</span> <span class="pre">/I</span></code> (or <code class="docutils literal notranslate"><span class="pre">WinDbgX</span> <span class="pre">/I</span></code>) from an elevated command prompt (the switch is forward slash immediately followed by a CAPITAL i letter, the casing is important!) and the debugger will pop up when any process crashes on your system.</p>
+<p>If you suspect a crash when running outside a debugger, install WinDbg as the default post-mortem crash debugger by running <code class="docutils literal notranslate"><span class="pre">windbg</span> <span class="pre">/I</span></code> (or <code class="docutils literal notranslate"><span class="pre">WinDbgX</span> <span class="pre">/I</span></code>) from an elevated command prompt (the switch is forward slash immediately followed by a CAPITAL i letter, the casing is important!) and the debugger will pop up when any process crashes on your system.</p>
 <p>If you use Visual Studio, you can configure the debugger for post-mortem crash debugging from the Tools | Options | Debugging | Just-In-Time dialog. Then make sure to check Native plus any other relevant modes.</p>
 <p>You can only have one post-mortem debugger installed at any given time.</p>
 <p>Remember that our symbols are at <a class="reference external" href="http://www.lwmq.net/symbols">http://www.lwmq.net/symbols</a> and that you can configure your debugger to use this symbol server to get the best debugging experience.</p>

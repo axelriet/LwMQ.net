@@ -98,7 +98,7 @@ transports with virtually no change to the code.
 
 For special case, LwMQ also provides "raw" channels with
 direct access to the underlying transport buffers, bypassing
-the messaging and queing layers as well as message encoding.
+the messaging and queuing layers as well as message encoding.
 
 This allows users to implement custom protocols on top of LwMQ's
 transport layer as well as cater to special use cases such as

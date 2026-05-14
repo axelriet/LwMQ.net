@@ -9,7 +9,7 @@ Installers
 """"""""""
 
 LwMQ is packaged in two distinct MSIs: one for the SDK, and one
-for the redistribuable runtime components.
+for the redistributable runtime components.
 
 .. table::
    :width: 95%

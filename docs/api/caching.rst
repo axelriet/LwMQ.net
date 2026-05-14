@@ -151,6 +151,8 @@ Types
 In-Memory Cache Functions
 -------------------------
 
+Describes the thread-safe in-memory cache API.
+
 Core Cache Functions
 ^^^^^^^^^^^^^^^^^^^^
 

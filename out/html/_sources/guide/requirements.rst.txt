@@ -3,7 +3,7 @@ Runtime Requirements
 ####################
 
 Size: The total size of the installed files on target machines is
-approximately 4MB. The size of the redistribuable installer (runtime) is
+approximately 4MB. The size of the redistributable installer (runtime) is
 approximately 600KB.
 
 .. table::

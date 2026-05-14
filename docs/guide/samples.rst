@@ -14,7 +14,7 @@ Supposing you are in a ``D:\GIT`` folder on your computer, run:
 
     git clone https://github.com/axelriet/LwMQ.net.git
 
-This commmand clones the GitHub repository in a subfolder named ``LwMQ.net``
+This command clones the GitHub repository in a subfolder named ``LwMQ.net``
 
 Building the samples
 ====================
@@ -99,7 +99,7 @@ The samples are provided as-is and are not intended to be used as production cod
 
     If you run into *any* issue while working with LwMQ, always run your code in a debugger, for example the Visual Studio debugger, WinDbg, or WinDbgX.
 
-    If you suspect a crash when running outside a debugger, install WinDbg as the default post-mortem crash debugger by running ``Windbg /I`` (or ``WinDbgX /I``) from an elevated command prompt (the switch is forward slash immediately followed by a CAPITAL i letter, the casing is important!) and the debugger will pop up when any process crashes on your system.
+    If you suspect a crash when running outside a debugger, install WinDbg as the default post-mortem crash debugger by running ``windbg /I`` (or ``WinDbgX /I``) from an elevated command prompt (the switch is forward slash immediately followed by a CAPITAL i letter, the casing is important!) and the debugger will pop up when any process crashes on your system.
 
     If you use Visual Studio, you can configure the debugger for post-mortem crash debugging from the Tools | Options | Debugging | Just-In-Time dialog. Then make sure to check Native plus any other relevant modes.
     

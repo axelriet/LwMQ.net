@@ -26,7 +26,7 @@
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="LwMQ Utility API" href="hashing.html" />
+    <link rel="next" title="LwMQ Hashing and Auxiliary API" href="hashing.html" />
     <link rel="prev" title="LwMQ Caching API" href="caching.html" /> 
 </head>
 
@@ -65,7 +65,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="hashing.html">LwMQ Utility API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hashing.html">LwMQ Hashing and Auxiliary API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="storage.html">LwMQ Storage API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="compression.html">LwMQ Compression API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utilities/index.html">LwMQ Utility APIs</a></li>
@@ -102,11 +102,11 @@
              
   <section id="lwmq-segmented-cache-api">
 <h1>LwMQ Segmented Cache API<a class="headerlink" href="#lwmq-segmented-cache-api" title="Link to this heading"></a></h1>
-<p>Beyond the LwMQ in-memory cache, LwMQ provides a segmented (partitionned) cache built on top of the regular in-memory cache.</p>
+<p>Beyond the LwMQ in-memory cache, LwMQ provides a segmented (partitioned) cache built on top of the regular in-memory cache.</p>
 <p>The segmented cache partitions the key space and assigns each key segment to its own underlying LRU cache. The result is a composite cache that reduces contentions to enable higher insertions and lookup rate than possible with a single cache with a central LRU list.</p>
 <p>The drawback is the cache assumes a uniform distribution of keys. The API provides for indicating which bits in the key are used for partitioning, giving the caller some control.</p>
-<p>The segmented cache supports up to 1,024 segments, and each segment can hold millions of entries. By creating as many segments as available CPU cores, up to 1,024, contentions are minimized and the cache througput can reach hundreds of millions of lookups per second, only subject to memory bandwidth, available CPU cores, and cache entry sizes.</p>
-<p>The segmented cache supports terabytes of RAM and the number of entries it holdscan be extended at runtime. It implements a custom memory management scheme that requests huge blocks directly from the system’s virtual memory manager for internal data structures.</p>
+<p>The segmented cache supports up to 1,024 segments, and each segment can hold millions of entries. By creating as many segments as available CPU cores, up to 1,024, contentions are minimized and the cache throughput can reach hundreds of millions of lookups per second, only subject to memory bandwidth, available CPU cores, and cache entry sizes.</p>
+<p>The segmented cache supports terabytes of RAM and the number of entries it holds can be extended at runtime. It implements a custom memory management scheme that requests huge blocks directly from the system’s virtual memory manager for internal data structures.</p>
 <p>The segmented cache is suitable for highly concurrent scenarios where many threads concurrently add and retrieve cache entries, and where the key distribution is reasonably uniform or can be made uniform through the choice of partitioning bits in the key.</p>
 <p>In such scenarios, LwMQ’a segmented cache is many times faster than existing popular in-memory LRU caches, easily surpassing 100 million operations/sec on common server hardware with full LRU and TTL operations, assuming uniformly distributed keys.</p>
 <p>The cache also supports an elaborate “read through” mechanism that allow applications to provide a callback for cache misses, which is invoked by the cache when a cache miss occurs.</p>
@@ -265,7 +265,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="caching.html" class="btn btn-neutral float-left" title="LwMQ Caching API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="hashing.html" class="btn btn-neutral float-right" title="LwMQ Utility API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="hashing.html" class="btn btn-neutral float-right" title="LwMQ Hashing and Auxiliary API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

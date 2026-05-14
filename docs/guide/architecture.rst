@@ -87,7 +87,7 @@ to system limits and a bit of common sense.
 When multiple transports are attached to a channel, the messages
 are laid down to each transport buffer separately. This is necessary
 as LwMQ often does not own the transport buffers as they belong to
-the device. There is threfore a linear cost to encoding a message
+the device. There is therefore a linear cost to encoding a message
 to each transport buffer. The application can choose to attach as
 many transports as it needs, but should be mindful of the cost of
 encoding messages to multiple buffers.

@@ -2,15 +2,15 @@
 LwMQ Segmented Cache API
 ************************
 
-Beyond the LwMQ in-memory cache, LwMQ provides a segmented (partitionned) cache built on top of the regular in-memory cache.
+Beyond the LwMQ in-memory cache, LwMQ provides a segmented (partitioned) cache built on top of the regular in-memory cache.
 
 The segmented cache partitions the key space and assigns each key segment to its own underlying LRU cache. The result is a composite cache that reduces contentions to enable higher insertions and lookup rate than possible with a single cache with a central LRU list.
 
 The drawback is the cache assumes a uniform distribution of keys. The API provides for indicating which bits in the key are used for partitioning, giving the caller some control.
 
-The segmented cache supports up to 1,024 segments, and each segment can hold millions of entries. By creating as many segments as available CPU cores, up to 1,024, contentions are minimized and the cache througput can reach hundreds of millions of lookups per second, only subject to memory bandwidth, available CPU cores, and cache entry sizes.
+The segmented cache supports up to 1,024 segments, and each segment can hold millions of entries. By creating as many segments as available CPU cores, up to 1,024, contentions are minimized and the cache throughput can reach hundreds of millions of lookups per second, only subject to memory bandwidth, available CPU cores, and cache entry sizes.
 
-The segmented cache supports terabytes of RAM and the number of entries it holdscan be extended at runtime. It implements a custom memory management scheme that requests huge blocks directly from the system's virtual memory manager for internal data structures.
+The segmented cache supports terabytes of RAM and the number of entries it holds can be extended at runtime. It implements a custom memory management scheme that requests huge blocks directly from the system's virtual memory manager for internal data structures.
 
 The segmented cache is suitable for highly concurrent scenarios where many threads concurrently add and retrieve cache entries, and where the key distribution is reasonably uniform or can be made uniform through the choice of partitioning bits in the key.
 

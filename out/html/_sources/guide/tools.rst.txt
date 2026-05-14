@@ -2,7 +2,7 @@
 LwMQ SDK Tools
 ##############
 
-The LwMQ SDK ships with comand-line test tools. See the 'tools' subfolder
+The LwMQ SDK ships with command-line test tools. See the 'tools' subfolder
 for more details, in particular Tools.txt
 
 .. table::
@@ -13,9 +13,9 @@ for more details, in particular Tools.txt
    ================  ========================================================================
    Variable          Description
    ================  ========================================================================
-   client_thr.exe    Througput test (client)
+   client_thr.exe    Throughput test (client)
    ----------------  ------------------------------------------------------------------------
-   server_thr.exe    Througput test (server)
+   server_thr.exe    Throughput test (server)
    ================  ========================================================================
 
 .. important::

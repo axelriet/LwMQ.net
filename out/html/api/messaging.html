@@ -103,7 +103,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="caching.html">LwMQ Caching API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="segmented-cache.html">LwMQ Segmented Cache API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hashing.html">LwMQ Utility API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hashing.html">LwMQ Hashing and Auxiliary API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="storage.html">LwMQ Storage API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="compression.html">LwMQ Compression API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utilities/index.html">LwMQ Utility APIs</a></li>
@@ -473,7 +473,7 @@ message-based communication.</p>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.LmqInitialize">
 <span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqInitialize</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">WORD</span></span><span class="w"> </span><span class="n"><span class="pre">VersionRequested</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqInitialize" title="Link to this definition"></a><br /></dt>
-<dd><p>Initializes LwMQ and allocates internal global ressources.</p>
+<dd><p>Initializes LwMQ and allocates internal global resources.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -490,7 +490,7 @@ message-based communication.</p>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.LmqTerminate">
 <span class="n"><span class="pre">LMQAPI</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LmqTerminate</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.LmqTerminate" title="Link to this definition"></a><br /></dt>
-<dd><p>Shuts down LwMQ and deallocate internal ressources.</p>
+<dd><p>Shuts down LwMQ and deallocate internal resources.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This function must be called once for each calls made to LmqInitialize().</p>
@@ -732,7 +732,7 @@ the risk of memory leaks or dangling pointers in the application.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>Message</strong> – The message to query.</p></li>
 <li><p><strong>FrameIndex</strong> – The zero-based index of the frame to query.</p></li>
-<li><p><strong>Data</strong> – A pointer to a variable that receives a pointer to the frame data wthin the message. The data is read-only and owned by the message. It must not be modified or freed by the caller.</p></li>
+<li><p><strong>Data</strong> – A pointer to a variable that receives a pointer to the frame data within the message. The data is read-only and owned by the message. It must not be modified or freed by the caller.</p></li>
 <li><p><strong>DataSize</strong> – A pointer to a variable that receives the size of the frame data in bytes.</p></li>
 <li><p><strong>Timestamp</strong> – An optional pointer to a variable that receives the timestamp associated with the frame. The value is zero if no timestamp was associated with the frame. See the Timestamp parameter of LmqAppendFrame() for important details.</p></li>
 <li><p><strong>EnumHint</strong> – An optional pointer to an enumeration hint structure that can be used to optimize enumeration of multiple frames in a message. If supplied, the caller must initialize the hint via LmqInitFrameEnumHint(). The enumeration hint is valid for all subsequent calls to LmqGetFrameData() for the same message until either the message is destroyed or LmqInitFrameEnumHint() is called again for the same enumeration hint structure.</p></li>
@@ -832,8 +832,8 @@ the risk of memory leaks or dangling pointers in the application.</p>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">SUCCEEDED</span><span class="p">(</span><span class="n">hr</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="c1">//</span>
-<span class="w">    </span><span class="c1">// The message has been successfuly created but</span>
-<span class="w">    </span><span class="c1">// an error occured afterward such as you could</span>
+<span class="w">    </span><span class="c1">// The message has been successfully created but</span>
+<span class="w">    </span><span class="c1">// an error occurred afterward such as you could</span>
 <span class="w">    </span><span class="c1">// not acquire the data to send, or you changed</span>
 <span class="w">    </span><span class="c1">// your mind about sending the message.</span>
 <span class="w">    </span><span class="c1">//</span>
@@ -1065,7 +1065,7 @@ the risk of memory leaks or dangling pointers in the application.</p>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If LingerTimeoutMs &gt; 0 the function blocks until all pending messages are sent and all received messages are processed by the applicationbefore closing the channel. If the flush operation does not complete within the LingerTimeoutMs time, the channel is forcefully closed anyway. The timeout is not necessarily millisecond-accurate as the thread can enter a sleeping state while waiting for the channel to be flushed.</p>
+<p>If LingerTimeoutMs &gt; 0 the function blocks until all pending messages are sent and all received messages are processed by the application before closing the channel. If the flush operation does not complete within the LingerTimeoutMs time, the channel is forcefully closed anyway. The timeout is not necessarily millisecond-accurate as the thread can enter a sleeping state while waiting for the channel to be flushed.</p>
 </div>
 </dd></dl>
 
@@ -1169,7 +1169,7 @@ the risk of memory leaks or dangling pointers in the application.</p>
 <p>Transports are added to the channel, and messages are sent through a specific send queue on the channel.</p>
 <p>Each message is sent though each sending transport in the channel.</p>
 <p>The send queue priority is used to determine the order in which messages are sent when there are multiple send queues on the same channel.</p>
-<p>Messages queued on higher priority send queues tend to be sent before messages queued on lower priority send queues, but LwMQ uses a weigthed round-robin scheduling algorithm to ensure some fairness among send queues.</p>
+<p>Messages queued on higher priority send queues tend to be sent before messages queued on lower priority send queues, but LwMQ uses a weighted round-robin scheduling algorithm to ensure some fairness among send queues.</p>
 <p>Two special priorities are not subjected to the prioritized scheduling:</p>
 <blockquote>
 <div><ul class="simple">
@@ -1205,7 +1205,7 @@ the risk of memory leaks or dangling pointers in the application.</p>
 <span class="c1">// framework, coroutines, OpenOMP, PPL, concrt, any thread pool, etc, as</span>
 <span class="c1">// your application does not control the threads that will be sending</span>
 <span class="c1">// messages. This important remark is also valid when calling from a</span>
-<span class="c1">// different lenguage/tasking framework such as Rust/Tokio, C#/TPL, etc.</span>
+<span class="c1">// different language/tasking framework such as Rust/Tokio, C#/TPL, etc.</span>
 <span class="c1">//</span>
 <span class="c1">// To clarify, nothing in Rust or C# (etc) prevents you from using the</span>
 <span class="c1">// high-performance monoproducer queues, as long as you create a queue for</span>
@@ -1331,7 +1331,7 @@ the risk of memory leaks or dangling pointers in the application.</p>
 <p>Ideally, the buffer size should be much larger than the typical message size, which enables message clubbing when messages are sent in rapid successions.</p>
 <p>For example, an application that sends, say, 80 bytes messages at very high rate (millions per second) will greatly benefit from using large buffers in the 1MB range.</p>
 <p>Moreover, all transports added to a particular channel must share the same buffer size.</p>
-<p>The actual maximum message size that cen be sent for a particular buffer size depends on various factors as the wire format use variable-length encoding for compacity.</p>
+<p>The actual maximum message size that cen be sent for a particular buffer size depends on various factors as the wire format use variable-length encoding for compactness.</p>
 <p>As a rule of thumb, consider ~1% overhead. For large payload, consider single-frame messages and add 4096 bytes to the expected payload size: if sending data in single-frame messages with 1MB of payload data (1,048,576 bytes) each - assuming the underlying transport supports that size - use a buffer size of 1,048,576 + 4,096 = 1,052,672 bytes, which allows for up to 4KB bytes of overhead, which is more than enough for the frame and message headers while aligning the buffer to a page boundary.</p>
 <p>Make sure you use at least 3-4 such buffers so your app can generate the next payload while the previous ones are transmitted. If sending messages with multiple frames or messages with very small payloads, the overhead can be higher in percentage, therefore you might want to use a larger buffer size to achieve optimal performance.</p>
 <p>There is no exact guidance or magic number regarding the optimal buffer size and count for each application. You need to experiment with different values to find the optimal configuration for your application, transport, and workload.</p>
@@ -1518,7 +1518,7 @@ allow LwMQ to manage transport buffers automatically.</p>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This function is useful for sending messages that supersede previous messages with the same tag, for example progress messages where only the latest message is relevant. By using the same tag for all progress messages, you can ensure that only the latest progress message is queued for sending, and any previous progress messages still in the queue are removed, which helps reduce unnecessary message processing on the receiving side. Note, however, that the tagged queues inccurs some overhead as they keep track of the tagged items in the queue for fast access. The coalescing only happen within messages that are qued but not already sent. Sent messages (i.e. mesages that have left, or about to leave in a trnasmission buffer) will not be rescinded. The tag is not transmitted and is only a locally processed artefact. The send queue must be one of the tagged queues: LMQ_SENDQUEUETYPE_MULTIPRODUCER_UNBOUNDED_TAGGED, LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_TAGGED_DISCARD_OLDEST, LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_TAGGED_DISCARD_NEWEST, otherwise the function will fail with an error.</p>
+<p>This function is useful for sending messages that supersede previous messages with the same tag, for example progress messages where only the latest message is relevant. By using the same tag for all progress messages, you can ensure that only the latest progress message is queued for sending, and any previous progress messages still in the queue are removed, which helps reduce unnecessary message processing on the receiving side. Note, however, that the tagged queues incurs some overhead as they keep track of the tagged items in the queue for fast access. The coalescing only happen within messages that are queued but not already sent. Sent messages (i.e. messages that have left, or about to leave in a transmission buffer) will not be rescinded. The tag is not transmitted and is only a locally processed artefact. The send queue must be one of the tagged queues: LMQ_SENDQUEUETYPE_MULTIPRODUCER_UNBOUNDED_TAGGED, LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_TAGGED_DISCARD_OLDEST, LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_TAGGED_DISCARD_NEWEST, otherwise the function will fail with an error.</p>
 </div>
 </dd></dl>
 

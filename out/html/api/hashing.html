@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LwMQ Hashing and Auxillary API &mdash; LwMQ 1.0 documentation</title>
+  <title>LwMQ Hashing and Auxiliary API &mdash; LwMQ 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -55,7 +55,7 @@
 <li class="toctree-l2"><a class="reference internal" href="messaging.html">LwMQ Messaging API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="caching.html">LwMQ Caching API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="segmented-cache.html">LwMQ Segmented Cache API</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">LwMQ Hashing and Auxillary API</a><ul>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">LwMQ Hashing and Auxiliary API</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#c-and-c-header-file">C and C++ Header File</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#binaries">Binaries</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#dependencies">Dependencies</a></li>
@@ -98,7 +98,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="index.html">LwMQ API Reference</a></li>
-      <li class="breadcrumb-item active">LwMQ Hashing and Auxillary API</li>
+      <li class="breadcrumb-item active">LwMQ Hashing and Auxiliary API</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/api/hashing.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -108,9 +108,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="lwmq-hashing-and-auxillary-api">
-<h1>LwMQ Hashing and Auxillary API<a class="headerlink" href="#lwmq-hashing-and-auxillary-api" title="Link to this heading"></a></h1>
-<p>LwMQ provides a set of fast auxillary functions that can be used
+  <section id="lwmq-hashing-and-auxiliary-api">
+<h1>LwMQ Hashing and Auxiliary API<a class="headerlink" href="#lwmq-hashing-and-auxiliary-api" title="Link to this heading"></a></h1>
+<p>LwMQ provides a set of fast auxiliary functions that can be used
 for various purposes such as message integrity checks, record
 identity, and more.</p>
 <p>Utility functions include:</p>
@@ -136,7 +136,7 @@ message integrity checks, enabling application to include checksums
 and HMACs at a reasonable performance cost.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>We want to emphasise once more that the HMAC and hashing functions
+<p>We want to emphasize once more that the HMAC and hashing functions
 provided with LwMQ are meant to offer a <em>fast</em> and reasonable way
 to include message integrity and authenticity at minimal performance
 cost.</p>
@@ -188,12 +188,12 @@ with during transmission.</p>
 checks. Each CRC correspond to some CRC standard but there are so many we had
 to pick some. For generic CRC’s not provided here, you can use any external
 CRC library.</p>
-<p>Picking a CRC size depends on your risk aversion and mow much space you can devote
+<p>Picking a CRC size depends on your risk aversion and how much space you can devote
 to message integrity verification. See <a class="reference external" href="https://en.wikipedia.org/wiki/Cyclic_redundancy_check">CRC (Wikipedia)</a> for the theory.</p>
 <p>As a rule of thumb, use Crc16 for quick integrity checks on small messages (up to a
 few KBs) and Crc32 otherwise (up to several MBs) then Crc64 for huge messages, or
 switch to 64 or 128 bit hashes for added peace of mind at the expense of performances,
-or HMACs if you want to authentify the sender (by the fact they know a secret key) in
+or HMACs if you want to authenticate the sender (by the fact they know a secret key) in
 addition to verifying the message integrity through a 128-bit hash.</p>
 <p>HMACs are nothing more than encrypted hashes: if they don’t know the secret key,
 it will be super-hard for them to generate the correct encrypted hash for a
@@ -273,7 +273,7 @@ to be fast as their primary design goal. The cipher used is a weakened (lower
 round count) version of an otherwise secure algorithm tuned for excellent
 performance on modern processors.</p>
 <p>The intent is to provide a way for security architects to include hash-based
-message authentication codes (HMAC) in their LwMQ messaging payload with reasonabe
+message authentication codes (HMAC) in their LwMQ messaging payload with reasonable
 impact on performance, knowing the data links are supposed to be relatively secure
 within the realms of applicability of LwMQ.</p>
 <p>You can protect the keys in memory using LmqProtectKey(). In that case, you can
@@ -289,7 +289,7 @@ such as <a class="reference external" href="https://learn.microsoft.com/en-us/wi
 <h4>Fast One-shot HMAC Functions<a class="headerlink" href="#fast-one-shot-hmac-functions" title="Link to this heading"></a></h4>
 <p>This set of functions is meant for cases where only a few HMACs need to be computed
 or verified, and the caller does not mind paying the cost of key setup every time.</p>
-<p>This simplicity comes at some preformance cost.</p>
+<p>This simplicity comes at some performance cost.</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
 <span class="nf">LmqComputeHMAC</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
@@ -324,7 +324,7 @@ parameter to TRUE. The function will unprotect a copy of the key internally
 and properly erase it when no longer needed.</p>
 <p>Additionally, the context is encrypted when using a protected key. This helps
 protect against memory dumps saving the decryption context intact by reducing
-the time where the context is unencypted in memory.</p>
+the time where the context is unencrypted in memory.</p>
 <p>The function uses a copy of the context and decrypts it, then safely disposes
 of the copy when no longer needed. Note, however, that encryption/decryption
 of the key and context incurs a performance penalty, and that there is still
@@ -615,7 +615,7 @@ consideration.</p>
 <p>You can make safe versions of those functions yourself,
 for example, knowing the number of characters written
 by the GUID conversions functions is fixed, you could
-easlily make a safe wrapper, e.g.:</p>
+easily make a safe wrapper, e.g.:</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">HRESULT</span>
 <span class="nf">SafeGuidToString</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">REFGUID</span><span class="w"> </span><span class="n">Guid</span><span class="p">,</span>

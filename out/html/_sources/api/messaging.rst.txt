@@ -349,7 +349,7 @@ Functions
 
 .. c:function:: LMQAPI LmqInitialize(WORD VersionRequested)
 
-    Initializes LwMQ and allocates internal global ressources.
+    Initializes LwMQ and allocates internal global resources.
 
     :param VersionRequested: Pass the supplied LMQ_CURRENT_API_VERSION macro.
 
@@ -357,7 +357,7 @@ Functions
 
 .. c:function:: LMQAPI LmqTerminate()
 
-    Shuts down LwMQ and deallocate internal ressources.
+    Shuts down LwMQ and deallocate internal resources.
     
     .. note:: This function must be called once for each calls made to LmqInitialize().
 
@@ -563,7 +563,7 @@ Functions
 
     :param FrameIndex: The zero-based index of the frame to query.
 
-    :param Data: A pointer to a variable that receives a pointer to the frame data wthin the message. The data is read-only and owned by the message. It must not be modified or freed by the caller.
+    :param Data: A pointer to a variable that receives a pointer to the frame data within the message. The data is read-only and owned by the message. It must not be modified or freed by the caller.
 
     :param DataSize: A pointer to a variable that receives the size of the frame data in bytes.
 
@@ -638,8 +638,8 @@ Functions
     if (SUCCEEDED(hr)
     {
         //
-        // The message has been successfuly created but
-        // an error occured afterward such as you could
+        // The message has been successfully created but
+        // an error occurred afterward such as you could
         // not acquire the data to send, or you changed
         // your mind about sending the message.
         //
@@ -840,7 +840,7 @@ Functions
 
     :param LingerTimeoutMs: The maximum time to wait for any pending messages to be sent before forcefully closing the channel, in milliseconds. A value of INFINITE can be used to wait indefinitely.
 
-    .. note:: If LingerTimeoutMs > 0 the function blocks until all pending messages are sent and all received messages are processed by the applicationbefore closing the channel. If the flush operation does not complete within the LingerTimeoutMs time, the channel is forcefully closed anyway. The timeout is not necessarily millisecond-accurate as the thread can enter a sleeping state while waiting for the channel to be flushed.
+    .. note:: If LingerTimeoutMs > 0 the function blocks until all pending messages are sent and all received messages are processed by the application before closing the channel. If the flush operation does not complete within the LingerTimeoutMs time, the channel is forcefully closed anyway. The timeout is not necessarily millisecond-accurate as the thread can enter a sleeping state while waiting for the channel to be flushed.
 
 .. code:: cpp
 
@@ -936,7 +936,7 @@ Functions
         
         The send queue priority is used to determine the order in which messages are sent when there are multiple send queues on the same channel.
         
-        Messages queued on higher priority send queues tend to be sent before messages queued on lower priority send queues, but LwMQ uses a weigthed round-robin scheduling algorithm to ensure some fairness among send queues.
+        Messages queued on higher priority send queues tend to be sent before messages queued on lower priority send queues, but LwMQ uses a weighted round-robin scheduling algorithm to ensure some fairness among send queues.
         
         Two special priorities are not subjected to the prioritized scheduling:
         
@@ -974,7 +974,7 @@ Functions
     // framework, coroutines, OpenOMP, PPL, concrt, any thread pool, etc, as
     // your application does not control the threads that will be sending
     // messages. This important remark is also valid when calling from a
-    // different lenguage/tasking framework such as Rust/Tokio, C#/TPL, etc.
+    // different language/tasking framework such as Rust/Tokio, C#/TPL, etc.
     //
     // To clarify, nothing in Rust or C# (etc) prevents you from using the
     // high-performance monoproducer queues, as long as you create a queue for
@@ -1100,7 +1100,7 @@ Functions
         
         Moreover, all transports added to a particular channel must share the same buffer size.
         
-        The actual maximum message size that cen be sent for a particular buffer size depends on various factors as the wire format use variable-length encoding for compacity.
+        The actual maximum message size that cen be sent for a particular buffer size depends on various factors as the wire format use variable-length encoding for compactness.
         
         As a rule of thumb, consider ~1% overhead. For large payload, consider single-frame messages and add 4096 bytes to the expected payload size: if sending data in single-frame messages with 1MB of payload data (1,048,576 bytes) each - assuming the underlying transport supports that size - use a buffer size of 1,048,576 + 4,096 = 1,052,672 bytes, which allows for up to 4KB bytes of overhead, which is more than enough for the frame and message headers while aligning the buffer to a page boundary.
         
@@ -1261,7 +1261,7 @@ Posting and Receiving
 
     :param TimeoutMs: The maximum time to wait for the message to be accepted for sending, in milliseconds. A value of INFINITE can be used to wait indefinitely. This parameter has no effect for unbounded send queues and must be zero, as they are always ready to accept messages for sending.
 
-    .. note:: This function is useful for sending messages that supersede previous messages with the same tag, for example progress messages where only the latest message is relevant. By using the same tag for all progress messages, you can ensure that only the latest progress message is queued for sending, and any previous progress messages still in the queue are removed, which helps reduce unnecessary message processing on the receiving side. Note, however, that the tagged queues inccurs some overhead as they keep track of the tagged items in the queue for fast access. The coalescing only happen within messages that are qued but not already sent. Sent messages (i.e. mesages that have left, or about to leave in a trnasmission buffer) will not be rescinded. The tag is not transmitted and is only a locally processed artefact. The send queue must be one of the tagged queues: LMQ_SENDQUEUETYPE_MULTIPRODUCER_UNBOUNDED_TAGGED, LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_TAGGED_DISCARD_OLDEST, LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_TAGGED_DISCARD_NEWEST, otherwise the function will fail with an error.
+    .. note:: This function is useful for sending messages that supersede previous messages with the same tag, for example progress messages where only the latest message is relevant. By using the same tag for all progress messages, you can ensure that only the latest progress message is queued for sending, and any previous progress messages still in the queue are removed, which helps reduce unnecessary message processing on the receiving side. Note, however, that the tagged queues incurs some overhead as they keep track of the tagged items in the queue for fast access. The coalescing only happen within messages that are queued but not already sent. Sent messages (i.e. messages that have left, or about to leave in a transmission buffer) will not be rescinded. The tag is not transmitted and is only a locally processed artefact. The send queue must be one of the tagged queues: LMQ_SENDQUEUETYPE_MULTIPRODUCER_UNBOUNDED_TAGGED, LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_TAGGED_DISCARD_OLDEST, LMQ_SENDQUEUETYPE_MULTIPRODUCER_BOUNDED_TAGGED_DISCARD_NEWEST, otherwise the function will fail with an error.
 
 .. code:: cpp
     
