@@ -8,7 +8,8 @@ integrity checks, record identity, and more.
 
 LwMQ also provides fast functions to convert GUIDs/UUIDs to 
 standard string format with or without enclosing braces, as
-well as a fast equality comparison for those strings.
+well as a fast equality comparison for those strings, and
+fast Base64 conversion functions.
 
 Remember that every hash function is subject to collisions, and the
 hashing functions provided by LwMQ are not cryptographic. They are
@@ -540,14 +541,14 @@ consideration.
 
 .. code:: cpp
 
-    LMQAPIIMP_VOID
+    LMQAPI_VOID
     LmqBytesToHexStringA (
         const BYTE* Bytes,
         const SIZE_T Count,
         PCHAR Out // ((Count * 2) + 1) ASCII chars
         );
 
-    LMQAPIIMP_VOID
+    LMQAPI_VOID
     LmqBytesToHexStringW (
         const BYTE* Bytes,
         const SIZE_T Count,
@@ -598,3 +599,38 @@ consideration.
         #define SafeGuidToString(Guid, Out, Cch) do { assert(Cch >= (37 * sizeof(TCHAR))) LmqGuidToString(Guid, Out); } while(0,0)
 
     As a side note, Cch means "count of characters," as opposed to Cb, "count of bytes."
+
+
+
+Base64 Conversion
+^^^^^^^^^^^^^^^^^
+
+Quickly convert byte extents of any length to Base64 and back.
+
+.. important::
+
+    The Base64 representation is not zero-terminated. If you need
+    a C-string, allocate one more byte and add a null terminator.
+
+    The null terminator should not be counted in the encoded size.
+
+.. code:: cpp
+
+    LMQAPI
+    LmqBase64Encode (
+        const BYTE* Bytes,
+        const SIZE_T Count,
+        PCHAR Encoded,
+        PSIZE_T EncodedSize
+        );
+
+    LMQAPI
+    LmqBase64Decode (
+        const CHAR* Encoded,
+        const SIZE_T EncodedSize,
+        PBYTE Bytes,
+        PSIZE_T Count
+        );
+
+    #define LmqBase64EncodedBufferSizeFromInputSize(__InputSize__)
+    #define LmqBase64MaxDecodedBufferSizeFromEncodedSize(__EncodedSize__)
