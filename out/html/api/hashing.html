@@ -69,7 +69,6 @@
 <li class="toctree-l4"><a class="reference internal" href="#entropy-generation-function">Entropy Generation Function</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#fast-guid-uuid-to-string-conversion-functions">Fast GUID/UUID To String Conversion Functions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#fast-generic-hex-conversion-functions">Fast Generic Hex Conversion Functions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#fast-base64-conversion-functions">Fast Base64 Conversion Functions</a></li>
 </ul>
 </li>
 </ul>
@@ -646,44 +645,6 @@ easily make a safe wrapper, e.g.:</p>
 </pre></div>
 </div>
 <p>As a side note, Cch means “count of characters,” as opposed to Cb, “count of bytes.”</p>
-</div>
-</section>
-<section id="fast-base64-conversion-functions">
-<h3>Fast Base64 Conversion Functions<a class="headerlink" href="#fast-base64-conversion-functions" title="Link to this heading"></a></h3>
-<p>Quickly convert byte extents of any length to Base64 and back.</p>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>The Base64 representations are NOT zero-terminated.</p>
-<p>If you need a C-string, allocate one more byte and add a
-null terminator manually after the function returns the exact
-encoded size.</p>
-<p>Any added null terminator must NOT be counted in the encoded size
-passed to the decoder.</p>
-</div>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
-<span class="nf">LmqBase64Encode</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Bytes</span><span class="p">,</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">Count</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PCHAR</span><span class="w"> </span><span class="n">Encoded</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PSIZE_T</span><span class="w"> </span><span class="n">EncodedSize</span>
-<span class="w">    </span><span class="p">);</span>
-
-<span class="n">LMQAPI</span>
-<span class="nf">LmqBase64Decode</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">CHAR</span><span class="o">*</span><span class="w"> </span><span class="n">Encoded</span><span class="p">,</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">EncodedSize</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PBYTE</span><span class="w"> </span><span class="n">Bytes</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PSIZE_T</span><span class="w"> </span><span class="n">Count</span>
-<span class="w">    </span><span class="p">);</span>
-
-<span class="c1">//</span>
-<span class="c1">// Helper macros for buffer size computations</span>
-<span class="c1">//</span>
-
-<span class="cp">#define LmqBase64EncodedBufferSizeFromInputSize(__InputSize__)</span>
-
-<span class="cp">#define LmqBase64MaxDecodedBufferSizeFromEncodedSize(__EncodedSize__)</span>
-</pre></div>
 </div>
 </section>
 </section>
