@@ -114,17 +114,17 @@ Quickly convert byte extents of any length to Base64 and back.
 
     LMQAPI
     LmqBase64Encode (
-        const BYTE* Bytes,
+        PCVOID Bytes,
         const SIZE_T Count,
-        PCHAR Encoded,
+        PVOID Encoded,
         PSIZE_T EncodedSize
         );
 
     LMQAPI
     LmqBase64Decode (
-        const CHAR* Encoded,
+        PCVOID Encoded,
         const SIZE_T EncodedSize,
-        PBYTE Bytes,
+        PVOID Bytes,
         PSIZE_T Count
         );
 
