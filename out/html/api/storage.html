@@ -27,7 +27,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="LwMQ Compression API" href="compression.html" />
-    <link rel="prev" title="LwMQ Utility API" href="hashing.html" /> 
+    <link rel="prev" title="LwMQ Hashing and Auxiliary API" href="hashing.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -55,7 +55,7 @@
 <li class="toctree-l2"><a class="reference internal" href="messaging.html">LwMQ Messaging API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="caching.html">LwMQ Caching API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="segmented-cache.html">LwMQ Segmented Cache API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hashing.html">LwMQ Utility API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hashing.html">LwMQ Hashing and Auxiliary API</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">LwMQ Storage API</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#c-and-c-header-file">C and C++ Header File</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#binaries">Binaries</a></li>
@@ -63,6 +63,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#types">Types</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#key-value-storage-functions">Key-Value Storage Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fast-base64-conversion-functions">Fast Base64 Conversion Functions</a></li>
 </ul>
 </li>
 </ul>
@@ -135,8 +136,6 @@
 </section>
 <section id="key-value-storage-functions">
 <h3>Key-Value Storage Functions<a class="headerlink" href="#key-value-storage-functions" title="Link to this heading"></a></h3>
-<section id="core-kv-store-functions">
-<h4>Core KV-Store Functions<a class="headerlink" href="#core-kv-store-functions" title="Link to this heading"></a></h4>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
 <span class="nf">LmqOpenKvStore</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">PCWSTR</span><span class="w"> </span><span class="n">Pathname</span><span class="p">,</span>
@@ -183,42 +182,43 @@
 </pre></div>
 </div>
 </section>
-<section id="kv-store-key-helpers-functions">
-<h4>KV-Store Key Helpers Functions<a class="headerlink" href="#kv-store-key-helpers-functions" title="Link to this heading"></a></h4>
+<section id="fast-base64-conversion-functions">
+<h3>Fast Base64 Conversion Functions<a class="headerlink" href="#fast-base64-conversion-functions" title="Link to this heading"></a></h3>
+<p>Quickly convert byte extents of any length to Base64 and back.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The Base64 representations are NOT zero-terminated.</p>
+<p>If you need a C-string, allocate one more byte and add a
+null terminator manually after the function returns the exact
+encoded size.</p>
+<p>Any added null terminator must NOT be counted in the encoded size
+passed to the decoder.</p>
+</div>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
-<span class="nf">LmqKvStoreKeyFromStringA</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">PCSTR</span><span class="w"> </span><span class="n">String</span><span class="p">,</span>
-<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">MaxLength</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PLMQ_KEY</span><span class="w"> </span><span class="n">Key</span>
+<span class="nf">LmqBase64Encode</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Bytes</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">Count</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">Encoded</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PSIZE_T</span><span class="w"> </span><span class="n">EncodedSize</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="n">LMQAPI</span>
-<span class="nf">LmqKvStoreKeyFromStringW</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">PCWSTR</span><span class="w"> </span><span class="n">String</span><span class="p">,</span>
-<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">MaxLength</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PLMQ_KEY</span><span class="w"> </span><span class="n">Key</span>
+<span class="nf">LmqBase64Decode</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Encoded</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">EncodedSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">Bytes</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PSIZE_T</span><span class="w"> </span><span class="n">Count</span>
 <span class="w">    </span><span class="p">);</span>
 
-<span class="cp">#ifdef UNICODE</span>
-<span class="cp">#define LmqKvStoreKeyFromString  LmqKvStoreKeyFromStringW</span>
-<span class="cp">#else</span>
-<span class="cp">#define LmqKvStoreKeyFromString  LmqKvStoreKeyFromStringA</span>
-<span class="cp">#endif</span>
+<span class="c1">//</span>
+<span class="c1">// Helper macros for buffer size computations</span>
+<span class="c1">//</span>
 
-<span class="n">LMQAPI</span>
-<span class="nf">LmqKvStoreKeyFromByteArray</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
-<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">LengthBytes</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PLMQ_KEY</span><span class="w"> </span><span class="n">Key</span>
-<span class="w">    </span><span class="p">);</span>
+<span class="cp">#define LmqBase64EncodedBufferSizeFromInputSize(__InputSize__)</span>
 
-<span class="n">LMQAPI</span>
-<span class="nf">LmqMakeRfc4122KvStoreKey</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">PLMQ_KEY</span><span class="w"> </span><span class="n">Key</span>
-<span class="w">    </span><span class="p">);</span>
+<span class="cp">#define LmqBase64MaxDecodedBufferSizeFromEncodedSize(__EncodedSize__)</span>
 </pre></div>
 </div>
-</section>
 </section>
 </section>
 </section>
@@ -227,7 +227,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="hashing.html" class="btn btn-neutral float-left" title="LwMQ Utility API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hashing.html" class="btn btn-neutral float-left" title="LwMQ Hashing and Auxiliary API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="compression.html" class="btn btn-neutral float-right" title="LwMQ Compression API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
