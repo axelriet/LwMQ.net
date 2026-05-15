@@ -65,9 +65,6 @@ int main()
     SIZE_T EncodedSize{ LmqBase64EncodedBufferSizeFromInputSize(sizeof(PayloadText)) };
     auto EncodedBuffer = std::make_unique<CHAR[]>(EncodedSize);
 
-    SIZE_T DecodedSize{ LmqBase64MaxDecodedBufferSizeFromEncodedSize(sizeof(PayloadText)) };
-    auto DecodedBuffer = std::make_unique<BYTE[]>(DecodedSize);
-
     //
     // Warmup run.
     //
@@ -76,6 +73,9 @@ int main()
                           sizeof(PayloadText),
                           EncodedBuffer.get(),
                           &EncodedSize));
+
+    SIZE_T DecodedSize{ LmqBase64MaxDecodedBufferSizeFromEncodedSize(EncodedSize) };
+    auto DecodedBuffer = std::make_unique<BYTE[]>(DecodedSize);
 
     CHECK(LmqBase64Decode(EncodedBuffer.get(),
                           EncodedSize,
