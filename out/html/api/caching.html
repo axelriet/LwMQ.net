@@ -20,8 +20,10 @@
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../_static/copybutton.js?v=f281be69"></script>
-      <script src="https://www.googletagmanager.com/gtag/js?id=G-VW7BZSSV48"></script>
+      <script src="../_static/sc.js?v=51d7b002"></script>
+      <script src="https://www.statcounter.com/counter/counter.js"></script>
       <script src="../_static/ga.js?v=3f0458de"></script>
+      <script src="https://www.googletagmanager.com/gtag/js?id=G-VW7BZSSV48"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
@@ -149,7 +151,7 @@ from hashing a string or byte array, or can be Globally unique
 Identifiers (GUIDs).</p>
 <p>LwMQ supplies functions to hash any string or byte array into
 a 128-bit key suitable for use with the cache, see
-<code class="docutils literal notranslate"><span class="pre">LmqKeyFromString()</span></code> and <code class="docutils literal notranslate"><span class="pre">LmqKeyFromByteArray()</span></code>, however
+<code class="docutils literal notranslate"><span class="pre">LmqStringToKey()</span></code> and <code class="docutils literal notranslate"><span class="pre">LmqBytesToKey()</span></code>, however
 it should be observed that hash functions are not immune to
 collisions.</p>
 <p>The cache only stores unique keys. If the same key is added twice,

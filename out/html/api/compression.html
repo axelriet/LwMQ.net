@@ -20,8 +20,10 @@
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../_static/copybutton.js?v=f281be69"></script>
-      <script src="https://www.googletagmanager.com/gtag/js?id=G-VW7BZSSV48"></script>
+      <script src="../_static/sc.js?v=51d7b002"></script>
+      <script src="https://www.statcounter.com/counter/counter.js"></script>
       <script src="../_static/ga.js?v=3f0458de"></script>
+      <script src="https://www.googletagmanager.com/gtag/js?id=G-VW7BZSSV48"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
@@ -55,7 +57,7 @@
 <li class="toctree-l2"><a class="reference internal" href="messaging.html">LwMQ Messaging API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="caching.html">LwMQ Caching API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="segmented-cache.html">LwMQ Segmented Cache API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hashing.html">LwMQ Utility API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hashing.html">LwMQ Hashing and Auxiliary API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="storage.html">LwMQ Storage API</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">LwMQ Compression API</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#c-and-c-header-file">C and C++ Header File</a></li>
@@ -168,8 +170,8 @@ compression API.</p>
 
 <span class="n">LMQAPI</span>
 <span class="nf">LmqCompressBuffer</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">UncompressedBuffer</span><span class="p">,</span>
-<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">UncompressedBufferSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Bytes</span><span class="p">,</span>
+<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">Count</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">CompressedBuffer</span><span class="p">,</span>
 <span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">CompressedBufferSize</span><span class="p">,</span>
 <span class="w">    </span><span class="n">LMQ_COMPRESSIONTYPE</span><span class="w"> </span><span class="n">CompressionType</span><span class="p">,</span>
@@ -179,12 +181,12 @@ compression API.</p>
 
 <span class="n">LMQAPI</span>
 <span class="nf">LmqDecompressBuffer</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">UncompressedBuffer</span><span class="p">,</span>
-<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">UncompressedBufferSize</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">CompressedBuffer</span><span class="p">,</span>
 <span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">CompressedBufferSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">Bytes</span><span class="p">,</span>
+<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">Count</span><span class="p">,</span>
 <span class="w">    </span><span class="n">LMQ_COMPRESSIONTYPE</span><span class="w"> </span><span class="n">CompressionType</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PSIZE_T</span><span class="w"> </span><span class="n">FinalUncompressedSize</span>
+<span class="w">    </span><span class="n">PSIZE_T</span><span class="w"> </span><span class="n">FinalDecompressedSize</span><span class="w"> </span><span class="c1">// Optional</span>
 <span class="w">    </span><span class="p">);</span>
 </pre></div>
 </div>
@@ -221,8 +223,8 @@ compression API.</p>
 
 <span class="k">const</span>
 <span class="n">LMQ_COMPRESSEDDATA</span>
-<span class="nf">LmqCompressedDataFromPointer</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Ptr</span>
+<span class="nf">LmqPointerToCompressedData</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Pointer</span>
 <span class="w">    </span><span class="p">);</span>
 </pre></div>
 </div>

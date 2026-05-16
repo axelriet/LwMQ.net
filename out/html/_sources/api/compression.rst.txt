@@ -80,8 +80,8 @@ Buffer Compression Functions
 
     LMQAPI
     LmqCompressBuffer (
-        PCVOID UncompressedBuffer,
-        SIZE_T UncompressedBufferSize,
+        PCVOID Bytes,
+        SIZE_T Count,
         PVOID CompressedBuffer,
         SIZE_T CompressedBufferSize,
         LMQ_COMPRESSIONTYPE CompressionType,
@@ -91,12 +91,12 @@ Buffer Compression Functions
 
     LMQAPI
     LmqDecompressBuffer (
-        PVOID UncompressedBuffer,
-        SIZE_T UncompressedBufferSize,
         PCVOID CompressedBuffer,
         SIZE_T CompressedBufferSize,
+        PVOID Bytes,
+        SIZE_T Count,
         LMQ_COMPRESSIONTYPE CompressionType,
-        PSIZE_T FinalUncompressedSize
+        PSIZE_T FinalDecompressedSize // Optional
         );
 
 One-Shot Compression Functions (BLOB)
@@ -134,6 +134,6 @@ One-Shot Compression Functions (BLOB)
 
     const
     LMQ_COMPRESSEDDATA
-    LmqCompressedDataFromPointer (
-        const BYTE* Ptr
+    LmqPointerToCompressedData (
+        PCVOID Pointer
         );

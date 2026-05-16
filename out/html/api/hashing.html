@@ -20,8 +20,10 @@
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../_static/copybutton.js?v=f281be69"></script>
-      <script src="https://www.googletagmanager.com/gtag/js?id=G-VW7BZSSV48"></script>
+      <script src="../_static/sc.js?v=51d7b002"></script>
+      <script src="https://www.statcounter.com/counter/counter.js"></script>
       <script src="../_static/ga.js?v=3f0458de"></script>
+      <script src="https://www.googletagmanager.com/gtag/js?id=G-VW7BZSSV48"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
@@ -69,6 +71,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#entropy-generation-function">Entropy Generation Function</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#fast-guid-uuid-to-string-conversion-functions">Fast GUID/UUID To String Conversion Functions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#fast-generic-hex-conversion-functions">Fast Generic Hex Conversion Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fast-base64-conversion-functions">Fast Base64 Conversion Functions</a></li>
 </ul>
 </li>
 </ul>
@@ -206,23 +209,23 @@ super-strong or not be used at all. Here at LwMQ we think that a little security
 is better than no security. We also believe in the <a class="reference external" href="https://en.wikipedia.org/wiki/Defense_in_depth_(computing)">defense-in-depth</a> principle
 where multiple layers of security are used conjointly to form a better defense.</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
-<span class="nf">LmqComputeCrc16</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
-<span class="w">    </span><span class="n">LengthBytes</span><span class="p">,</span>
+<span class="nf">LmqBytesToCrc16</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Bytes</span><span class="p">,</span>
+<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">Count</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PUINT16</span><span class="w"> </span><span class="n">Crc16</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="n">LMQAPI</span>
-<span class="nf">LmqComputeCrc32</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
-<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">LengthBytes</span><span class="p">,</span>
+<span class="nf">LmqBytesToCrc32</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Bytes</span><span class="p">,</span>
+<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">Count</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PUINT32</span><span class="w"> </span><span class="n">Crc32</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="n">LMQAPI</span>
-<span class="nf">LmqComputeCrc64</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
-<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">LengthBytes</span><span class="p">,</span>
+<span class="nf">LmqBytesToCrc64</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Bytes</span><span class="p">,</span>
+<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">Count</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PUINT64</span><span class="w"> </span><span class="n">Crc64</span>
 <span class="w">    </span><span class="p">);</span>
 </pre></div>
@@ -236,16 +239,16 @@ strong security purposes.</p>
 to timing attacks by taking the same amount of time regardless of how
 many bytes match between the two hashes.</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
-<span class="nf">LmqHashByteArray64</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
-<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">LengthBytes</span><span class="p">,</span>
+<span class="nf">LmqBytesToHash64</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Bytes</span><span class="p">,</span>
+<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">Count</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PUINT64</span><span class="w"> </span><span class="n">Hash</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="n">LMQAPI</span>
-<span class="nf">LmqHashByteArray128</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
-<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">LengthBytes</span><span class="p">,</span>
+<span class="nf">LmqBytesToHash</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Bytes</span><span class="p">,</span>
+<span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">Count</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PLMQ_HASH</span><span class="w"> </span><span class="n">Hash</span>
 <span class="w">    </span><span class="p">);</span>
 
@@ -394,28 +397,28 @@ from ASCII and Unicode strings, or byte arrays, and to generate RFC
 other purposes, and can also be protected/unprotected in memory using
 <code class="docutils literal notranslate"><span class="pre">LmqProtectKey()</span></code> and <code class="docutils literal notranslate"><span class="pre">LmqUnprotectKey()</span></code>, respectively.</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
-<span class="nf">LmqKeyFromStringA</span><span class="w"> </span><span class="p">(</span>
+<span class="nf">LmqStringToKeyA</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">PCSTR</span><span class="w"> </span><span class="n">String</span><span class="p">,</span>
 <span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">MaxLength</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PLMQ_KEY</span><span class="w"> </span><span class="n">Key</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="n">LMQAPI</span>
-<span class="nf">LmqKeyFromStringW</span><span class="w"> </span><span class="p">(</span>
+<span class="nf">LmqStringToKeyW</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">PCWSTR</span><span class="w"> </span><span class="n">String</span><span class="p">,</span>
 <span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">MaxLength</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PLMQ_KEY</span><span class="w"> </span><span class="n">Key</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="cp">#ifdef UNICODE</span>
-<span class="cp">#define LmqKeyFromString  LmqKeyFromStringW</span>
+<span class="cp">#define LmqStringToKey  LmqStringToKeyW</span>
 <span class="cp">#else</span>
-<span class="cp">#define LmqKeyFromString  LmqKeyFromStringA</span>
+<span class="cp">#define LmqStringToKey  LmqStringToKeyA</span>
 <span class="cp">#endif</span>
 
 <span class="n">LMQAPI</span>
-<span class="nf">LmqKeyFromByteArray</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
+<span class="nf">LmqBytesToKey</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Buffer</span><span class="p">,</span>
 <span class="w">    </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">LengthBytes</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PLMQ_KEY</span><span class="w"> </span><span class="n">Key</span>
 <span class="w">    </span><span class="p">);</span>
@@ -590,16 +593,16 @@ consideration.</p>
 </div>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI_VOID</span>
 <span class="nf">LmqBytesToHexStringA</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Bytes</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Bytes</span><span class="p">,</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">Count</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PCHAR</span><span class="w"> </span><span class="n">Out</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="p">((</span><span class="n">Count</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="n">ASCII</span><span class="w"> </span><span class="n">chars</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="n">LMQAPI_VOID</span>
 <span class="nf">LmqBytesToHexStringW</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">BYTE</span><span class="o">*</span><span class="w"> </span><span class="n">Bytes</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Bytes</span><span class="p">,</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">Count</span><span class="p">,</span>
-<span class="w">    </span><span class="n">PWCHAR</span><span class="w"> </span><span class="n">Out</span><span class="o">//</span><span class="w"> </span><span class="p">((</span><span class="n">Count</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="n">UNICODE</span><span class="w"> </span><span class="n">chars</span><span class="w"> </span><span class="p">(((</span><span class="n">Count</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">bytes</span><span class="p">)</span>
+<span class="w">    </span><span class="n">PWCHAR</span><span class="w"> </span><span class="n">Out</span><span class="o">//</span><span class="w"> </span><span class="p">((</span><span class="n">Count</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="n">UNICODE</span><span class="w"> </span><span class="n">chars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(((</span><span class="n">Count</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">bytes</span><span class="p">)</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="cp">#ifdef UNICODE</span>
@@ -645,6 +648,44 @@ easily make a safe wrapper, e.g.:</p>
 </pre></div>
 </div>
 <p>As a side note, Cch means “count of characters,” as opposed to Cb, “count of bytes.”</p>
+</div>
+</section>
+<section id="fast-base64-conversion-functions">
+<h3>Fast Base64 Conversion Functions<a class="headerlink" href="#fast-base64-conversion-functions" title="Link to this heading"></a></h3>
+<p>Quickly convert byte extents of any length to Base64 and back.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The Base64 representations are NOT zero-terminated.</p>
+<p>If you need a C-string, allocate one more byte and add a
+null terminator manually after the function returns the exact
+encoded size.</p>
+<p>Any added null terminator must NOT be counted in the encoded size
+passed to the decoder.</p>
+</div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
+<span class="nf">LmqBytesToBase64</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Bytes</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">Count</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">Encoded</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PSIZE_T</span><span class="w"> </span><span class="n">EncodedSize</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqBase64ToBytes</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PCVOID</span><span class="w"> </span><span class="n">Encoded</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">SIZE_T</span><span class="w"> </span><span class="n">EncodedSize</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PVOID</span><span class="w"> </span><span class="n">Bytes</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PSIZE_T</span><span class="w"> </span><span class="n">Count</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="c1">//</span>
+<span class="c1">// Helper macros for buffer size computations</span>
+<span class="c1">//</span>
+
+<span class="cp">#define LmqInputSizeToBase64BufferSize(__InputSize__)</span>
+
+<span class="cp">#define LmqBase64BufferSizeToMaxOutputSize(__EncodedSize__)</span>
+</pre></div>
 </div>
 </section>
 </section>

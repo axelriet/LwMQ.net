@@ -121,23 +121,23 @@ where multiple layers of security are used conjointly to form a better defense.
 .. code:: cpp
 
     LMQAPI
-    LmqComputeCrc16 (
-        PCVOID Buffer,
-        LengthBytes,
+    LmqBytesToCrc16 (
+        PCVOID Bytes,
+        SIZE_T Count,
         PUINT16 Crc16
         );
 
     LMQAPI
-    LmqComputeCrc32 (
-        PCVOID Buffer,
-        SIZE_T LengthBytes,
+    LmqBytesToCrc32 (
+        PCVOID Bytes,
+        SIZE_T Count,
         PUINT32 Crc32
         );
 
     LMQAPI
-    LmqComputeCrc64 (
-        PCVOID Buffer,
-        SIZE_T LengthBytes,
+    LmqBytesToCrc64 (
+        PCVOID Bytes,
+        SIZE_T Count,
         PUINT64 Crc64
         );
 
@@ -154,16 +154,16 @@ many bytes match between the two hashes.
 .. code:: cpp
 
     LMQAPI
-    LmqHashByteArray64 (
-        PCVOID Buffer,
-        SIZE_T LengthBytes,
+    LmqBytesToHash64 (
+        PCVOID Bytes,
+        SIZE_T Count,
         PUINT64 Hash
         );
 
     LMQAPI
-    LmqHashByteArray128 (
-        PCVOID Buffer,
-        SIZE_T LengthBytes,
+    LmqBytesToHash (
+        PCVOID Bytes,
+        SIZE_T Count,
         PLMQ_HASH Hash
         );
 
@@ -336,28 +336,28 @@ other purposes, and can also be protected/unprotected in memory using
 .. code:: cpp
 
     LMQAPI
-    LmqKeyFromStringA (
+    LmqStringToKeyA (
         PCSTR String,
         SIZE_T MaxLength,
         PLMQ_KEY Key
         );
 
     LMQAPI
-    LmqKeyFromStringW (
+    LmqStringToKeyW (
         PCWSTR String,
         SIZE_T MaxLength,
         PLMQ_KEY Key
         );
 
     #ifdef UNICODE
-    #define LmqKeyFromString  LmqKeyFromStringW
+    #define LmqStringToKey  LmqStringToKeyW
     #else
-    #define LmqKeyFromString  LmqKeyFromStringA
+    #define LmqStringToKey  LmqStringToKeyA
     #endif
 
     LMQAPI
-    LmqKeyFromByteArray (
-        const BYTE* Buffer,
+    LmqBytesToKey (
+        PCVOID Buffer,
         SIZE_T LengthBytes,
         PLMQ_KEY Key
         );
@@ -556,16 +556,16 @@ consideration.
 
     LMQAPI_VOID
     LmqBytesToHexStringA (
-        const BYTE* Bytes,
+        PCVOID Bytes,
         const SIZE_T Count,
         PCHAR Out // ((Count * 2) + 1) ASCII chars
         );
 
     LMQAPI_VOID
     LmqBytesToHexStringW (
-        const BYTE* Bytes,
+        PCVOID Bytes,
         const SIZE_T Count,
-        PWCHAR Out// ((Count * 2) + 1) UNICODE chars (((Count * 2) + 1) * 2 bytes)
+        PWCHAR Out// ((Count * 2) + 1) UNICODE chars = (((Count * 2) + 1) * 2 bytes)
         );
 
     #ifdef UNICODE
@@ -614,3 +614,45 @@ consideration.
                          LmqGuidToString(Guid, Out); } while(0,0)
 
     As a side note, Cch means "count of characters," as opposed to Cb, "count of bytes."
+
+Fast Base64 Conversion Functions
+--------------------------------
+
+Quickly convert byte extents of any length to Base64 and back.
+
+.. important::
+
+    The Base64 representations are NOT zero-terminated.
+    
+    If you need a C-string, allocate one more byte and add a
+    null terminator manually after the function returns the exact
+    encoded size.
+
+    Any added null terminator must NOT be counted in the encoded size
+    passed to the decoder.
+
+.. code:: cpp
+
+    LMQAPI
+    LmqBytesToBase64 (
+        PCVOID Bytes,
+        const SIZE_T Count,
+        PVOID Encoded,
+        PSIZE_T EncodedSize
+        );
+
+    LMQAPI
+    LmqBase64ToBytes (
+        PCVOID Encoded,
+        const SIZE_T EncodedSize,
+        PVOID Bytes,
+        PSIZE_T Count
+        );
+
+    //
+    // Helper macros for buffer size computations
+    //
+
+    #define LmqInputSizeToBase64BufferSize(__InputSize__)
+
+    #define LmqBase64BufferSizeToMaxOutputSize(__EncodedSize__)

@@ -36,7 +36,9 @@ html_css_files = [
 html_show_sphinx = False
 
 def setup(app):
-    app.add_js_file("https://www.googletagmanager.com/gtag/js?id=G-VW7BZSSV48")
+    app.add_js_file("sc.js")
+    app.add_js_file("https://www.statcounter.com/counter/counter.js")
     app.add_js_file("ga.js")
+    app.add_js_file("https://www.googletagmanager.com/gtag/js?id=G-VW7BZSSV48")
 
 mermaid_params = ['-p', 'puppeteer-config.json']
