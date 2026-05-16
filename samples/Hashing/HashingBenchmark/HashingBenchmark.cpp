@@ -68,7 +68,7 @@ int main()
     // Warmup run.
     //
 
-    CHECK(LmqComputeCrc16(&PayloadText[0],
+    CHECK(LmqBytesToCrc16(&PayloadText[0],
                           sizeof(PayloadText),
                           &Crc16));
 
@@ -78,7 +78,7 @@ int main()
 
     StartNs = LmqGetTickCountNs();
 
-    CHECK(LmqComputeCrc16(&PayloadText[0],
+    CHECK(LmqBytesToCrc16(&PayloadText[0],
                           sizeof(PayloadText),
                           &Crc16));
 
@@ -95,7 +95,7 @@ int main()
     // Warmup run.
     //
 
-    CHECK(LmqComputeCrc32(&PayloadText[0],
+    CHECK(LmqBytesToCrc32(&PayloadText[0],
                           sizeof(PayloadText),
                           &Crc32));
 
@@ -105,7 +105,7 @@ int main()
 
     StartNs = LmqGetTickCountNs();
 
-    CHECK(LmqComputeCrc32(&PayloadText[0],
+    CHECK(LmqBytesToCrc32(&PayloadText[0],
                           sizeof(PayloadText),
                           &Crc32));
 
@@ -122,7 +122,7 @@ int main()
     // Warmup run.
     //
 
-    CHECK(LmqComputeCrc64(&PayloadText[0],
+    CHECK(LmqBytesToCrc64(&PayloadText[0],
                           sizeof(PayloadText),
                           &Crc64));
 
@@ -132,7 +132,7 @@ int main()
 
     StartNs = LmqGetTickCountNs();
 
-    CHECK(LmqComputeCrc64(&PayloadText[0],
+    CHECK(LmqBytesToCrc64(&PayloadText[0],
                           sizeof(PayloadText),
                           &Crc64));
 
@@ -149,9 +149,9 @@ int main()
     // Warmup run.
     //
 
-    CHECK(LmqHashByteArray64(&PayloadText[0],
-                             sizeof(PayloadText),
-                             &Hash64));
+    CHECK(LmqBytesToHash64(&PayloadText[0],
+                           sizeof(PayloadText),
+                           &Hash64));
 
     //
     // Timed run.
@@ -159,9 +159,9 @@ int main()
 
     StartNs = LmqGetTickCountNs();
 
-    CHECK(LmqHashByteArray64(&PayloadText[0],
-                             sizeof(PayloadText),
-                             &Hash64));
+    CHECK(LmqBytesToHash64(&PayloadText[0],
+                           sizeof(PayloadText),
+                           &Hash64));
 
     PrintTime("Hash-64 ",
               LmqTimeElapsedNsSince(StartNs));
@@ -177,9 +177,9 @@ int main()
     // Warmup run.
     //
 
-    CHECK(LmqHashByteArray128(&PayloadText[0],
-                              sizeof(PayloadText),
-                              &Hash128));
+    CHECK(LmqBytesToHash(&PayloadText[0],
+                         sizeof(PayloadText),
+                         &Hash128));
 
     //
     // Timed run.
@@ -187,9 +187,9 @@ int main()
 
     StartNs = LmqGetTickCountNs();
 
-    CHECK(LmqHashByteArray128(&PayloadText[0],
-                              sizeof(PayloadText),
-                              &Hash128));
+    CHECK(LmqBytesToHash(&PayloadText[0],
+                         sizeof(PayloadText),
+                         &Hash128));
 
     PrintTime("Hash-128",
               LmqTimeElapsedNsSince(StartNs));

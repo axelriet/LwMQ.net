@@ -88,9 +88,9 @@ int main()
 
     static_assert(sizeof(g_SecretPassword) > 1);
 
-    CHECK(LmqKeyFromStringA(&g_SecretPassword[0],
-                            sizeof(g_SecretPassword),
-                            &g_HmacKey));
+    CHECK(LmqStringToKeyA(&g_SecretPassword[0],
+                          sizeof(g_SecretPassword),
+                          &g_HmacKey));
 
     CHECK(LmqProtectKey(&g_HmacKey));
 
@@ -319,7 +319,7 @@ ReceiveOneMessage (
     static WCHAR Buffer[63 * 1024]{};
     SIZE_T UncompressedDataSizeBytes{ sizeof (Buffer) };
 
-    CHECK_RETURN(LmqDecompressData(LmqCompressedDataFromPointer(Data),
+    CHECK_RETURN(LmqDecompressData(LmqPointerToCompressedData(Data),
                                    &Buffer[0],
                                    &UncompressedDataSizeBytes));
 

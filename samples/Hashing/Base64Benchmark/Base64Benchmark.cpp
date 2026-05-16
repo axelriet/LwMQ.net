@@ -30,7 +30,7 @@ Environment:
 #include <format>
 
 #include <api-lwmq-time.h>
-#include <api-lwmq-storage.h>
+#include <api-lwmq-hash.h>
 
 #include <api-lwmq-samples-common.h>
 
@@ -62,25 +62,25 @@ int main()
     // CRC-16 Demo ----------------------------------------------------------------
     //
     
-    SIZE_T EncodedSize{ LmqBase64EncodedBufferSizeFromInputSize(sizeof(PayloadText)) };
+    SIZE_T EncodedSize{ LmqInputSizeToBase64BufferSize(sizeof(PayloadText)) };
     auto EncodedBuffer = std::make_unique<CHAR[]>(EncodedSize);
 
     //
     // Warmup run.
     //
 
-    CHECK(LmqBase64Encode(&PayloadText[0],
-                          sizeof(PayloadText),
-                          EncodedBuffer.get(),
-                          &EncodedSize));
+    CHECK(LmqBytesToBase64(&PayloadText[0],
+                           sizeof(PayloadText),
+                           EncodedBuffer.get(),
+                           &EncodedSize));
 
-    SIZE_T DecodedSize{ LmqBase64MaxDecodedBufferSizeFromEncodedSize(EncodedSize) };
+    SIZE_T DecodedSize{ LmqBase64BufferSizeToMaxOutputSize(EncodedSize) };
     auto DecodedBuffer = std::make_unique<BYTE[]>(DecodedSize);
 
-    CHECK(LmqBase64Decode(EncodedBuffer.get(),
-                          EncodedSize,
-                          DecodedBuffer.get(),
-                          &DecodedSize));
+    CHECK(LmqBase64ToBytes(EncodedBuffer.get(),
+                           EncodedSize,
+                           DecodedBuffer.get(),
+                           &DecodedSize));
 
     //
     // Timed run.
@@ -88,7 +88,7 @@ int main()
 
     StartNs = LmqGetTickCountNs();
 
-    CHECK(LmqBase64Encode(&PayloadText[0],
+    CHECK(LmqBytesToBase64(&PayloadText[0],
                           sizeof(PayloadText),
                           EncodedBuffer.get(),
                           &EncodedSize));
@@ -98,10 +98,10 @@ int main()
 
     StartNs = LmqGetTickCountNs();
 
-    CHECK(LmqBase64Decode(EncodedBuffer.get(),
-                          EncodedSize,
-                          DecodedBuffer.get(),
-                          &DecodedSize));
+    CHECK(LmqBase64ToBytes(EncodedBuffer.get(),
+                           EncodedSize,
+                           DecodedBuffer.get(),
+                           &DecodedSize));
 
     PrintTime("Base64Decode",
               LmqTimeElapsedNsSince(StartNs));

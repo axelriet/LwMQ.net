@@ -219,10 +219,10 @@ int main()
                             &CompressedSize,
                             CompressionWorkspace));
 
-    CHECK(LmqDecompressBuffer(UncompressedBuffer.get(),
-                              BufferSize,
-                              CompressedBuffer.get(),
+    CHECK(LmqDecompressBuffer(CompressedBuffer.get(),
                               CompressedSize,
+                              UncompressedBuffer.get(),
+                              BufferSize,
                               LMQ_COMPRESSION_LZ4,
                               &UncompressedSize));
 
@@ -246,10 +246,10 @@ int main()
 
     StartNs = LmqGetTickCountNs();
 
-    CHECK(LmqDecompressBuffer(UncompressedBuffer.get(),
-                              BufferSize,
-                              CompressedBuffer.get(),
+    CHECK(LmqDecompressBuffer(CompressedBuffer.get(),
                               CompressedSize,
+                              UncompressedBuffer.get(),
+                              BufferSize,
                               LMQ_COMPRESSION_LZ4,
                               &UncompressedSize));
 
@@ -280,10 +280,10 @@ int main()
                             &CompressedSize,
                             CompressionWorkspace));
 
-    CHECK(LmqDecompressBuffer(UncompressedBuffer.get(),
-                              BufferSize,
-                              CompressedBuffer.get(),
+    CHECK(LmqDecompressBuffer(CompressedBuffer.get(),
                               CompressedSize,
+                              UncompressedBuffer.get(),
+                              BufferSize,
                               LMQ_COMPRESSION_DEFLATE,
                               &UncompressedSize));
 
@@ -307,10 +307,10 @@ int main()
 
     StartNs = LmqGetTickCountNs();
 
-    CHECK(LmqDecompressBuffer(UncompressedBuffer.get(),
-                              BufferSize,
-                              CompressedBuffer.get(),
+    CHECK(LmqDecompressBuffer(CompressedBuffer.get(),
                               CompressedSize,
+                              UncompressedBuffer.get(),
+                              BufferSize,
                               LMQ_COMPRESSION_DEFLATE,
                               &UncompressedSize));
 
