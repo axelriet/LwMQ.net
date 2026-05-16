@@ -22,6 +22,6 @@ limitations, with the segmented cache taking the lead in heavily
 contended scenarios, delivering lookup and retrieval rates in the tens
 of millions per second on suitable hardware.
 
-The Key-Value storage enable persistency with optional compression
+The Key-Value store enable persistency with optional compression
 at reasonably high speeds, the database being backed by virtual memory,
 and offers a decent tradeoff between speed and durability.

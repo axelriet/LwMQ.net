@@ -28,7 +28,7 @@
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Messaging" href="messaging.html" />
+    <link rel="next" title="Process-to-Process Messaging" href="messaging.html" />
     <link rel="prev" title="LwMQ Documentation" href="../index.html" /> 
 </head>
 
@@ -55,7 +55,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">LwMQ User Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#user-guide-sections">User Guide Sections</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="messaging.html">Messaging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="messaging.html">Process-to-Process Messaging</a></li>
 <li class="toctree-l3"><a class="reference internal" href="caching.html">LRU Caching and Key-Value Storage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="supporting-features.html">Supporting Features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="implementation.html">Implementation</a></li>
@@ -118,25 +118,30 @@
 <p>LwMQ is a systems and platform architect’s LEGO® set, born
 from a simple observation: there is a gap in message-oriented
 inter-process communication system’s offerings.</p>
-<p>LwMQ provides <em>fast</em> inter-process messaging, caching, and key-value
-storage as well as supporting features such as hashing, HMAC and
-key generation, data compression, and more. Everything is
-lightweight and optimized for the best possible performance on
-modern hardware, and exposed through a simple and consistent API.</p>
+<p>LwMQ provides <em>extremely fast</em> inter-process messaging, <em>extremely fast</em>
+in-memory caching with special attention to high-contention scenarios,
+a persistent key-value store as well as supporting features such as
+hashing, CRC, HMAC and key and entropy generation, data compression,
+and more.</p>
+<p>Everything in LwMQ is lightweight and optimized for the best possible
+performance on modern hardware, and exposed through a simple and
+consistent API.</p>
 <p>LwMQ is designed to be used in a wide variety of scenarios, from
 locally distributed applications to networked applications, and
 from <a class="reference external" href="https://learn.microsoft.com/en-us/windows/iot/">IoT</a> / embedded SoCs to workstations to datacenters, and even
 in virtualized environments.</p>
-<p>Samples: <a class="reference external" href="https://github.com/axelriet/LwMQ.net/tree/main/samples">https://github.com/axelriet/LwMQ.net/tree/main/samples</a></p>
-<p>SDK: <a class="reference external" href="https://www.lwmq.net">https://www.lwmq.net</a></p>
+<ul class="simple">
+<li><p>Samples: <a class="reference external" href="https://github.com/axelriet/LwMQ.net/tree/main/samples">LwMQ Samples (GitHub)</a></p></li>
+<li><p>SDK: <a class="reference external" href="https://www.lwmq.net">https://www.lwmq.net</a></p></li>
+</ul>
 <p>The entire binary distribution of LwMQ weights about 4MB and fits
 comfortably on any device capable of running any general-purpose SKU
 of Windows 10, Windows 11, Windows Server 2022, or later, while the
 redistributable installer weights less than 600KB.</p>
-<p>LwMQ’s performance is best-in-industry on every aspect, and it
-is designed to be used in performance-critical and mission-critical
-long-running scenarios, with a strong emphasis on correctness and
-reliability.</p>
+<p>LwMQ’s performance is best-in-industry when not industry-defining, on
+every aspect, and set a new standard of excellence. LwMQ is designed to be
+used in performance-critical and mission-critical long-running scenarios,
+with a strong emphasis on correctness and reliability.</p>
 <p>Axel Rietschin Software Development, LLC is a Microsoft Partner member
 of the Microsoft Windows Hardware Compatibility Program (WHCP) and
 is committed to ensuring LwMQ’s compatibility with Windows and its ecosystem,
@@ -149,7 +154,7 @@ as well as to providing the best possible experience for our users.</p>
 <blockquote>
 <div><div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="messaging.html">Messaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="messaging.html">Process-to-Process Messaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="caching.html">LRU Caching and Key-Value Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="supporting-features.html">Supporting Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="implementation.html">Implementation</a></li>
@@ -189,7 +194,7 @@ as well as to providing the best possible experience for our users.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../index.html" class="btn btn-neutral float-left" title="LwMQ Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="messaging.html" class="btn btn-neutral float-right" title="Messaging" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="messaging.html" class="btn btn-neutral float-right" title="Process-to-Process Messaging" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
