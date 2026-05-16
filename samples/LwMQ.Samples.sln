@@ -47,6 +47,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HashingBenchmark", "Hashing
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Base64Benchmark", "Hashing\Base64Benchmark\Base64Benchmark.vcxproj", "{F230E476-EEBD-44BD-826E-279194C21DF1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Screenshots", "Screenshots", "{33D2A574-C1CE-46EC-BA9B-C23324B31278}"
+	ProjectSection(SolutionItems) = preProject
+		Screenshots\AMD EPYC 9V45 - Standard E8ads v7, 8 vCPU, 64 GB.PNG = Screenshots\AMD EPYC 9V45 - Standard E8ads v7, 8 vCPU, 64 GB.PNG
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
