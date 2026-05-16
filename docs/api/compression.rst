@@ -106,8 +106,8 @@ One-Shot Compression Functions (BLOB)
 
     LMQAPI
     LmqCompressData (
-        PCVOID UncompressedBuffer,
-        SIZE_T UncompressedBufferSize,
+        PCVOID Byte,
+        SIZE_T Count,
         LMQ_COMPRESSIONTYPE CompressionType,
         PLMQ_COMPRESSEDDATA CompressedDataBlob,
         PSIZE_T CompressedDataBlobSize
@@ -116,8 +116,8 @@ One-Shot Compression Functions (BLOB)
     LMQAPI
     LmqDecompressData (
         const LMQ_COMPRESSEDDATA CompressedDataBlob,
-        PVOID UncompressedBuffer,
-        PSIZE_T UncompressedBufferSize
+        PVOID Byte,
+        PSIZE_T Count
         );
 
     LMQAPI
