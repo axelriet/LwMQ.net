@@ -93,46 +93,4 @@ Key-Value Storage Functions
     LmqCloseKvStore (
         PLMQ_KVSTORE KvStore
         );
-
-Fast Base64 Conversion Functions
---------------------------------
-
-Quickly convert byte extents of any length to Base64 and back.
-
-.. important::
-
-    The Base64 representations are NOT zero-terminated.
-    
-    If you need a C-string, allocate one more byte and add a
-    null terminator manually after the function returns the exact
-    encoded size.
-
-    Any added null terminator must NOT be counted in the encoded size
-    passed to the decoder.
-
-.. code:: cpp
-
-    LMQAPI
-    LmqBase64Encode (
-        PCVOID Bytes,
-        const SIZE_T Count,
-        PVOID Encoded,
-        PSIZE_T EncodedSize
-        );
-
-    LMQAPI
-    LmqBase64Decode (
-        PCVOID Encoded,
-        const SIZE_T EncodedSize,
-        PVOID Bytes,
-        PSIZE_T Count
-        );
-
-    //
-    // Helper macros for buffer size computations
-    //
-
-    #define LmqBase64EncodedBufferSizeFromInputSize(__InputSize__)
-
-    #define LmqBase64MaxDecodedBufferSizeFromEncodedSize(__EncodedSize__)
-
+        

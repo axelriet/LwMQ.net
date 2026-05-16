@@ -60,7 +60,7 @@ and AES-GCM encryption.
 
     LwMQ supplies functions to hash any string or byte array into
     a 128-bit key suitable for use with the cache, see
-    ``LmqKeyFromString()`` and ``LmqKeyFromByteArray()``, however
+    ``LmqStringToKey()`` and ``LmqBytesToKey()``, however
     it should be observed that hash functions are not immune to
     collisions.
 
