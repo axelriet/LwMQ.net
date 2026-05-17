@@ -58,12 +58,12 @@ SenderThread (
     _In_ PVOID Param
     ) noexcept;
 
-int main()
+int main(int, const CHAR* Argv[])
 {
-    printf("MiniChat IPC 1.0 - Account must have SeCreateGlobalPrivilege!\n"
+    printf("MiniChat IPC 1.0 - LwMQ Basic Messaging Demo.\n"
            "Start two instances of MiniChat and start typing or pasting text.\n\n");
 
-    printf("*** IF YOU GET AN ACCESS DENIED ERROR (0x8007005) CHECK THE ACCOUNT PRIVILEGES ***\n\n");
+    CHECK(CanCreateGlobalNames(Argv[0]));
 
     //
     // Set up a bidirectional channel

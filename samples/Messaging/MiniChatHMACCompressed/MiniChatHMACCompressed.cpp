@@ -75,12 +75,12 @@ static const CHAR g_SecretPassword[] = { "Password" };
 
 static LMQ_KEY g_HmacKey;
 
-int main()
+int main(int, const CHAR* Argv[])
 {
-    printf("MiniChatHMAC (Compressed) IPC 1.0 - Account must have SeCreateGlobalPrivilege!\n"
+    printf("MiniChatHMAC (Compressed) IPC 1.0 - LwMQ Basic Messaging Demo with HMAC + LZ4.\n"
            "Start two instances of MiniChatHMACCompressed and start typing or pasting text.\n\n");
 
-    printf("*** IF YOU GET AN ACCESS DENIED ERROR (0x8007005) CHECK THE ACCOUNT PRIVILEGES ***\n\n");
+    CHECK(CanCreateGlobalNames(Argv[0]));
 
     //
     // Derive a key from the password and protect it.
