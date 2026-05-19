@@ -59,6 +59,7 @@ User Guide Sections
 
       messaging
       caching
+      storage
       supporting-features
       implementation
       philosophy

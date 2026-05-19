@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LRU Caching and Key-Value Storage &mdash; LwMQ 1.0 documentation</title>
+  <title>In-Memory LRU Caching &mdash; LwMQ 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -28,7 +28,7 @@
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Supporting Features" href="supporting-features.html" />
+    <link rel="next" title="Persistent Key-Value Storage" href="storage.html" />
     <link rel="prev" title="Process-to-Process Messaging" href="messaging.html" /> 
 </head>
 
@@ -56,7 +56,17 @@
 <li class="toctree-l2"><a class="reference internal" href="index.html#introduction">Introduction</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html#user-guide-sections">User Guide Sections</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="messaging.html">Process-to-Process Messaging</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">LRU Caching and Key-Value Storage</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">In-Memory LRU Caching</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#when-to-use-each-cache">When to Use Each Cache</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#key-concepts">Key Concepts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#quickstart-example">Quickstart Example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#best-practices">Best Practices</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#performance-characteristics">Performance Characteristics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#limitations-considerations">Limitations &amp; Considerations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="storage.html">Persistent Key-Value Storage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="supporting-features.html">Supporting Features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="implementation.html">Implementation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="philosophy.html">Philosophy</a></li>
@@ -97,7 +107,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="index.html">LwMQ User Guide</a></li>
-      <li class="breadcrumb-item active">LRU Caching and Key-Value Storage</li>
+      <li class="breadcrumb-item active">In-Memory LRU Caching</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/guide/caching.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -107,27 +117,223 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="lru-caching-and-key-value-storage">
-<h1>LRU Caching and Key-Value Storage<a class="headerlink" href="#lru-caching-and-key-value-storage" title="Link to this heading"></a></h1>
-<p>LRU caching and key-value storage play supporting roles in LwMQ’s
-offerings, as they are often needed to implement applications
-that leverage LwMQ’s messaging capabilities.</p>
-<p>Those features are designed to be used in conjunction with
-the messaging subsystem. For example the in-memory LRU cache
-can be used to store partial results in AI inference scenarios,
-or to store often-served data with a precise expiration time.</p>
-<p>The segmented LRU cache supports massive caching scenarios with
-millions of entries under <em>heavy</em> multithreaded concurrent access,
-and both caches support compression and encryption with per-entry
-entropy.</p>
-<p>Both the LRU cache and the segmented LRU cache support multi-million
-retrievals per second, only subject to CPU speed and memory bandwidth
-limitations, with the segmented cache taking the lead in heavily
-contended scenarios, delivering lookup and retrieval rates in the tens
-of millions per second on suitable hardware.</p>
-<p>The Key-Value store enable persistency with optional compression
-at reasonably high speeds, the database being backed by virtual memory,
-and offers a decent tradeoff between speed and durability.</p>
+  <section id="in-memory-lru-caching">
+<h1>In-Memory LRU Caching<a class="headerlink" href="#in-memory-lru-caching" title="Link to this heading"></a></h1>
+<p>High-performance, concurrent LRU caches for C and C++ applications.</p>
+<p>LwMQ provides two powerful in-memory LRU caching solutions:</p>
+<ul class="simple">
+<li><p><strong>Regular Cache</strong> — Excellent for low-to-moderate contention workloads.</p></li>
+<li><p><strong>Segmented Cache</strong> — Designed for extreme concurrency and massive scale (hundreds of millions of operations per second on server hardware).</p></li>
+</ul>
+<p>Both support <strong>zero-allocation steady-state</strong> operation, <strong>TTL eviction</strong>, <strong>safe read-through</strong> with tombstone protection, optional <strong>compression</strong> (LZ4 or Intel QAT), and <strong>AES-256-GCM encryption</strong> with per-entry entropy.</p>
+<section id="when-to-use-each-cache">
+<h2>When to Use Each Cache<a class="headerlink" href="#when-to-use-each-cache" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Use Case</p></th>
+<th class="head"><p>Recommended Cache</p></th>
+<th class="head"><p>Why</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Low-to-moderate threading (≤8-16 threads)</p></td>
+<td><p>Regular Cache</p></td>
+<td><p>Simpler, lower overhead</p></td>
+</tr>
+<tr class="row-odd"><td><p>Heavy multithreading + high contention</p></td>
+<td><p><strong>Segmented Cache</strong></p></td>
+<td><p>Direct bit partitioning eliminates global lock contention</p></td>
+</tr>
+<tr class="row-even"><td><p>Millions to hundreds of millions ops/sec</p></td>
+<td><p><strong>Segmented Cache</strong></p></td>
+<td><p>Scales with cores and memory bandwidth</p></td>
+</tr>
+<tr class="row-odd"><td><p>Predictable memory usage / embedded / real-time</p></td>
+<td><p>Both</p></td>
+<td><p>Custom huge-block allocator + inline small data</p></td>
+</tr>
+<tr class="row-even"><td><p>AI inference, session stores, hot data layers</p></td>
+<td><p>Both (with read-through)</p></td>
+<td><p>Safe single backfill + tombstone protection</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="key-concepts">
+<h2>Key Concepts<a class="headerlink" href="#key-concepts" title="Link to this heading"></a></h2>
+<section id="direct-bit-based-partitioning-segmented-cache">
+<h3>Direct Bit-Based Partitioning (Segmented Cache)<a class="headerlink" href="#direct-bit-based-partitioning-segmented-cache" title="Link to this heading"></a></h3>
+<p>You control partitioning by designating 1–10 bits from your 128-bit keys. This provides <strong>direct, zero-overhead indexing</strong> into 2–1024 independent segments. Each segment maintains its own LRU list, dramatically reducing contention under heavy concurrency.</p>
+<p><strong>Requirement</strong>: Supply well-distributed keys (e.g., RFC 4122 GUIDs or high-quality hashes). Poor distribution leads to hot segments.</p>
+</section>
+<section id="read-through-with-tombstone-protection">
+<h3>Read-Through with Tombstone Protection<a class="headerlink" href="#read-through-with-tombstone-protection" title="Link to this heading"></a></h3>
+<p>On a cache miss when using a callback:</p>
+<ul class="simple">
+<li><p>The cache inserts a <strong>tombstone</strong> (placeholder) protected by a per-entry lock.</p></li>
+<li><p>Exactly <strong>one</strong> thread performs the backfill.</p></li>
+<li><p>Other threads wait efficiently on the same key.</p></li>
+<li><p>The entry is protected from eviction while the backfill is in progress.</p></li>
+</ul>
+<p>This eliminates the thundering herd problem without locking the entire cache or segment.</p>
+</section>
+<section id="memory-management">
+<h3>Memory Management<a class="headerlink" href="#memory-management" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Allocates one or more large virtual memory block(s) upfront.</p></li>
+<li><p>Uses a custom fixed-size allocator inside the block(s) → <strong>zero runtime allocations</strong> in steady state (especially when storing small values inline).</p></li>
+<li><p>Supports runtime extension via additional extents.</p></li>
+<li><p>Capable of handling terabytes of cached data.</p></li>
+</ul>
+</section>
+<section id="security-efficiency-features">
+<h3>Security &amp; Efficiency Features<a class="headerlink" href="#security-efficiency-features" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Per-entry AES-GCM encryption with additional entropy.</p></li>
+<li><p>LZ4 (fast), Deflate, or hardware-accelerated Deflate (Intel QAT) compression.</p></li>
+<li><p>TTL-based eviction (checked on access).</p></li>
+</ul>
+</section>
+</section>
+<section id="quickstart-example">
+<h2>Quickstart Example<a class="headerlink" href="#quickstart-example" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;api-lwmq-cache.h&gt;</span>
+
+<span class="n">LMQ_KEY</span><span class="w"> </span><span class="n">Key</span><span class="p">{};</span>
+<span class="n">SIZE_T</span><span class="w"> </span><span class="n">DataSize</span><span class="p">{};</span>
+<span class="n">LMQ_CACHE</span><span class="w"> </span><span class="n">Cache</span><span class="p">{};</span>
+
+<span class="c1">//</span>
+<span class="c1">// Prepare cache parameters for 1 million slots.</span>
+<span class="c1">//</span>
+
+<span class="k">constexpr</span><span class="w"> </span><span class="n">LMQ_CACHEPARAMETERS</span><span class="w"> </span><span class="n">Parameters</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">sizeof</span><span class="p">(</span><span class="n">LMQ_CACHEPARAMETERS</span><span class="p">),</span>
+<span class="w">    </span><span class="n">LMQ_CACHETYPE_DATA_CACHE</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LMQ_CACHEFLAGS_NONE</span><span class="p">,</span>
+<span class="w">    </span><span class="mi">1&#39;000&#39;000</span>
+<span class="p">};</span>
+
+<span class="c1">//</span>
+<span class="c1">// Create one key.</span>
+<span class="c1">//</span>
+
+<span class="n">LmqMakeRfc4122Key</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Key</span><span class="p">);</span>
+
+<span class="c1">//</span>
+<span class="c1">// Create the cache.</span>
+<span class="c1">//</span>
+
+<span class="n">LmqCreateCache</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Parameters</span><span class="p">,</span>
+<span class="w">               </span><span class="o">&amp;</span><span class="n">Cache</span><span class="p">);</span>
+
+<span class="c1">//</span>
+<span class="c1">// Add one entry.</span>
+<span class="c1">//</span>
+
+<span class="n">LmqAddCacheEntry</span><span class="p">(</span><span class="n">Cache</span><span class="p">,</span>
+<span class="w">                 </span><span class="o">&amp;</span><span class="n">Key</span><span class="p">,</span>
+<span class="w">                 </span><span class="n">Data</span><span class="p">,</span>
+<span class="w">                 </span><span class="n">Length</span><span class="p">,</span>
+<span class="w">                 </span><span class="n">LMQ_CACHEENTRY_NO_ADDITIONAL_ENTROPY</span><span class="p">,</span>
+<span class="w">                 </span><span class="n">LMQ_CACHEENTRY_FLAGS_NONE</span><span class="p">,</span>
+<span class="w">                 </span><span class="mf">0.0f</span><span class="p">);</span>
+
+<span class="c1">//</span>
+<span class="c1">// Existence test: lookup one entry.</span>
+<span class="c1">//</span>
+
+<span class="n">LmqLookupCacheEntry</span><span class="p">(</span><span class="n">Cache</span><span class="p">,</span>
+<span class="w">                    </span><span class="o">&amp;</span><span class="n">Key</span><span class="p">,</span>
+<span class="w">                    </span><span class="o">&amp;</span><span class="n">DataSize</span><span class="p">);</span>
+
+<span class="c1">//</span>
+<span class="c1">// Retrieve one entry.</span>
+<span class="c1">//</span>
+
+<span class="n">LmqRetrieveCacheEntry</span><span class="p">(</span><span class="n">Cache</span><span class="p">,</span>
+<span class="w">                      </span><span class="o">&amp;</span><span class="n">Key</span><span class="p">,</span>
+<span class="w">                      </span><span class="n">Data</span><span class="p">,</span>
+<span class="w">                      </span><span class="o">&amp;</span><span class="n">DataSize</span><span class="p">,</span>
+<span class="w">                      </span><span class="n">LMQ_CACHEENTRY_NO_ADDITIONAL_ENTROPY</span><span class="p">,</span>
+<span class="w">                      </span><span class="k">nullptr</span><span class="p">);</span>
+
+<span class="c1">//</span>
+<span class="c1">// Delete an entry.</span>
+<span class="c1">//</span>
+
+<span class="n">LmqRemoveCacheEntry</span><span class="p">(</span><span class="n">Cache</span><span class="p">,</span>
+<span class="w">                    </span><span class="o">&amp;</span><span class="n">Key</span><span class="p">);</span>
+
+<span class="c1">//</span>
+<span class="c1">// Destroy the cache.</span>
+<span class="c1">//</span>
+
+<span class="n">LmqDestroyCache</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Cache</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<section id="key-selection">
+<h3>Key Selection<a class="headerlink" href="#key-selection" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Prefer <strong>GUIDs</strong> created with <code class="docutils literal notranslate"><span class="pre">LmqMakeRfc4122Key()</span></code> — no hashing required at lookup time.</p></li>
+<li><p>For strings or binary data, use <code class="docutils literal notranslate"><span class="pre">LmqStringToKey()</span></code> or <code class="docutils literal notranslate"><span class="pre">LmqBytesToKey()</span></code>.</p></li>
+<li><p>For Segmented Cache, choose partition bits from high-entropy positions in the key.</p></li>
+</ul>
+</section>
+<section id="choosing-segment-count-segmented-cache">
+<h3>Choosing Segment Count (Segmented Cache)<a class="headerlink" href="#choosing-segment-count-segmented-cache" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Start with <strong>256</strong> or <strong>512</strong> segments on high-core-count servers.</p></li>
+<li><p>More segments = better scalability, slightly higher memory overhead.</p></li>
+<li><p>Fewer segments = more contention.</p></li>
+</ul>
+</section>
+<section id="read-through-callbacks">
+<h3>Read-Through Callbacks<a class="headerlink" href="#read-through-callbacks" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Keep callbacks reasonably fast.</p></li>
+<li><p>The cache protects the entry (via tombstone) during the callback.</p></li>
+</ul>
+</section>
+<section id="performance-tips">
+<h3>Performance Tips<a class="headerlink" href="#performance-tips" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Use small inline data when possible.</p></li>
+<li><p>Enable Hardware Lock Elision (HLE) where supported by the CPU.</p></li>
+<li><p>Pre-size the cache appropriately to minimize extent allocations.</p></li>
+<li><p>Monitor performance with <code class="docutils literal notranslate"><span class="pre">LmqGetCacheMetrics()</span></code>.</p></li>
+</ul>
+</section>
+</section>
+<section id="performance-characteristics">
+<h2>Performance Characteristics<a class="headerlink" href="#performance-characteristics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Regular Cache</strong>: Multi-million ops/sec even under moderate contention.</p></li>
+<li><p><strong>Segmented Cache</strong>: Tens of millions ops/sec on laptops; <strong>hundreds of millions</strong> on multi-socket servers with sufficient memory bandwidth.</p></li>
+<li><p>Near-linear scaling with cores when keys are well-distributed.</p></li>
+<li><p>Predictable low latency (no background threads or global locks).</p></li>
+</ul>
+</section>
+<section id="limitations-considerations">
+<h2>Limitations &amp; Considerations<a class="headerlink" href="#limitations-considerations" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Keys are 128-bit values. Collision risk is extremely low but present if using weak hashing.</p></li>
+<li><p>Segmented Cache requires well-distributed keys for optimal load balancing.</p></li>
+<li><p>Encryption and compression add CPU overhead (valuable trade-off for memory/IO-bound workloads).</p></li>
+<li><p>The cache is passive: eviction and TTL checks occur on access.</p></li>
+</ul>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Full <strong>API Reference</strong> → <a class="reference internal" href="../api/caching.html"><span class="doc">LwMQ Caching API</span></a></p></li>
+<li><p>Advanced topics: memory extents, metrics, custom allocators (see API documentation)</p></li>
+</ul>
+</section>
 </section>
 
 
@@ -135,7 +341,7 @@ and offers a decent tradeoff between speed and durability.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="messaging.html" class="btn btn-neutral float-left" title="Process-to-Process Messaging" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="supporting-features.html" class="btn btn-neutral float-right" title="Supporting Features" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="storage.html" class="btn btn-neutral float-right" title="Persistent Key-Value Storage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
