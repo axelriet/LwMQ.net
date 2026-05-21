@@ -57,6 +57,7 @@ User Guide Sections
    .. toctree::
       :maxdepth: 1
 
+      why-lwmq
       messaging
       caching
       storage
