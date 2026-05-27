@@ -173,6 +173,8 @@ Transports
         PULONG BytesReturned
         );
 
+.. _messaging-direct-buffer-access:
+
 Direct Buffer Access
 --------------------
 

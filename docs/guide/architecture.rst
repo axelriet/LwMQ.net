@@ -7,16 +7,144 @@ the messaging framework revolves around the high-level concept
 of a memory window being "teleported" from one peer's address
 space to another.
 
-The actual transport happens either through directly shared
+The actual data transfer happens either through directly shared
 memory (for the IPC transport) or with the help of the network
 adapter for the RDMA case, where the transfer is offloaded to
-the hardware.
+the network hardware.
+
+We are investigating options to enable cross-VM
+and cross-container shared memory support in the future to enable
+direct VM-to-VM (or container) communication, but this requires a
+little help from the hypervisor.
 
 Other transports, such as Hyper-V's HvSocket, rely on an existing
 pipe-like infrastructure, while yet other transports, like
 a possible TCP transport, rely on pinned memory windows and queues
 that sit in-between user-mode and kernel-mode to minimize buffer
 copies and kernel transitions.
+
+General Architecture
+====================
+
+LwMQ's is roughly divided in two main distinct layers: the transport
+layer and the message queuing layer.
+
+Transport Layer
+---------------
+
+Each transport exposes a well-defined function table conforming to
+the LwMQ TLI (transport layer interface).
+
+Transport discovery is performed at runtime. The transport layer does
+not know anything about specific transports but discovers them
+dynamically by examining a custom PE section, .lmqini, where each
+transports registers its entry point at compile time.
+
+The scheme provide full logical separation between transports and
+the transport layer and allows for future expansion.
+
+Adding a new transport boils down to adding the new transport's
+entry point to the transport's table in the .lmqini section,
+something done automatically through some linker magic.
+
+Transports expose capabilities, such as the ability to send, receive,
+multicast, etc, as well as address parsing. Upper layers atop the
+TLI don't know much about transports either. The matching is done
+mainly by the URI scheme, for example "ipc://" is passed to each
+transport until one of them handles it.
+
+
+The address parsing is then performed by the selected transport: LwMQ
+does not know anything about IP addresses, paths, reserved characters,
+etc, as the parsing is performed by the transport themselves.
+
+The LwMQ API has provisions for :ref:`messaging-direct-buffer-access`. It is therefore
+possible to build any upper-layer leveraging LwMQ's buffer teleportation
+to meet any special requirements not covered by message queuing,
+for example bulk BLOB transfer of any size or other scenarios where
+discrete messages are not ideal.
+
+The transport layer operates asynchronously, in the sense that an
+upper layer can obtain a buffer, fill it, and send it, then immediately
+try obtaining another buffer, which will succeed provided that a buffer
+is available, or timeout. The buffer queue length is under application
+control and the TLI only blocks when no buffer is immediately available.
+
+We don't provide guidance regarding the number of send and/or receive
+buffers as those numbers are dependent on the workload, transport speed,
+etc, but an application can conceivably have buffer long buffer queues with
+dozens or even hundreds of buffers.
+
+The built-in IPC transport has a limit of approximately 4,000 buffers
+shared between both directions of traffic (e.g. you can have 3,500 buffers
+in one direction and 500 in the other), with no practical per-buffer size
+limit, and no practical limit on channel count.
+
+Other transports can have very different limits. For example RDMA adapters
+often have a maximum memory aperture size, e.g. 2GB, and sometimes limit
+the total aperture size adapter-wide, or the count of memory regions, which
+in turn affects the buffer size/count as well as the number of LwMQ channels
+that can be established with whatever buffer size/count on that particular
+adapter.
+
+While LwMQ sounds like Christmas came earlier, we don't recommend to go
+crazy with the buffer queue lengths and buffer sizes. Large buffers are
+useful in direct scenarios when moving huge blobs, and also allow clubbing
+messages together if the producer is very quick and queues messages faster
+than the underlying transport can move them.
+
+Long buffer queues can help absorb message traffic spikes but also expose
+the application to more risks in case of crash as more messages will be
+lost.
+
+Both increase memory usage, so use sensible queue lengths and appropriate
+buffer sizes to meet your requirements with minimal resource usage.
+
+
+Future
+^^^^^^
+
+If the need arises, the scheme can easily be extended to discovery
+of external transport modules in the future after v1, with the understanding
+that external transports will have priority over the built-in ones:
+if someone comes up with a better IPC transport, dropping an external
+module handling the "ipc://" scheme, in the field, will override the
+internal one without code change to LwMQ, and more importantly
+without changes to application code.
+
+It is also easy to imagine transport filters, which could be installed
+to intercept transport activity for debugging, logging, or auditing
+purposes.
+
+In any case, LwMQ will only load EV-signed modules.
+
+Message Queuing Layer
+---------------------
+
+The message queuing layer exposes various input and output queues
+and handles the serialization / deserialization of messages and their
+data frames to and from transport buffers, and takes care of buffer
+processing.
+
+The message queuing layer handles queue priorities and utilizes a
+weighted round-robin message collection algorithm to gather messages
+from various priority groups.
+
+Each priority group can have any number of any type of input queue,
+for example the NORMAL priority group on a given LwMQ channel can
+have five mono-producer unbounded queue and a multi-producer bounded
+queue, both accessed concurrency by various threads queuing messages
+asynchronously.
+
+In this example, the five threads bound to the five mono-producer
+queues can post messages concurrently and unobstructed at an extremely
+high rate (multi-millions per second per thread) while more threads
+sharing the multi-producer queue are synchronized by the queue itself,
+trading concurrency for the convenience of a shared queue.
+
+The messaging layer impose very little to the application or systems
+architect: the functionality exposed for messaging is flexible and
+accommodate many scenarios.
 
 Sender Block Diagram
 ====================
