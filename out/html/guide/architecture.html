@@ -553,22 +553,18 @@ window.runMermaid = runMermaid;</script>
   <section id="architecture">
 <h1>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h1>
 <p>LwMQ messaging’s architecture is DMA-first. What that means is
-the messaging framework revolves around the high-level concept
-of a memory window being “teleported” from one peer’s address
+the messaging fabric revolves around the high-level concept
+of a <em>memory window</em> being “teleported” from one peer’s address
 space to another.</p>
 <p>The actual data transfer happens either through directly shared
 memory (for the IPC transport) or with the help of the network
 adapter for the RDMA case, where the transfer is offloaded to
 the network hardware.</p>
-<p>We are investigating options to enable cross-VM
-and cross-container shared memory support in the future to enable
-direct VM-to-VM (or container) communication, but this requires a
-little help from the hypervisor.</p>
 <p>Other transports, such as Hyper-V’s HvSocket, rely on an existing
-pipe-like infrastructure, while yet other transports, like
-a possible TCP transport, rely on pinned memory windows and queues
-that sit in-between user-mode and kernel-mode to minimize buffer
-copies and kernel transitions.</p>
+pipe-like infrastructure provided by the hypervisor platform, while
+yet other transports, like a possible TCP transport, rely on pinned
+memory windows and queues (RQ, CQ) that sit in-between user-mode and
+kernel-mode to minimize buffer copies and kernel transitions.</p>
 <section id="general-architecture">
 <h2>General Architecture<a class="headerlink" href="#general-architecture" title="Link to this heading"></a></h2>
 <p>LwMQ’s is roughly divided in two main layers: the transport
@@ -662,17 +658,21 @@ and control channel, and a separate data channel, each with completely different
 parameters adapted to their respective traffic types.</p>
 <section id="future">
 <h4>Future<a class="headerlink" href="#future" title="Link to this heading"></a></h4>
-<p>If the need arises, the scheme can easily be extended to discovery
-of external transport modules in the future after v1, with the understanding
-that external transports will have priority over the built-in ones:
-if someone comes up with a better IPC transport, dropping an external
-module handling the “ipc://” scheme, in the field, will override the
-internal one without code change to LwMQ, and more importantly
-without changes to application code.</p>
-<p>It is also easy to imagine transport filters, which could be installed
+<p>For the future, we are investigating options to enable cross-VM
+and cross-container shared memory to enable direct VM-to-VM communication
+(or container-to-container, VM-to-container, etc) , but this requires a
+little help from the hypervisor which is not available to us yet.</p>
+<p>If the need arises, the transport provider discovery scheme can easily be
+extended to discover external transport modules, with the understanding that
+external transports will have priority over the built-in ones: if someone comes
+up with a better IPC transport, dropping an external module handling the “ipc://”
+scheme, in the field, will override the internal one without code change to LwMQ,
+and more importantly without requiring changes to application code.</p>
+<p>It is also easy to imagine transport <em>filters</em>, which could be installed
 to intercept transport activity for debugging, logging, or auditing
 purposes.</p>
-<p>In any case, LwMQ will only load EV-signed modules.</p>
+<p>In any case, LwMQ will only load EV-signed modules, external transport
+providers, or transport filters.</p>
 </section>
 </section>
 <section id="message-queuing-layer">

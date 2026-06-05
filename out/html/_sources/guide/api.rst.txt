@@ -2,14 +2,14 @@
 API
 ###
 
-The API follows a C-style design, with a flat API and
+The API follows a clean C-style design, with a flat API and
 opaque types, and is designed to be easily callable from C,
 C++, Rust, Go, Python and more. Wrappers and bindings can
-also be created for almost any language.
+also be created for almost any programming language.
 
 The ABI (Application Binary Interface) remains stable between
-releases, ensuring backward compatibility: new versions of
-LwMQ will generally be drop-in replacements for any previous
+releases, ensuring backward compatibility: post v1, new versions
+of LwMQ will generally be drop-in replacements for any previous
 version, meaning the API surface is stable and extensions
 are made by adding new functions and types, rather than
 modifying existing ones. Existing functions will *never* be
@@ -31,5 +31,7 @@ Create verbs are complemented by Destroy verbs that free the
 resources allocated by the Create functions. Open -> Close,
 Allocate -> Free, and so on.
 
-Save for a couple of rare exceptions, LwMQ's API calls return a status
-code (HRESULT) indicating success or failure.
+Save for a couple of rare exceptions, LwMQ's API calls return a structured
+status code (`HRESULT`_) indicating success or failure.
+
+.. _HRESULT: https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-erref/705fb797-2175-4a90-b5a3-3918024b10b8
