@@ -26,43 +26,43 @@ copies and kernel transitions.
 General Architecture
 ====================
 
-LwMQ's is roughly divided in two main distinct layers: the transport
-layer and the message queuing layer.
+LwMQ's is roughly divided in two main layers: the transport
+layer at the bottom and the message queuing layer on top.
 
-Transport Layer
----------------
+Transports and Transport Layer
+------------------------------
 
 Each transport exposes a well-defined function table conforming to
-the LwMQ TLI (transport layer interface).
+the LwMQ Transport Layer Interface (TLI) and acts as a transport provider.
 
-Transport discovery is performed at runtime. The transport layer does
-not know anything about specific transports but discovers them
-dynamically by examining a custom PE section, .lmqini, where each
-transports registers its entry point at compile time.
+Transport provider's discovery is performed at runtime. The transport layer does
+not know anything about specific transport providers but discovers them
+dynamically by examining a custom PE section, ".lmqini", where each
+transports registers its provider's entry point at compile time.
 
-The scheme provide full logical separation between transports and
+The scheme provide full logical separation between transport providers and
 the transport layer and allows for future expansion.
 
-Adding a new transport boils down to adding the new transport's
-entry point to the transport's table in the .lmqini section,
-something done automatically through some linker magic.
+Adding a new transport boils down to adding the new transport provider's
+entry point to the transport provider's table in the .lmqini section,
+something done automatically at build time through linker magic.
 
 Transports expose capabilities, such as the ability to send, receive,
-multicast, etc, as well as address parsing. Upper layers atop the
+multicast, etc, as well as address parsing functionality. Upper layers atop the
 TLI don't know much about transports either. The matching is done
 mainly by the URI scheme, for example "ipc://" is passed to each
 transport until one of them handles it.
-
 
 The address parsing is then performed by the selected transport: LwMQ
 does not know anything about IP addresses, paths, reserved characters,
 etc, as the parsing is performed by the transport themselves.
 
-The LwMQ API has provisions for :ref:`messaging-direct-buffer-access`. It is therefore
-possible to build any upper-layer leveraging LwMQ's buffer teleportation
-to meet any special requirements not covered by message queuing,
-for example bulk BLOB transfer of any size or other scenarios where
-discrete messages are not ideal.
+The LwMQ API also has provisions for :ref:`messaging-direct-buffer-access`.
+
+It is therefore possible to build any upper-layer leveraging LwMQ's buffer
+teleportation to meet any special requirements not covered by message
+queuing, for example bulk BLOB transfer of any size or other scenarios
+where discrete messages are not ideal.
 
 The transport layer operates asynchronously, in the sense that an
 upper layer can obtain a buffer, fill it, and send it, then immediately
@@ -72,20 +72,31 @@ control and the TLI only blocks when no buffer is immediately available.
 
 We don't provide guidance regarding the number of send and/or receive
 buffers as those numbers are dependent on the workload, transport speed,
-etc, but an application can conceivably have buffer long buffer queues with
-dozens or even hundreds of buffers.
+application needs etc, but an LwMQ channel can conceivably have large
+buffers and long buffer queues, with dozens or even hundreds of buffers.
 
-The built-in IPC transport has a limit of approximately 4,000 buffers
-shared between both directions of traffic (e.g. you can have 3,500 buffers
-in one direction and 500 in the other), with no practical per-buffer size
-limit, and no practical limit on channel count.
+The built-in IPC transport has a buffer queue length limit of approximately
+4,000 buffers, shared between both directions of traffic (e.g. you can have
+3,500 buffers in one direction and 500 in the other), with no practical
+per-buffer size limit. Application don't have practical limits on channel
+count and can open as many channels between peer processes as system
+resource allow.
 
-Other transports can have very different limits. For example RDMA adapters
+Other transports can have different limits. For example RDMA adapters
 often have a maximum memory aperture size, e.g. 2GB, and sometimes limit
 the total aperture size adapter-wide, or the count of memory regions, which
 in turn affects the buffer size/count as well as the number of LwMQ channels
 that can be established with whatever buffer size/count on that particular
 adapter.
+
+LwMQ can work on multiple network adapters simultaneously. There is no
+synchronization point between channels or even traffic direction on a
+particular channel. An application can entertain multiple independent
+conversations on different channels and directions without any obstruction
+within LwMQ itself. The application can also have parallel channels between
+pairs of processes. For as long as the hardware (or memory bandwidth) supports
+it, and there are enough CPU resources to support the traffic, 2x channels
+equates to 2x throughput, etc.
 
 While LwMQ sounds like Christmas came earlier, we don't recommend to go
 crazy with the buffer queue lengths and buffer sizes. Large buffers are
@@ -95,10 +106,35 @@ than the underlying transport can move them.
 
 Long buffer queues can help absorb message traffic spikes but also expose
 the application to more risks in case of crash as more messages will be
-lost.
+lost, while large buffers affect the average latency in case of continuous
+traffic influx. Think of a large airliner vs. a very large one: it takes
+longer to load if there is a continuous influx of passengers, but it moves
+more passengers at once.
 
-Both increase memory usage, so use sensible queue lengths and appropriate
-buffer sizes to meet your requirements with minimal resource usage.
+Large buffers greatly increase peak throughput but also increase the *average*
+latency as the first "passenger" to get on board has to wait until the
+plane is full before the aircraft can take off. For the last passenger, the
+latency was very short as the plane took off as soon as they got in. Note
+that LwMQ never waits for anything. If the input queues are drained, the buffer
+is sent immediately.
+
+YOu can think of the buffer size as your Maximum Segment Size (MSS) in TCP/IP.
+
+LwMQ's message clubbing is *somewhat* similar in spirit to Nagle's algorithm
+in TCP/IP, in the sense that it aggregates multiple small *messages* fitting
+within a *buffer* until the buffer is full *or* there are no more messages
+in the input queue rings, in which case the buffer is shipped to the hardware
+for transmission. LwMQ never waits "just in case" to see if another message
+arrives when the input queues are drained. 
+
+Both buffer sizes and buffer queue lengths increase memory usage, so use
+sensible queue lengths and appropriate buffer sizes to meet your requirements
+with minimal resource usage. Increasing the buffer size and queue lengths can
+have a *dramatic* impact on performance, so be sure to experiment with your
+workload, and don't hesitate to use multiple specialized channels tuned for
+the expected traffic. For example (inspired by FTP) you could have a command
+and control channel, and a separate data channel, each with completely different
+parameters adapted to their respective traffic types.
 
 
 Future
