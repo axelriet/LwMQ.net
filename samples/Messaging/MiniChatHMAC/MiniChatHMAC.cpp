@@ -87,9 +87,9 @@ int main()
 
     static_assert(sizeof(g_SecretPassword) > 1);
 
-    CHECK(LmqKeyFromStringA(&g_SecretPassword[0],
-                            sizeof(g_SecretPassword),
-                            &g_HmacKey));
+    CHECK(LmqStringToKeyA(&g_SecretPassword[0],
+                          sizeof(g_SecretPassword),
+                          &g_HmacKey));
 
     CHECK(LmqProtectKey(&g_HmacKey));
 

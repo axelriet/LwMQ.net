@@ -49,7 +49,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir).obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>$(LMQ_SDK_INCLUDE);$(SolutionDir)Assets;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Program Files\LwMQ.SDK\inc;$(LMQ_SDK_INCLUDE);$(SolutionDir)Assets;$(IncludePath)</IncludePath>
     <LibraryPath>$(LMQ_SDK_LIB);$(LibraryPath)</LibraryPath>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -57,7 +57,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir).obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>$(LMQ_SDK_INCLUDE);$(SolutionDir)Assets;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Program Files\LwMQ.SDK\inc;$(LMQ_SDK_INCLUDE);$(SolutionDir)Assets;$(IncludePath)</IncludePath>
     <LibraryPath>$(LMQ_SDK_LIB);$(LibraryPath)</LibraryPath>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
