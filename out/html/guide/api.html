@@ -55,8 +55,10 @@
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">LwMQ User Guide</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="index.html#introduction">Introduction</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html#user-guide-sections">User Guide Sections</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="messaging.html">Messaging</a></li>
-<li class="toctree-l3"><a class="reference internal" href="caching.html">LRU Caching and Key-Value Storage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="why-lwmq.html">Why LwMQ?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="messaging.html">Process-to-Process Messaging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="caching.html">In-Memory LRU Caching</a></li>
+<li class="toctree-l3"><a class="reference internal" href="storage.html">Persistent Key-Value Storage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="supporting-features.html">Supporting Features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="implementation.html">Implementation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="philosophy.html">Philosophy</a></li>
@@ -109,13 +111,13 @@
              
   <section id="api">
 <h1>API<a class="headerlink" href="#api" title="Link to this heading"></a></h1>
-<p>The API follows a C-style design, with a flat API and
+<p>The API follows a clean C-style design, with a flat API and
 opaque types, and is designed to be easily callable from C,
 C++, Rust, Go, Python and more. Wrappers and bindings can
-also be created for almost any language.</p>
+also be created for almost any programming language.</p>
 <p>The ABI (Application Binary Interface) remains stable between
-releases, ensuring backward compatibility: new versions of
-LwMQ will generally be drop-in replacements for any previous
+releases, ensuring backward compatibility: post v1, new versions
+of LwMQ will generally be drop-in replacements for any previous
 version, meaning the API surface is stable and extensions
 are made by adding new functions and types, rather than
 modifying existing ones. Existing functions will <em>never</em> be
@@ -132,8 +134,8 @@ LmqPostMessage() posts a message to a queue, and so on. No surprises.</p>
 <p>Create verbs are complemented by Destroy verbs that free the
 resources allocated by the Create functions. Open -&gt; Close,
 Allocate -&gt; Free, and so on.</p>
-<p>Save for a couple of rare exceptions, LwMQ’s API calls return a status
-code (HRESULT) indicating success or failure.</p>
+<p>Save for a couple of rare exceptions, LwMQ’s API calls return a structured
+status code (<a class="reference external" href="https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-erref/705fb797-2175-4a90-b5a3-3918024b10b8">HRESULT</a>) indicating success or failure.</p>
 </section>
 
 

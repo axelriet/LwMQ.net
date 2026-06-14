@@ -20,6 +20,7 @@ Environment:
 
 --*/
 
+#pragma warning(disable: 4714)  // __forceinline not inlined
 #pragma warning(disable: 26490) // Don't use reinterpret_cast.
 #pragma warning(disable: 26493) // Don't use C-style casts.
 
@@ -107,3 +108,105 @@ LmqGetSystemTime (
 #endif
 
 __declspec(selectany) double g_TimingAdjustmentNs{};
+
+//
+// Some WIL-similar error macros to make the rest compile
+//
+
+#ifndef RETURN_IF_WIN32_BOOL_FALSE
+#define UNDEF_WIL_REPLACEMENT
+#define RETURN_IF_WIN32_BOOL_FALSE(win32bool) if(win32bool == FALSE) { return HRESULT_FROM_WIN32(GetLastError()); }
+#endif
+
+#pragma warning(disable: 26481) // Don't use pointer arithmetic
+#pragma warning(disable: 26461) // Argv can be marked as a pointer to const
+#pragma warning(disable: 26429) // Argv can be marked as not_null
+
+#pragma warning(push)
+#pragma warning(disable: 6242)  // Jump forces local unwind (we only jump on error) 
+
+HRESULT
+FORCEINLINE
+CheckPrivilege (
+    PCTCH Privilege,
+    _Out_ PBOOL Result
+    ) noexcept
+{
+    *Result = FALSE;
+
+    _Uninitialized_ HANDLE Token;
+
+    RETURN_IF_WIN32_BOOL_FALSE(OpenProcessToken(GetCurrentProcess(),
+                                                TOKEN_QUERY,
+                                                &Token));
+
+    __try
+    {
+        _Uninitialized_ LUID PrivilegeId;
+
+        RETURN_IF_WIN32_BOOL_FALSE(LookupPrivilegeValue(nullptr,
+                                                        Privilege,
+                                                        &PrivilegeId));
+
+        PRIVILEGE_SET Privileges{ 1, PRIVILEGE_SET_ALL_NECESSARY };
+
+        Privileges.Privilege[0].Luid = PrivilegeId;
+        Privileges.Privilege[0].Attributes = SE_PRIVILEGE_ENABLED;
+
+        RETURN_IF_WIN32_BOOL_FALSE(PrivilegeCheck(Token,
+                                                  &Privileges,
+                                                  Result));
+    }
+    __finally
+    {
+        CloseHandle(Token);
+    }
+
+    return S_OK;
+}
+
+HRESULT
+FORCEINLINE
+CanCreateGlobalNames (
+    PCSTR Argv0
+    ) noexcept
+{
+    _Uninitialized_ BOOL HasPrivilege;
+
+    CHECK(CheckPrivilege(SE_CREATE_GLOBAL_NAME,
+                         &HasPrivilege));
+
+    if (HasPrivilege == FALSE)
+    {
+        printf("The process is missing %S and will fail with Access Denied (0x80004005)\n\n", SE_CREATE_GLOBAL_NAME);
+
+        printf("Solutions:\n\n");
+
+        const CHAR* LastBackslash = strrchr(Argv0, '\\');
+        const CHAR* ProcessName { ((LastBackslash != nullptr) && (LastBackslash[1] != '\0')) ? &LastBackslash[1] : "<this process>" };
+
+        printf("  - Run this process with: sudo run %s (Yes, Windows has sudo!)\n", ProcessName);
+        printf("  - Run this process with: powershell -Command \"Start-Process %s -Verb RunAs\"\n", ProcessName);
+        printf("  - Run this process under an admin account.\n");
+
+        printf("  - Grant %S to the account or group:\n\n", SE_CREATE_GLOBAL_NAME);
+
+        printf("      Local Security Policy ->\n");
+        printf("        Security Settings ->\n");
+        printf("          Local Policies ->\n");
+        printf("            User Rights Assignment ->\n");
+        printf("              Create global objects ->\n");
+        printf("                Properties ->\n");
+        printf("                  Add User or Group...\n\n");
+
+        return E_FAIL;
+    }
+
+    return S_OK;
+}
+
+#pragma warning(pop)
+
+#ifdef UNDEF_WIL_REPLACEMENT
+#undef RETURN_IF_WIN32_BOOL_FALSE
+#endif

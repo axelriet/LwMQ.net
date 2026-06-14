@@ -64,9 +64,9 @@ SenderThread (
     _In_ PVOID Param
     ) noexcept;
 
-int main()
+int main(int, const CHAR* Argv[])
 {
-    printf("RawChannels IPC 1.0 - Account must have SeCreateGlobalPrivilege!\n"
+    printf("RawChannels IPC 1.0 - LwMQ Raw Transport Buffer Demo.\n"
            "Start two instances of RawChannels and start typing or pasting text.\n");
 
 #ifdef USE_PRECISE_BUT_SLOWER_TIMESTAMPS
@@ -77,7 +77,7 @@ int main()
 
 #endif
 
-    printf("*** IF YOU GET AN ACCESS DENIED ERROR (0x8007005) CHECK THE ACCOUNT PRIVILEGES ***\n\n");
+    CHECK(CanCreateGlobalNames(Argv[0]));
 
     //
     // Set up a bidirectional raw channel.

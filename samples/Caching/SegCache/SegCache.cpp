@@ -170,11 +170,15 @@ int main()
 {
     std::locale::global(std::locale("en_US.UTF-8"));
 
-    printf("SegCache 1.0 - LwMQ Segmented LRU Cache Demo.\n\n%s-way Segmented Cache, %s-byte entries.\n%s slots/insertions/retrievals with %s threads.\n",
+    printf("SegCache 1.0 - LwMQ Segmented LRU Cache Demo.\n\n"
+             "%s-way Segmented Cache, %s-byte entries.\n"
+               "%s slots/insertions/retrievals with %s threads.\n\n"
+                 "**** You need lots of cores (%u+) to see the FULL effect!\n",
            std::format("{:L}", CACHE_SEGMENTS).c_str(),
            std::format("{:L}", sizeof(PayloadText)).c_str(),
            std::format("{:L}", CACHE_SLOTS).c_str(),
-           std::format("{:L}", WORKER_THREADS).c_str());
+           std::format("{:L}", WORKER_THREADS).c_str(),
+           WORKER_THREADS);
 
     //
     // Create a key that we'll modify later.

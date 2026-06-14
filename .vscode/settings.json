@@ -1,6 +1,7 @@
 {
     "cSpell.words": [
         "backpressure",
+        "brokerless",
         "bugcheck",
         "CACHECOOKIE",
         "CACHEMETRICS",
@@ -31,6 +32,7 @@
         "LMDB",
         "LMQAPI",
         "Lmqi",
+        "lmqini",
         "lwmq",
         "MAKEWORD",
         "mdmp",
@@ -48,6 +50,7 @@
         "mycompany",
         "myport",
         "myproduct",
+        "Nagle's",
         "NTFS",
         "nullptr",
         "PBYTE",

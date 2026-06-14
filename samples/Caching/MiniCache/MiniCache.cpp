@@ -63,7 +63,9 @@ int main()
 {
     std::locale::global(std::locale("en_US.UTF-8"));
 
-    printf("MiniCache 1.0 - LwMQ LRU Cache Demo.\n\nSingle Cache, %s-byte entries.\n%s slots/insertions/retrievals.\n",
+    printf("MiniCache 1.0 - LwMQ Single-Threaded LRU Cache Demo.\n\n"
+             "Single Cache, %s-byte entries.\n"
+               "%s slots/insertions/retrievals.\n",
            std::format("{:L}", sizeof(PayloadText)).c_str(),
            std::format("{:L}", CACHE_SLOTS).c_str());
 

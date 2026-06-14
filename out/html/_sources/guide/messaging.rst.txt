@@ -1,6 +1,6 @@
-#########
-Messaging
-#########
+############################
+Process-to-Process Messaging
+############################
 
 Messaging is a core feature of LwMQ. It enables processes
 to exchange *messages*, which are structured entities composed
@@ -46,14 +46,38 @@ The result is much improved throughput, easily in the
 multi-million messages per second on common hardware for small
 payloads, and reaching multi-GB per second throughput with large
 payloads, as well as much reduced latency down to the low
-microseconds range or better for single one-way messages.
+microseconds range or better for single one-way messages, and
+even sub-microsecond in some scenarios.
 
-Similarly, LwMQ leverages Remote Direct Memory Access (RDMA)
-for remote peer-to-peer communication. RDMA is a datacenter
-technology that bypasses the network stack almost entirely (the
-technology is known as "kernel bypass") and achieves higher
-throughput and lower latency that what can be reached through
-typical network stacks on most operating systems.
+LwMQ messaging is entirely asynchronous. Messages are posted to
+prioritized queues without waiting and application can create
+multiple queues to avoid interlocking its own threads, or use
+synchronized queues for worry-free multithreading.
+
+There is no request-and-reply concept in LwMQ. What you get in
+independent channels in one, the other, or both directions,
+where the traffic is asynchronous and entirely independent.
+
+One way to look at it is through the lens of a multi-lane
+interstate superhighway: both directions are high-bandwidth,
+asynchronous, and independent of each other.
+
+The northbound (say) traffic does not need to be synchronized
+in any way with the southbound traffic, and *both direction
+can be used at simultaneously* at their maximum throughput.
+
+Similarly, you can have any number of independent lanes in
+each direction, each independent of each other. Just like
+in real-live you can have a truck lane, multiple regular
+lanes, and a passing lane with independent traffic, and
+this in one or both directions in any imaginable configuration.
+
+LwMQ leverages Remote Direct Memory Access (RDMA) for remote
+peer-to-peer communication. RDMA is a datacenter technology
+that bypasses the network stack almost entirely (the technology
+is known as "kernel bypass") and achieves higher throughput
+and lower latency that what can be reached through typical
+network stacks on most operating systems.
 
 LwMQ supports three flavors of RDMA through NetworkDirect v2 providers:
 
@@ -116,6 +140,10 @@ all. Communication is achieved at high speed between
 the host operating system and potentially headless VMs
 and Containers having no virtual network hardware attached.
 
+In the future, LwMQ will enable cross-VM and cross-container
+communication through *direct memory access* when the needed
+support is exposed by the underlying hypervisor and OS.
+
 Together, these features enable new scenarios for locally
 distributed and networked application communicating without
 borders at the highest throughput allowed by the hardware.
@@ -135,16 +163,17 @@ focuses on the 1:1 use case, knowing there is no intrinsic
 limits on the number of channels an application can create
 and use concurrently.
 
-Ultrafast IPC enables many scenarios including real-time
-financial data dissemination, locally-distributed agents,
-faster AI training, reinforcement learning and inference
-scenarios, delegation of sensitive work to a separate process
+Ultrafast IPC and in-memory caching enables many scenarios
+including real-time financial data dissemination,
+locally-distributed agents, faster AI training, reinforcement
+learning and inference scenarios, delegation of sensitive
+work to a separate process, container or virtual machine
 with minimal impact on performance, i.e. fast batching of
 commands to a numeric solver, or a graphic or HTML renderer
-hosted in separate process, container, VM, or computer.
+hosted separately, a risk engine, or simulation components.
 
 In these scenarios, LwMQ performs *many time faster* than
 existing solutions, even more so when the current solution
 involves HTTP/2 over a local socket connection such as gRPC
-or a local REST API, not mentioning elastic queues, queue
-priorities, and other features unique to LwMQ.
+or a local REST API, not mentioning LwMQ provides elastic
+queues, queue priorities, and other unique features.
