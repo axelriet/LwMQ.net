@@ -359,7 +359,7 @@ Messages Barriers
         LMQ_SENDQUEUE SendQueue,
         PLMQ_MESSAGEBARRIER MessageBarrier,
         UINT32 TimeoutMs
-        ) noexcept;
+        );
 
     LMQAPI
     LmqPostMessageBarrierWithTag (
