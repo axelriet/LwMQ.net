@@ -177,3 +177,82 @@ existing solutions, even more so when the current solution
 involves HTTP/2 over a local socket connection such as gRPC
 or a local REST API, not mentioning LwMQ provides elastic
 queues, queue priorities, and other unique features.
+
+LwMQ supports advanced synchronization scenarios through
+message barriers.
+
+Three types of barriers are supplied:
+
+* Signal barriers - The barrier signals an event handle.
+* Wait barriers - The barrier waits on an object.
+* Signal and wait barriers - Signal an event, then wait.
+
+A message barrier can be posted to any send queue.
+ 
+Barriers are processed just like messages but instead of
+carrying a transmission payload they signal an event (of
+the type created by CreateEvent()) or wait for an object
+to be signaled.
+ 
+Waitable objects include events, mutexes, process and thread
+handles, semaphores, and waitable timers. Less common waitable
+objects include file system change notifications, print
+queue state notifications, high or low memory resources
+notifications, and console input notifications. See the
+documentation for `WaitForSingleObject()`_ to learn more.
+
+.. _WaitForSingleObject(): https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
+
+When a signal barrier is encountered, the signal handle
+in the barrier is set to the signaled state using
+SetEvent() and message processing immediately continues.
+
+When a wait barrier is encountered, processing on the channel
+is paused until the wait condition is satisfied (meaning
+the wait handle enters signaled state) or the wait times
+out.
+ 
+In both cases, message processing resumes.
+ 
+A signal-and-wait barrier combines the two operations by
+first signaling the signal handle and immediately wait on
+the wait handle with timeout.
+ 
+Note that the signal and wait operations are performed by
+the channel's message scheduler and therefore the order of
+barrier processing is determined by the same algorithm that
+governs message processing, and waiting suspends the whole
+channel, not just the queue into which the barrier was posted.
+
+The right way of thinking about barriers is they behave like
+messages, but send (or wait for) signals instead of sending
+data.
+ 
+Barriers enable advanced message scheduling and synchronization.
+
+As an example amongst many, you could create a waitable
+timer that fires at midnight, post the wait barrier,
+then post one or more messages in the same queue.
+
+The channel will pause until the timer fires, then proceed
+with sending whathever was posted and waiting in the queue
+after the barrier, and whathever else was queued to any
+other queue on the same channel after the barrier was hit
+and entered its waiting state.
+ 
+Another use could be a signal barrier posted after a batch
+of messages have being queued. A thread could then wait on
+the event handle that was passed to the barrier, and the
+message scheduler will signal the handle, and therefore
+wake up the thread or threads that were waiting on it,
+when all messages preceding the barrier in the same queue
+have been processed.
+ 
+Keep in mind that queue priorities affect when messages (and
+barriers) get processed. For example if the user posts a wait
+barrier to an idle priority queue the scheduler will see
+that barrier only after all queues of higher priorities
+have been drained.
+
+Posting tagged barriers to a tagged (coalescing) queue
+is also supported, enabling complex scenarios.

@@ -58,6 +58,8 @@ Types
     LMQ_TRANSPORTBUFFER
     LMQ_TRANSPORTBUFFERLIMITS
     LMQ_MESSAGE
+    LMQ_MESSAGEBARRIER
+    LMQ_MESSAGEBARRIERTYPE
     LMQ_MESSAGECALLBACK
     LMQ_MESSAGEFRAMEENUMHINT
 
@@ -336,6 +338,40 @@ Post and Receive Messages
     LMQAPI
     LmqDisposeReceivedMessage (
         PLMQ_MESSAGE Message
+        );
+
+Messages Barriers
+-----------------
+
+.. code:: cpp
+
+    LMQAPI
+    LmqCreateMessageBarrier (
+        LMQ_MESSAGEBARRIERTYPE MessageBarrierType,
+        HANDLE SignalHandle,
+        HANDLE WaitHandle,
+        UINT32 WaitTimeoutMs,
+        PLMQ_MESSAGEBARRIER MessageBarrier
+        );
+
+    LMQAPI
+    LmqPostMessageBarrier (
+        LMQ_SENDQUEUE SendQueue,
+        PLMQ_MESSAGEBARRIER MessageBarrier,
+        UINT32 TimeoutMs
+        ) noexcept;
+
+    LMQAPI
+    LmqPostMessageBarrierWithTag (
+        LMQ_SENDQUEUE SendQueue,
+        PLMQ_MESSAGEBARRIER MessageBarrier,
+        LONG_PTR Tag,
+        UINT32 TimeoutMs
+        );
+
+    LMQAPI
+    LmqDestroyUnpostedMessageBarrier (
+        PLMQ_MESSAGEBARRIER MessageBarrier
         );
 
 Initialization and Termination

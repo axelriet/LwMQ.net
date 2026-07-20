@@ -67,6 +67,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#direct-buffer-access">Direct Buffer Access</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#messages-frames">Messages &amp; Frames</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#post-and-receive-messages">Post and Receive Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#messages-barriers">Messages Barriers</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#id1">Initialization and Termination</a><ul>
@@ -186,6 +187,8 @@ message-based communication.</p>
 <span class="n">LMQ_TRANSPORTBUFFER</span>
 <span class="n">LMQ_TRANSPORTBUFFERLIMITS</span>
 <span class="n">LMQ_MESSAGE</span>
+<span class="n">LMQ_MESSAGEBARRIER</span>
+<span class="n">LMQ_MESSAGEBARRIERTYPE</span>
 <span class="n">LMQ_MESSAGECALLBACK</span>
 <span class="n">LMQ_MESSAGEFRAMEENUMHINT</span>
 </pre></div>
@@ -455,6 +458,39 @@ message-based communication.</p>
 <span class="n">LMQAPI</span>
 <span class="nf">LmqDisposeReceivedMessage</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">PLMQ_MESSAGE</span><span class="w"> </span><span class="n">Message</span>
+<span class="w">    </span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="messages-barriers">
+<h3>Messages Barriers<a class="headerlink" href="#messages-barriers" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
+<span class="nf">LmqCreateMessageBarrier</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_MESSAGEBARRIERTYPE</span><span class="w"> </span><span class="n">MessageBarrierType</span><span class="p">,</span>
+<span class="w">    </span><span class="n">HANDLE</span><span class="w"> </span><span class="n">SignalHandle</span><span class="p">,</span>
+<span class="w">    </span><span class="n">HANDLE</span><span class="w"> </span><span class="n">WaitHandle</span><span class="p">,</span>
+<span class="w">    </span><span class="n">UINT32</span><span class="w"> </span><span class="n">WaitTimeoutMs</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLMQ_MESSAGEBARRIER</span><span class="w"> </span><span class="n">MessageBarrier</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqPostMessageBarrier</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUE</span><span class="w"> </span><span class="n">SendQueue</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLMQ_MESSAGEBARRIER</span><span class="w"> </span><span class="n">MessageBarrier</span><span class="p">,</span>
+<span class="w">    </span><span class="n">UINT32</span><span class="w"> </span><span class="n">TimeoutMs</span>
+<span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="k">noexcept</span><span class="p">;</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqPostMessageBarrierWithTag</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">LMQ_SENDQUEUE</span><span class="w"> </span><span class="n">SendQueue</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLMQ_MESSAGEBARRIER</span><span class="w"> </span><span class="n">MessageBarrier</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LONG_PTR</span><span class="w"> </span><span class="n">Tag</span><span class="p">,</span>
+<span class="w">    </span><span class="n">UINT32</span><span class="w"> </span><span class="n">TimeoutMs</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqDestroyUnpostedMessageBarrier</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PLMQ_MESSAGEBARRIER</span><span class="w"> </span><span class="n">MessageBarrier</span>
 <span class="w">    </span><span class="p">);</span>
 </pre></div>
 </div>
