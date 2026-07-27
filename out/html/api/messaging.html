@@ -67,7 +67,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#direct-buffer-access">Direct Buffer Access</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#messages-frames">Messages &amp; Frames</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#post-and-receive-messages">Post and Receive Messages</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#messages-barriers">Messages Barriers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#message-barriers">Message Barriers</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#id1">Initialization and Termination</a><ul>
@@ -462,9 +462,27 @@ message-based communication.</p>
 </pre></div>
 </div>
 </section>
-<section id="messages-barriers">
-<h3>Messages Barriers<a class="headerlink" href="#messages-barriers" title="Link to this heading"></a></h3>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LMQAPI</span>
+<section id="message-barriers">
+<h3>Message Barriers<a class="headerlink" href="#message-barriers" title="Link to this heading"></a></h3>
+<p>Message barriers can be posted to any send queue and
+can signal an event, or wait on a waitable object,
+or both when they are encountered in the message
+stream.</p>
+<p>Additionally, advanced barriers can call back into
+client code in three different ways:</p>
+<ul class="simple">
+<li><p>Simple, direct callback from the channel service thread.</p></li>
+<li><p>Callback through a User APC queued to a designated thread.</p></li>
+<li><p>Callback through a User Work Item running on a thread from the thread pool.</p></li>
+</ul>
+<p>Callback barriers are advanced and tricky! Each has subtle
+implications and consequences. Prefer Signal barriers
+for most in-line notifications needs.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span>
+<span class="c1">// Barrier creation.</span>
+<span class="c1">//</span>
+
+<span class="n">LMQAPI</span>
 <span class="nf">LmqCreateMessageBarrier</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">LMQ_MESSAGEBARRIERTYPE</span><span class="w"> </span><span class="n">MessageBarrierType</span><span class="p">,</span>
 <span class="w">    </span><span class="n">HANDLE</span><span class="w"> </span><span class="n">SignalHandle</span><span class="p">,</span>
@@ -472,6 +490,38 @@ message-based communication.</p>
 <span class="w">    </span><span class="n">UINT32</span><span class="w"> </span><span class="n">WaitTimeoutMs</span><span class="p">,</span>
 <span class="w">    </span><span class="n">PLMQ_MESSAGEBARRIER</span><span class="w"> </span><span class="n">MessageBarrier</span>
 <span class="w">    </span><span class="p">);</span>
+
+<span class="k">typedef</span><span class="w"> </span><span class="n">VOID</span><span class="p">(</span><span class="n">REENTRANT_CALLBACK</span><span class="o">*</span><span class="w"> </span><span class="n">PLMQ_MESSAGEBARRIERCALLBACK</span><span class="p">)</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">ULONG_PTR</span><span class="w"> </span><span class="n">Context</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqCreateCallbackMessageBarrier</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PLMQ_MESSAGEBARRIERCALLBACK</span><span class="w"> </span><span class="n">Callback</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ULONG_PTR</span><span class="w"> </span><span class="n">Context</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLMQ_MESSAGEBARRIER</span><span class="w"> </span><span class="n">MessageBarrier</span>
+<span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="k">noexcept</span><span class="p">;</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqCreateApcMessageBarrier</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">HANDLE</span><span class="w"> </span><span class="n">ThreadHandle</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLMQ_MESSAGEBARRIERCALLBACK</span><span class="w"> </span><span class="n">Callback</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ULONG_PTR</span><span class="w"> </span><span class="n">Context</span><span class="p">,</span>
+<span class="w">    </span><span class="n">QUEUE_USER_APC_FLAGS</span><span class="w"> </span><span class="n">Flags</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLMQ_MESSAGEBARRIER</span><span class="w"> </span><span class="n">MessageBarrier</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="n">LMQAPI</span>
+<span class="nf">LmqCreateUserWorkItemMessageBarrier</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">PLMQ_MESSAGEBARRIERCALLBACK</span><span class="w"> </span><span class="n">Callback</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ULONG_PTR</span><span class="w"> </span><span class="n">Context</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ULONG</span><span class="w"> </span><span class="n">Flags</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PLMQ_MESSAGEBARRIER</span><span class="w"> </span><span class="n">MessageBarrier</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="c1">//</span>
+<span class="c1">// Barrier posting.</span>
+<span class="c1">//</span>
 
 <span class="n">LMQAPI</span>
 <span class="nf">LmqPostMessageBarrier</span><span class="w"> </span><span class="p">(</span>
@@ -487,6 +537,10 @@ message-based communication.</p>
 <span class="w">    </span><span class="n">LONG_PTR</span><span class="w"> </span><span class="n">Tag</span><span class="p">,</span>
 <span class="w">    </span><span class="n">UINT32</span><span class="w"> </span><span class="n">TimeoutMs</span>
 <span class="w">    </span><span class="p">);</span>
+
+<span class="c1">//</span>
+<span class="c1">// Barrier destruction (in case posting failed).</span>
+<span class="c1">//</span>
 
 <span class="n">LMQAPI</span>
 <span class="nf">LmqDestroyUnpostedMessageBarrier</span><span class="w"> </span><span class="p">(</span>

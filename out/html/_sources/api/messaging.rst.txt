@@ -340,10 +340,30 @@ Post and Receive Messages
         PLMQ_MESSAGE Message
         );
 
-Messages Barriers
------------------
+Message Barriers
+----------------
+
+Message barriers can be posted to any send queue and
+can signal an event, or wait on a waitable object,
+or both when they are encountered in the message
+stream.
+
+Additionally, advanced barriers can call back into
+client code in three different ways:
+
+* Simple, direct callback from the channel service thread.
+* Callback through a User APC queued to a designated thread.
+* Callback through a User Work Item running on a thread from the thread pool.
+
+Callback barriers are advanced and tricky! Each has subtle
+implications and consequences. Prefer Signal barriers
+for most in-line notifications needs.
 
 .. code:: cpp
+
+    //
+    // Barrier creation.
+    //
 
     LMQAPI
     LmqCreateMessageBarrier (
@@ -353,6 +373,38 @@ Messages Barriers
         UINT32 WaitTimeoutMs,
         PLMQ_MESSAGEBARRIER MessageBarrier
         );
+
+    typedef VOID(REENTRANT_CALLBACK* PLMQ_MESSAGEBARRIERCALLBACK) (
+        ULONG_PTR Context
+        );
+
+    LMQAPI
+    LmqCreateCallbackMessageBarrier (
+        PLMQ_MESSAGEBARRIERCALLBACK Callback,
+        ULONG_PTR Context,
+        PLMQ_MESSAGEBARRIER MessageBarrier
+        ) noexcept;
+
+    LMQAPI
+    LmqCreateApcMessageBarrier (
+        HANDLE ThreadHandle,
+        PLMQ_MESSAGEBARRIERCALLBACK Callback,
+        ULONG_PTR Context,
+        QUEUE_USER_APC_FLAGS Flags,
+        PLMQ_MESSAGEBARRIER MessageBarrier
+        );
+
+    LMQAPI
+    LmqCreateUserWorkItemMessageBarrier (
+        PLMQ_MESSAGEBARRIERCALLBACK Callback,
+        ULONG_PTR Context,
+        ULONG Flags,
+        PLMQ_MESSAGEBARRIER MessageBarrier
+        );
+
+    //
+    // Barrier posting.
+    //
 
     LMQAPI
     LmqPostMessageBarrier (
@@ -368,6 +420,10 @@ Messages Barriers
         LONG_PTR Tag,
         UINT32 TimeoutMs
         );
+
+    //
+    // Barrier destruction (in case posting failed).
+    //
 
     LMQAPI
     LmqDestroyUnpostedMessageBarrier (
